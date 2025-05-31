@@ -5,11 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Raspberry
+  - Rock
+  - LeafPile
+  - Mushroom
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
   - 

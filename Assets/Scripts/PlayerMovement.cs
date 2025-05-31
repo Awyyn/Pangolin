@@ -3,23 +3,21 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
+using Unity.Burst.CompilerServices;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public int movesLeft = 20;  // COUNTER FOR MOVES LEFT (will move to UI sometime)                                TO DO
-    public MovesLeftDisplay movesLeftDisplay;
+    public MovesManager movesManager; 
     public Button button; 
 
     public Tilemap groundTilemap;
     public Tilemap obstacleTilemap;
-    public float moveSpeed = 20f;
+    public float moveSpeed = 10f;
 
     private Vector3 targetPosition;
     private Vector3 startingPosition;
     private bool isMoving = false;
     private Vector3 lastBumpDirection;
-
-
     private bool levelCompleted = false;
 
     public AudioSource bumpAudioSource;
@@ -28,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     {
         startingPosition = transform.position;
         targetPosition = transform.position;
-        movesLeftDisplay.SetMovesLeft(movesLeft);
+        movesManager.ResetMoves(22);
     }
 
     private void Update()
@@ -38,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
             RestartGame();  
         }
 
-        if (!isMoving && movesLeft > 0)
+        if (!isMoving && movesManager.movesLeft > 0)
         {
             Vector3 direction = Vector3.zero;
 
@@ -54,11 +52,9 @@ public class PlayerMovement : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 lastBumpDirection = direction;  // save direction for bump animation
-
-                movesLeft--;  // decreases moves here!
-                movesLeftDisplay.SetMovesLeft(movesLeft);  // updates UI display
-
                 Vector3 nextPos = targetPosition + direction;
+
+                movesManager.ModifyMoves(-1);
 
                 if (CanMoveTo(nextPos))
                 {
@@ -67,17 +63,70 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Bump animation played");
-                    StartCoroutine(BumpAnimation());
-                    PlayBumpSound();
-                    Debug.Log("Blocked!");
+                    Collider2D hitCollider = Physics2D.OverlapPoint(nextPos); // check for interactable object at nextPos
+
+                    if (hitCollider != null)
+                    {
+                        if (hitCollider.CompareTag("Rock"))
+                        {
+                            Vector3 rockNextPos = nextPos + direction;
+
+                            if (CanMoveTo(rockNextPos))
+                            {
+                                // push the rock smoothly
+                                StartCoroutine(MoveRock(hitCollider.gameObject, rockNextPos, moveSpeed));
+
+                                // optionally play push sound/animation here                                                  TO-DO
+                            }
+                            else
+                            {
+                                // rock can't be pushed
+                                StartCoroutine(BumpAnimation());
+                                PlayBumpSound();
+                                Debug.Log("Rock can't move further! Blocked");
+                            } //bump by rock
+                        }
+                        else if (hitCollider.CompareTag("LeafPile"))
+                        {
+                            Vector3 leafNextPos = nextPos + direction;
+
+                            if (CanMoveTo(leafNextPos))
+                            {
+                                // Trigger fade + smooth move to next tile
+                                LeafPile leafScript = hitCollider.GetComponent<LeafPile>();
+                                if (leafScript != null)
+                                {
+                                    float fadeDuration = 1.0f;  // seconds to fade & move
+                                    leafScript.FadeOut(leafNextPos, fadeDuration);
+                                }
+                                // player does NOT move automatically here -> must move next turn manually
+                            }
+                            else
+                            {
+                                StartCoroutine(BumpAnimation());
+                                PlayBumpSound();
+                                Debug.Log("Blocked by leaf pile!");
+                            }//bump by leaf
+                        }
+                        else
+                        {
+                            StartCoroutine(BumpAnimation());
+                            PlayBumpSound();
+                            Debug.Log("Blocked by another object!");
+                        }//bump - blocked by tilemap obstacle or nothing detected 
+                    }
+                    else 
+                    {
+                        StartCoroutine(BumpAnimation());
+                        PlayBumpSound();
+                        Debug.Log("Blocked by tilemap obstacle!");
+                    }// No object detected, but the player is blocked by a tilemap obstacle
                 }
             }
-
         }
     }
 
-    private bool CanMoveTo(Vector3 targetPos) //checking if the player can get to the next tile
+    private bool CanMoveTo(Vector3 targetPos) //checking if the GAME OBJECT can get to the next tile
     {        
                 // converts world position to tilemap cell position
         Vector3Int cellPos = groundTilemap.WorldToCell(targetPos);
@@ -89,6 +138,14 @@ public class PlayerMovement : MonoBehaviour
         TileBase obstacleTile = obstacleTilemap.GetTile(cellPos);
         if (obstacleTile != null)
             return false;
+
+        // Check if rock is blocking
+        Collider2D[] colliders = Physics2D.OverlapPointAll(targetPos);
+        foreach (var col in colliders)
+        {
+            if (col.CompareTag("Rock") || col.CompareTag("LeafPile"))
+                return false;
+        }
 
         return true;
     }
@@ -131,51 +188,47 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-    /*public void RestartGame()
+    private IEnumerator MoveRock(GameObject rock, Vector3 destination, float speed)
     {
-        Debug.Log("Restart button pressed!");
-        // Reset moves
-        movesLeft = 20;
-        movesLeftDisplay.SetMovesLeft(movesLeft);  // Update UI
-
-        // Reset player position (if you want to reset the player to the starting position)
-        transform.position = startingPosition;  // Or any other start position
-
-        // You can also reset other game-related stuff here if needed
-        targetPosition = startingPosition;
-        isMoving = false;  // Ensure the player isn't moving when restarting
-        Debug.Log("Game Restarted!");
-    }*/
-
-    public void RestartGame()
-    {
-        Debug.Log("Restart button clicked!");
-
-        // Debugging the state of the button and UIManager
-       // Debug.Log("Button Interactable: " + GetComponent<Button>().interactable);
-       // Debug.Log("UIManager position: " + transform.position);
-
-        // Reset moves
-        movesLeft = 20;
-        movesLeftDisplay.SetMovesLeft(movesLeft);  // Update UI
-
-        // Reset player position
-        transform.position = startingPosition;
-        targetPosition = startingPosition;
-
-        // Reset movement state
-        isMoving = false;
-
-        Debug.Log("Game Restarted!");
+        while ((rock.transform.position - destination).sqrMagnitude > 0.001f)
+        {
+            rock.transform.position = Vector3.MoveTowards(rock.transform.position, destination, speed * Time.deltaTime);
+            yield return null;
+        }
+        rock.transform.position = destination;
     }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Raspberry") && !levelCompleted)
         {
             levelCompleted = true;
             StartCoroutine(LevelCompleteSequence());
+        }
+        else if (other.CompareTag("Mushroom"))
+        {
+            HandleMushroom(other);
+        }
+    }
+    private void HandleMushroom(Collider2D mushroomCollider)
+    {
+        Debug.Log("Stepped on Mushroom!");
+
+        // Subtract 2 moves when stepping on a mushroom
+        movesManager.ModifyMoves(-2);
+
+        // Hide the mushroom by disabling its sprite
+        SpriteRenderer mushroomSprite = mushroomCollider.GetComponent<SpriteRenderer>();
+        if (mushroomSprite != null)
+        {
+            mushroomSprite.enabled = false;  // Hide the mushroom's sprite
+        }
+
+        // Optionally, disable the collider to prevent further interactions
+        Collider2D mushroomColliderComponent = mushroomCollider.GetComponent<Collider2D>();
+        if (mushroomColliderComponent != null)
+        {
+            mushroomColliderComponent.enabled = false;  // Disable the collider
         }
     }
     private IEnumerator LevelCompleteSequence()
@@ -189,5 +242,34 @@ public class PlayerMovement : MonoBehaviour
         // TODO: Load next level (future implementation)
         Debug.Log("Next level loading... (to be implemented)");
     }
+    public void RestartGame()                                           //RESTART
+    {
+        // Reset moves
+        movesManager.ResetMoves(21);
 
+        // Reset player position
+        transform.position = startingPosition;
+        targetPosition = startingPosition;
+        isMoving = false;
+
+        // Reset rocks
+        foreach (Rock rock in FindObjectsOfType<Rock>())
+        {
+            rock.ResetRock();
+        }
+
+        // Reset mushrooms
+        foreach (Mushroom mushroom in FindObjectsOfType<Mushroom>())
+        {
+            mushroom.ResetMushroom();
+        }
+
+        // Reset leaf piles (only if still present)
+        foreach (LeafPile leaf in FindObjectsOfType<LeafPile>(true))
+        {
+            leaf.ResetLeafPile();
+        }
+
+        Debug.Log("Game Restarted!");
+    }
 }
