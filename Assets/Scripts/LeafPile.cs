@@ -2,20 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LeafPile : MonoBehaviour
+public class LeafPile : MonoBehaviour, IInteractable
 {
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
     private bool isFading = false;
-    private Vector3 initialPosition;
+    private Vector3 originalPosition;
     private Color originalColor;
 
-    private void Start()
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
-        initialPosition = transform.position;
+        originalPosition = transform.position;
         originalColor = spriteRenderer.color;
+    }
+
+    public void Interact(Vector3 playerDirection)
+    {
+        // Determine where to move the leaf pile based on player direction
+        Vector3 moveToPosition = transform.position + playerDirection;
+        float fadeDuration = 1.0f;
+
+        FadeOut(moveToPosition, fadeDuration);
     }
 
     public void FadeOut(Vector3 moveToPosition, float moveDuration)
@@ -59,11 +68,11 @@ public class LeafPile : MonoBehaviour
         //Destroy(gameObject); i am remaking this
         gameObject.SetActive(false);
     }
-    public void ResetLeafPile()
+    public void ResetState()
     {
         gameObject.SetActive(true);
         isFading = false;
-        transform.position = initialPosition;
+        transform.position = originalPosition;
 
         if (spriteRenderer != null)
             spriteRenderer.color = originalColor;

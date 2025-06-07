@@ -1,27 +1,26 @@
 using UnityEngine;
 
-public class Mushroom : MonoBehaviour
+public class Mushroom : MonoBehaviour, IInteractable
 {
-    private Vector3 initialPosition;
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
 
-    private void Start()
+    private void Awake()
     {
-        initialPosition = transform.position;
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
     }
 
-    public void ResetMushroom()
+    public void Interact(Vector3 direction)
     {
-        gameObject.SetActive(true);
-        transform.position = initialPosition;
+        FindObjectOfType<MovesManager>().ModifyMoves(-2);
+        spriteRenderer.enabled = false;
+        col.enabled = false;
+    }
 
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = true;
-
-        if (col != null)
-            col.enabled = true;
+    public void ResetState()
+    {
+        spriteRenderer.enabled = true;
+        col.enabled = true;
     }
 }
