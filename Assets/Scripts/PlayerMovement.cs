@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine.UI;
 using Unity.Burst.CompilerServices;
 
+/// <summary>
+/// Controls the player movement 
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 { 
     public MovesManager movesManager; 
@@ -19,18 +22,29 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving = false;
     private Vector3 lastBumpDirection;
     private bool levelCompleted = false;
+    private Vector3 previousDirection;
+
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private bool isSide = true; // tracks if facing side (true) or up/down (false)
 
     public AudioSource bumpAudioSource;
+
 
     private void Start()
     {
         startingPosition = transform.position;
         targetPosition = transform.position;
         movesManager.ResetMoves(22);
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        previousDirection = Vector3.zero;
+
     }
 
     private void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
             RestartGame();  
@@ -48,23 +62,46 @@ public class PlayerMovement : MonoBehaviour
                 direction = Vector3.left;
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 direction = Vector3.right;
+           
 
             if (direction != Vector3.zero)
             {
+
                 lastBumpDirection = direction;  // save direction for bump animation
                 Vector3 nextPos = targetPosition + direction;
 
                 movesManager.ModifyMoves(-1);
 
-                if (GridManager.Instance.CanMoveTo(nextPos))
+
+                if (GridManager.Instance.CanMoveTo(nextPos)) //IF CAN MOVE
                 {
-                    // move is allowed
+                    //move is allowed
+
+                    if (direction == Vector3.left || direction == Vector3.right)
+                    {
+                        animator.SetBool("isMovingSide", true);
+                        animator.SetBool("isMovingTop", false);
+                        animator.SetBool("isIdle", false);
+                        animator.SetBool("isSide", true);
+
+                        // Flip sprite in the correct direction
+                        spriteRenderer.flipX = direction == Vector3.left;
+                    }
+                    else if (direction == Vector3.up || direction == Vector3.down)
+                    {
+                        animator.SetBool("isMovingTop", true);
+                        animator.SetBool("isMovingSide", false);
+                        animator.SetBool("isIdle", false);
+                        animator.SetBool("isSide", false);
+                    }
+
+                    // Execute the move
                     targetPosition = nextPos;
                     StartCoroutine(moveToPosition(targetPosition));
                 }
-                else
+                else //if the path is blocked by something
                 {
-                    // move is blocked → check interactables first
+                    // Handle when move is blocked
                     Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);
 
                     bool reacted = false;
@@ -78,28 +115,44 @@ public class PlayerMovement : MonoBehaviour
                             reacted = true;
 
                             Rock rockScript = hitCollider.GetComponent<Rock>();
-                            if (rockScript != null && rockScript.rockBlocked)
+                            if (rockScript != null && !rockScript.rockBlocked)
+                            {
+                                // If rock can be moved, interact with it
+                                rockScript.Interact(direction);
+                            }
+                            else
                             {
                                 StartCoroutine(BumpAnimation());
                                 PlayBumpSound();
+                                Debug.Log("Blocked by wall or unknown obstacle");
                             }
                         }
                     }
-
-                    // If no interaction handled it → do bump by default
                     if (!reacted)
                     {
+                        // Play bump animation                                                       TODO
+                        //   animator.SetTrigger("isBumped");
                         StartCoroutine(BumpAnimation());
                         PlayBumpSound();
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
             }
+            else
+            {
+                //idle
+                animator.SetBool("isMovingSide", false);
+                animator.SetBool("isMovingTop", false);
+                animator.SetBool("isIdle", true);
+            }
         }
     }
+
+    
     private IEnumerator moveToPosition(Vector3 destination)
     {
         isMoving = true;
+
         // move smoothly to the destination
         while ((transform.position - destination).sqrMagnitude > 0.001f)
         {
@@ -108,6 +161,10 @@ public class PlayerMovement : MonoBehaviour
         }
         transform.position = destination;
         isMoving = false;
+
+        animator.SetBool("isMovingSide", false);
+        animator.SetBool("isMovingTop", false);
+        animator.SetBool("isIdle", true);
     }
 
     private IEnumerator BumpAnimation()
@@ -181,6 +238,7 @@ public class PlayerMovement : MonoBehaviour
     }
     public void RestartGame()
     {
+        spriteRenderer.flipX = false;  // Reset sprite to face right again. this will always make the pangolin face a desired direction wher restarting.
         movesManager.ResetMoves(21);
         transform.position = startingPosition;
         targetPosition = startingPosition;
