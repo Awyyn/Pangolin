@@ -3,8 +3,14 @@ using UnityEngine;
 public class MovesManager : MonoBehaviour
 {
     public int movesLeft;
-    public MovesLeftDisplay movesLeftDisplay;  
+    public MovesLeftDisplay movesLeftDisplay;
 
+    public static MovesManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void ResetMoves(int startingMoves)
     {

@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public int currentLevel = 1;
+    public int currentLevelIndex = 0;
     public LevelManager currentLevelManager;
     public MovesManager movesManager;
 

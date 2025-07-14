@@ -8,7 +8,6 @@ public class LevelManager : MonoBehaviour
 
     //Level Setup
     public GameObject[] levels;              // Each level is a GameObject with its own Grid
-    public int[] levelMoves;                 // Number of allowed moves per level
     public float transitionDelay = 2f;       // Time before switching levels
 
     //References
@@ -65,11 +64,20 @@ public class LevelManager : MonoBehaviour
 
     public void SetLevelMoves(int levelIndex)
     {
-        if (levelIndex >= 0 && levelIndex < levelMoves.Length)
-            movesLeft = levelMoves[levelIndex];
+        GameObject level = levels[levelIndex];
+        LevelData data = level.GetComponent<LevelData>();
+
+        if (data != null)
+        {
+            movesLeft = data.allowedMoves;
+        }
         else
-            Debug.LogError("LevelMoves array index out of bounds!");
+        {
+            Debug.LogError("LevelData component missing on level " + level.name);
+            movesLeft = 0;
+        }
     }
+
 
     private void AssignTilemaps(int levelIndex)
     {
