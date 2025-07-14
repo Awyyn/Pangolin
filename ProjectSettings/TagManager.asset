@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Raspberry
   - Rock
   - LeafPile
   - Mushroom
+  - Soul
   layers:
   - Default
   - TransparentFX

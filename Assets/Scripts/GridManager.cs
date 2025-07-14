@@ -10,7 +10,6 @@ public class GridManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
             Instance = this;
         else
@@ -19,18 +18,23 @@ public class GridManager : MonoBehaviour
 
     public bool CanMoveTo(Vector3 worldPosition)
     {
+        if (obstacleTilemap == null)
+        {
+            Debug.LogError("ObstacleTilemap is NULL!");
+            return false;
+        }
+
+
+
         Vector3Int cellPos = groundTilemap.WorldToCell(worldPosition);
 
-        TileBase groundTile = groundTilemap.GetTile(cellPos);
-        if (groundTile == null)
+        if (groundTilemap.GetTile(cellPos) == null)
             return false;
 
-        TileBase obstacleTile = obstacleTilemap.GetTile(cellPos);
-        if (obstacleTile != null)
+        if (obstacleTilemap.GetTile(cellPos) != null)
             return false;
 
-        Collider2D[] colliders = Physics2D.OverlapPointAll(worldPosition);
-        foreach (var col in colliders)
+        foreach (var col in Physics2D.OverlapPointAll(worldPosition))
         {
             if (col.CompareTag("Rock") || col.CompareTag("LeafPile"))
                 return false;

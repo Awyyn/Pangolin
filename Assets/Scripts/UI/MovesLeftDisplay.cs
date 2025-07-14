@@ -1,14 +1,13 @@
 using UnityEngine;
-using TMPro;  // Needed for TextMeshProUGUI
+using TMPro;  // For TextMeshProUGUI
 
 public class MovesLeftDisplay : MonoBehaviour
 {
-    public TextMeshProUGUI movesLeftText;
+    public TextMeshProUGUI movesLeftText;  // The UI Text element that displays moves left
 
-    // Just update the displayed number — no internal logic for moves count here
+    // Update the displayed moves left
     public void SetMovesLeft(int moves)
     {
-        movesLeftText.text = moves.ToString();
+        movesLeftText.text = moves.ToString();  // Update the text in UI
     }
 }
-

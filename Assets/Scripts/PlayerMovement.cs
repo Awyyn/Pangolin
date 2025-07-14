@@ -9,8 +9,10 @@ using Unity.Burst.CompilerServices;
 /// Controls the player movement 
 /// </summary>
 public class PlayerMovement : MonoBehaviour
-{ 
-    public MovesManager movesManager; 
+{
+    public MovesManager movesManager;  // Reference to the MovesManager
+    public LevelManager levelManager;  // Reference to the LevelManager
+
     public Button button; 
 
     public Tilemap groundTilemap;
@@ -22,23 +24,29 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving = false;
     private Vector3 lastBumpDirection;
     private bool levelCompleted = false;
-    private Vector3 previousDirection;
+    //private Vector3 previousDirection;
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private bool isSide = true; // tracks if facing side (true) or up/down (false)
 
     public AudioSource bumpAudioSource;
 
 
+
     private void Start()
     {
+        if (levelManager == null)
+            levelManager = LevelManager.Instance;
+        if (movesManager == null)//optional? idk if needed
+            movesManager = FindObjectOfType<MovesManager>();
+
+
         startingPosition = transform.position;
         targetPosition = transform.position;
-        movesManager.ResetMoves(22);
+
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        previousDirection = Vector3.zero;
+        //previousDirection = Vector3.zero;
 
     }
 
@@ -48,6 +56,13 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
             RestartGame();  
+        }
+
+        if (movesManager.movesLeft <= 0)//if no moves are left, stop player movement
+        {
+            // Optionally, you can play a sound or animation indicating no moves left
+            Debug.Log("No moves left!");
+            return;
         }
 
         if (!isMoving && movesManager.movesLeft > 0)
@@ -66,12 +81,11 @@ public class PlayerMovement : MonoBehaviour
 
             if (direction != Vector3.zero)
             {
-
                 lastBumpDirection = direction;  // save direction for bump animation
                 Vector3 nextPos = targetPosition + direction;
 
-                movesManager.ModifyMoves(-1);
-
+                // Decrease moves left on each move
+                movesManager.ModifyMoves(-1); // Decrease moves left after a move
 
                 if (GridManager.Instance.CanMoveTo(nextPos)) //IF CAN MOVE
                 {
@@ -86,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
 
                         // Flip sprite in the correct direction
                         spriteRenderer.flipX = direction == Vector3.left;
+                        spriteRenderer.flipY = direction == Vector3.up;
                     }
                     else if (direction == Vector3.up || direction == Vector3.down)
                     {
@@ -93,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
                         animator.SetBool("isMovingSide", false);
                         animator.SetBool("isIdle", false);
                         animator.SetBool("isSide", false);
+
+                        spriteRenderer.flipY = direction == Vector3.down;
                     }
 
                     // Execute the move
@@ -146,9 +163,10 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isIdle", true);
             }
         }
+
     }
 
-    
+
     private IEnumerator moveToPosition(Vector3 destination)
     {
         isMoving = true;
@@ -194,10 +212,11 @@ public class PlayerMovement : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Raspberry") && !levelCompleted)
+        if (other.CompareTag("Soul") && !levelCompleted)    //If pleyer touched Soul, the level is      COMPLETED
         {
             levelCompleted = true;
-            StartCoroutine(LevelCompleteSequence());
+            Debug.Log("Soul touched!");
+            LevelManager.Instance.LoadNextLevelWithDelay(2f);
         }
         else if (other.CompareTag("Mushroom"))
         {
@@ -225,29 +244,25 @@ public class PlayerMovement : MonoBehaviour
             mushroomColliderComponent.enabled = false;  // Disable the collider
         }
     }
-    private IEnumerator LevelCompleteSequence()
-    {
-        Debug.Log("Level Completed!");
 
-        // Play small animation here (e.g., player celebration)
-        // For simplicity, let's just wait 1 second now
-        yield return new WaitForSeconds(1f);
 
-        // TODO: Load next level (future implementation)
-        Debug.Log("Next level loading... (to be implemented)");
-    }
     public void RestartGame()
     {
-        spriteRenderer.flipX = false;  // Reset sprite to face right again. this will always make the pangolin face a desired direction wher restarting.
-        movesManager.ResetMoves(21);
+        spriteRenderer.flipX = false;
+        animator.SetBool("isMovingSide", false);
+        animator.SetBool("isMovingTop", false);
+        animator.SetBool("isIdle", true);
+        animator.SetBool("isSide", true);
+
+        levelManager.ResetLevel(); // <-- calls SetLevelMoves + movesManager.ResetMoves
+
         transform.position = startingPosition;
         targetPosition = startingPosition;
         isMoving = false;
 
-        // Reset all IInteractable objects in the scene
         foreach (var interactable in FindObjectsOfType<MonoBehaviour>(true))
         {
-            if (interactable is IInteractable resettable)
+            if (interactable is IInteractable resettable && resettable != null)
             {
                 resettable.ResetState();
             }
@@ -255,6 +270,7 @@ public class PlayerMovement : MonoBehaviour
 
         Debug.Log("Game Restarted!");
     }
+
 
 
 }

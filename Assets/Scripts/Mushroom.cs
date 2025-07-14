@@ -20,7 +20,10 @@ public class Mushroom : MonoBehaviour, IInteractable
 
     public void ResetState()
     {
-        spriteRenderer.enabled = true;
-        col.enabled = true;
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = true;
+        if (col != null)
+            col.enabled = true;
     }
+
 }
