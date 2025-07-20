@@ -271,6 +271,9 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Game Restarted!");
     }
 
+    // Call this when player finishes a level
+
+
 
 
 }

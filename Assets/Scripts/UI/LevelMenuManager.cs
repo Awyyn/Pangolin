@@ -58,8 +58,8 @@ public class LevelMenuManager : MonoBehaviour
             GameObject buttonObj = Instantiate(levelButtonPrefab, levelGrid);
             LevelButton levelButton = buttonObj.GetComponent<LevelButton>();
 
-            // Check if the level is unlocked based on PlayerPrefs
-            bool isUnlocked = PlayerPrefs.GetInt($"Level_{i}_Completed", 0) == 1 || i == 0;
+
+            bool isUnlocked = PlayerProgress.IsLevelUnlocked(i);
             levelButton.Setup(i, isUnlocked, OnLevelSelected);
 
             spawnedButtons.Add(buttonObj);
@@ -95,13 +95,14 @@ public class LevelMenuManager : MonoBehaviour
     {
         Debug.Log($"Selected level {index + 1}");
 
-        // Mark the level as completed in PlayerPrefs
-        PlayerPrefs.SetInt($"Level_{index}_Completed", 1);
-        PlayerPrefs.Save();
+        if (index > PlayerProgress.GetHighestLevel())
+        {
+            PlayerProgress.SetHighestLevel(index);
+        }
 
-        // If the level is selected mid-game, restart it
-        levelManager.InitializeLevel(index);  // Restart the level (no need for LoadLevel)
+        levelManager.InitializeLevel(index);  // Restart the level
 
         ToggleMenu();  // Close the level menu
     }
+
 }

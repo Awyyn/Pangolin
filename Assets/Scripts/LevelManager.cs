@@ -24,7 +24,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.InitializeLevel(0);
+        //LevelManager.Instance.InitializeLevel(0);
     }
 
     public void InitializeLevel(int levelIndex)
@@ -56,11 +56,21 @@ public class LevelManager : MonoBehaviour
 
     public void ResetLevel()
     {
+        if (currentLevelIndex < 0 || currentLevelIndex >= levels.Length)
+            return;
+
+        // Fully reload the current level GameObject
+        GameObject level = levels[currentLevelIndex];
+        level.SetActive(false);
+        level.SetActive(true);
+
+        // Reset moves as before
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
-        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset with " + movesLeft + " moves left.");
 
+        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset with " + movesLeft + " moves left.");
     }
+
 
     public void SetLevelMoves(int levelIndex)
     {
@@ -109,6 +119,18 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"Next level will load in {delay} seconds...");
         yield return new WaitForSeconds(delay);
 
+        // Save progress if this level is higher than saved
+        if (currentLevelIndex > PlayerProgress.GetHighestLevel())
+        {
+            PlayerProgress.SetHighestLevel(currentLevelIndex);
+
+            // Refresh menu now that progress is updated
+            LevelMenuManager menu = FindObjectOfType<LevelMenuManager>();
+            if (menu != null)
+                menu.PopulatePage(0);
+        }
+
+
         // Disable current level
         if (currentLevelIndex < levels.Length)
             levels[currentLevelIndex].SetActive(false);
@@ -121,7 +143,6 @@ public class LevelManager : MonoBehaviour
         {
             InitializeLevel(currentLevelIndex);
             Debug.Log("Level " + (currentLevelIndex + 1) + " loaded.");
-
         }
         else
         {
@@ -129,4 +150,5 @@ public class LevelManager : MonoBehaviour
             // TODO: trigger game-end screen
         }
     }
+
 }
