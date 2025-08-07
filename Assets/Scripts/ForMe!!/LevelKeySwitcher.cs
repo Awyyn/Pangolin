@@ -10,7 +10,6 @@ public class LevelKeySwitcher : MonoBehaviour
         // Find all levels by tag (even if inactive)
         levels = FindAllLevels();
         SortLevelsByNumber(levels);
-        SwitchToLevel(0); // start with the first level
     }
 
     void Update()

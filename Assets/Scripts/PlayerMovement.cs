@@ -10,21 +10,25 @@ using Unity.Burst.CompilerServices;
 /// </summary>
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement instance;
+
     public MovesManager movesManager;  // Reference to the MovesManager
     public LevelManager levelManager;  // Reference to the LevelManager
 
-    public Button button; 
 
-    public Tilemap groundTilemap;
-    public Tilemap obstacleTilemap;
     public float moveSpeed = 10f;
 
     private Vector3 targetPosition;
     private Vector3 startingPosition;
     private bool isMoving = false;
     private Vector3 lastBumpDirection;
-    private bool levelCompleted = false;
-    //private Vector3 previousDirection;
+
+
+    private Vector3 lastDirection = Vector3.zero;
+    private Vector3 previousDirection = Vector3.zero;
+    private bool inputLocked = false;
+
+    public float inputCooldown = 0.25f; // Cooldown time for input
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -32,30 +36,31 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource bumpAudioSource;
 
 
+    private void Awake() => instance = this;
 
     private void Start()
     {
         if (levelManager == null)
             levelManager = LevelManager.Instance;
-        if (movesManager == null)//optional? idk if needed
+        if (movesManager == null)
             movesManager = FindObjectOfType<MovesManager>();
-
-
-        startingPosition = transform.position;
-        targetPosition = transform.position;
 
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        //previousDirection = Vector3.zero;
 
+        // Get starting position from level
+        SetStartPositionFromLevel();
     }
+
 
     private void Update()
     {
+        if (inputLocked || LevelManager.Instance.levelCompleted) return;
+
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
-            RestartGame();  
+            RestartGame();
         }
 
         if (movesManager.movesLeft <= 0)//if no moves are left, stop player movement
@@ -77,44 +82,38 @@ public class PlayerMovement : MonoBehaviour
                 direction = Vector3.left;
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 direction = Vector3.right;
-           
+
 
             if (direction != Vector3.zero)
             {
-                lastBumpDirection = direction;  // save direction for bump animation
+                inputLocked = true;
+
+                // Store direction history
+                previousDirection = lastDirection;
+                lastDirection = direction;
+
+                // Animator parameters
+                animator.SetFloat("moveX", direction.x);
+                animator.SetFloat("moveY", direction.y);
+
+                int tailIndex = GetTailAngleIndex(previousDirection, direction);
+                animator.SetFloat("tailAngleIndex", tailIndex);
+                animator.SetBool("isMoving", true);
+
+                // Flip sprite if player moves left. Don't flip if moving right
+                spriteRenderer.flipX = direction == Vector3.left;
+
+                // Handle movement logic
+                lastBumpDirection = direction;
                 Vector3 nextPos = targetPosition + direction;
 
-                // Decrease moves left on each move
-                movesManager.ModifyMoves(-1); // Decrease moves left after a move
+                movesManager.ModifyMoves(-1);
 
-                if (GridManager.Instance.CanMoveTo(nextPos)) //IF CAN MOVE
+                if (GridManager.Instance.CanMoveTo(nextPos))
                 {
-                    //move is allowed
-
-                    if (direction == Vector3.left || direction == Vector3.right)
-                    {
-                        animator.SetBool("isMovingSide", true);
-                        animator.SetBool("isMovingTop", false);
-                        animator.SetBool("isIdle", false);
-                        animator.SetBool("isSide", true);
-
-                        // Flip sprite in the correct direction
-                        spriteRenderer.flipX = direction == Vector3.left;
-                        spriteRenderer.flipY = direction == Vector3.up;
-                    }
-                    else if (direction == Vector3.up || direction == Vector3.down)
-                    {
-                        animator.SetBool("isMovingTop", true);
-                        animator.SetBool("isMovingSide", false);
-                        animator.SetBool("isIdle", false);
-                        animator.SetBool("isSide", false);
-
-                        spriteRenderer.flipY = direction == Vector3.down;
-                    }
-
-                    // Execute the move
                     targetPosition = nextPos;
                     StartCoroutine(moveToPosition(targetPosition));
+                    StartCoroutine(InputCooldown());
                 }
                 else //if the path is blocked by something
                 {
@@ -154,18 +153,35 @@ public class PlayerMovement : MonoBehaviour
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
+
+                inputLocked = false;
             }
             else
             {
                 //idle
-                animator.SetBool("isMovingSide", false);
-                animator.SetBool("isMovingTop", false);
-                animator.SetBool("isIdle", true);
+                animator.SetBool("isMoving", false);
+
             }
         }
 
     }
 
+    public void SetStartPositionFromLevel()
+    {
+        LevelData levelData = FindObjectOfType<LevelData>();
+        if (levelData != null && levelData.pangolinStartPoint != null)
+        {
+            startingPosition = levelData.pangolinStartPoint.position;
+            transform.position = startingPosition;
+            targetPosition = startingPosition;
+        }
+        else
+        {
+            Debug.LogWarning("Pangolin start position not assigned in LevelData!");
+            startingPosition = transform.position;
+            targetPosition = transform.position;
+        }
+    }
 
     private IEnumerator moveToPosition(Vector3 destination)
     {
@@ -180,10 +196,63 @@ public class PlayerMovement : MonoBehaviour
         transform.position = destination;
         isMoving = false;
 
-        animator.SetBool("isMovingSide", false);
-        animator.SetBool("isMovingTop", false);
-        animator.SetBool("isIdle", true);
+        animator.SetBool("isMoving", false);
+
     }
+
+    private IEnumerator InputCooldown()
+    {
+        inputLocked = true;
+        yield return new WaitForSeconds(inputCooldown);
+        inputLocked = false;
+    }
+    int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
+    {
+        // If no previous direction (e.g., first move), tail is straight
+        if (previousDir == Vector3.zero)
+            return 0;
+
+        // If same direction, tail stays straight
+        if (previousDir == currentDir)
+            return 0;
+
+        // Determine relative tail curve based on previous move vs current move
+        // Tail curves opposite the direction the pangolin just came from
+
+        if (currentDir == Vector3.up)
+        {
+            if (previousDir == Vector3.right)
+                return 1; // tail curves left (index 1)
+            if (previousDir == Vector3.left)
+                return 2; // tail curves right (index 2)
+        }
+        else if (currentDir == Vector3.down)
+        {
+            if (previousDir == Vector3.right)
+                return 2; // tail curves right (index 2)
+            if (previousDir == Vector3.left)
+                return 1; // tail curves left (index 1)
+        }
+        else if (currentDir == Vector3.right)
+        {
+            if (previousDir == Vector3.up)
+                return 2; // tail curves downwards (index 2)
+            if (previousDir == Vector3.down)
+                return 1; // tail curves upwards (index 1)
+        }
+        else if (currentDir == Vector3.left)
+        {
+            if (previousDir == Vector3.up)
+                return 2; // tail curves downwards (index 2)
+            if (previousDir == Vector3.down)
+                return 1; // tail curves upwards (index 1)
+        }
+
+        // Default tail straight
+        return 0;
+    }
+
+
 
     private IEnumerator BumpAnimation()
     {
@@ -209,15 +278,16 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Soul") && !levelCompleted)    //If pleyer touched Soul, the level is      COMPLETED
+        if (other.CompareTag("Soul") && !LevelManager.Instance.levelCompleted)
         {
-            levelCompleted = true;
-            Debug.Log("Soul touched!");
-            LevelManager.Instance.LoadNextLevelWithDelay(2f);
+            LevelManager.Instance.MarkLevelCompleted();
+            Debug.Log("soul reached!");
+            LevelManager.Instance.LoadNextLevelWithDelay(1.5f);
         }
+
         else if (other.CompareTag("Mushroom"))
         {
             HandleMushroom(other);
@@ -249,12 +319,15 @@ public class PlayerMovement : MonoBehaviour
     public void RestartGame()
     {
         spriteRenderer.flipX = false;
-        animator.SetBool("isMovingSide", false);
-        animator.SetBool("isMovingTop", false);
-        animator.SetBool("isIdle", true);
-        animator.SetBool("isSide", true);
+        animator.SetBool("isMoving", false);
+        animator.SetFloat("moveX", 0f);
+        animator.SetFloat("moveY", 0f);
+        animator.SetFloat("tailAngleIndex", 0f);
 
-        levelManager.ResetLevel(); // <-- calls SetLevelMoves + movesManager.ResetMoves
+        // Move this line ABOVE transform.position reset
+        SetStartPositionFromLevel(); // <-- sets startingPosition again from new level
+
+        levelManager.ResetLevel(); // <-- resets the level & moves
 
         transform.position = startingPosition;
         targetPosition = startingPosition;
@@ -270,10 +343,6 @@ public class PlayerMovement : MonoBehaviour
 
         Debug.Log("Game Restarted!");
     }
-
-    // Call this when player finishes a level
-
-
 
 
 }

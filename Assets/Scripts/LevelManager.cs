@@ -5,13 +5,15 @@ using UnityEngine.Tilemaps;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
+    public MovesManager movesManager;
 
-    //Level Setup
-    public GameObject[] levels;              // Each level is a GameObject with its own Grid
-    public float transitionDelay = 2f;       // Time before switching levels
+    public GameObject[] levelPrefabs;
+    private GameObject currentLevelInstance;
+    public bool levelCompleted { get; private set; } = false;
 
-    //References
-    public MovesManager movesManager;        // Reference to MovesManager
+    public float transitionDelay = 2f;
+
+
 
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
@@ -24,78 +26,100 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        //LevelManager.Instance.InitializeLevel(0);
+        if (levelPrefabs.Length == 0)
+        {
+            Debug.LogError("No level prefabs assigned! please assign them in the inspector.");
+            return;
+        }
+
+        InitializeLevel(0);
     }
 
     public void InitializeLevel(int levelIndex)
     {
-        if (levelIndex < 0 || levelIndex >= levels.Length)
+        if (levelIndex < 0 || levelIndex >= levelPrefabs.Length)
         {
-            Debug.LogError("Invalid level index: " + levelIndex);
+            Debug.LogError("invalid level index: " + levelIndex);
             return;
         }
 
-        // Deactivate all levels
-        foreach (GameObject level in levels)
-            level.SetActive(false);
-
-        // Activate selected level
-        levels[levelIndex].SetActive(true);
         currentLevelIndex = levelIndex;
+        levelCompleted = false; // reset completion status for the new level
 
-        // Assign tilemaps from the current level
-        AssignTilemaps(levelIndex);
+        CleanupOldLevel();
 
-        // Set and reset moves
+        currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
+
+        AssignTilemaps();
+
         SetLevelMoves(levelIndex);
-        ResetLevel();
+        movesManager.ResetMoves(movesLeft);
+
+        ResetPangolinPosition();
 
         Debug.Log("Initialized level " + (levelIndex + 1) + " with " + movesLeft + " moves.");
-
     }
 
     public void ResetLevel()
     {
-        if (currentLevelIndex < 0 || currentLevelIndex >= levels.Length)
-            return;
+        if (currentLevelInstance == null) return;
 
-        // Fully reload the current level GameObject
-        GameObject level = levels[currentLevelIndex];
-        level.SetActive(false);
-        level.SetActive(true);
+        levelCompleted = false;  // <<< Reset completion status for the new level
+        CleanupOldLevel();
 
-        // Reset moves as before
+        currentLevelInstance = Instantiate(levelPrefabs[currentLevelIndex]);
+
+        AssignTilemaps();
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
 
-        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset with " + movesLeft + " moves left.");
+        ResetPangolinPosition();
+
+        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset.");
+    }
+
+    public void MarkLevelCompleted()
+    {
+        levelCompleted = true;
     }
 
 
+    private void CleanupOldLevel()
+    {
+        var leftovers = GameObject.FindGameObjectsWithTag("Level");
+        foreach (var obj in leftovers)
+            Destroy(obj);
+
+        if (currentLevelInstance != null)
+        {
+            Destroy(currentLevelInstance);
+            currentLevelInstance = null;
+        }
+    }
+
     public void SetLevelMoves(int levelIndex)
     {
-        GameObject level = levels[levelIndex];
-        LevelData data = level.GetComponent<LevelData>();
+        if (currentLevelInstance == null) return;
 
+        var data = currentLevelInstance.GetComponent<LevelData>();
         if (data != null)
         {
             movesLeft = data.allowedMoves;
         }
         else
         {
-            Debug.LogError("LevelData component missing on level " + level.name);
+            Debug.LogError("LevelData component missing on level " + currentLevelInstance.name);
             movesLeft = 0;
         }
     }
 
-
-    private void AssignTilemaps(int levelIndex)
+    private void AssignTilemaps()
     {
-        Transform gridTransform = levels[levelIndex].transform.Find("Grid");
+        var gridTransform = currentLevelInstance.transform.Find("Grid");
 
         if (gridTransform == null)
         {
-            Debug.LogError("Grid object NOT FOUND under level " + levelIndex);
+            Debug.LogError("Grid object not found in level prefab");
             return;
         }
 
@@ -105,41 +129,37 @@ public class LevelManager : MonoBehaviour
         GridManager.Instance.groundTilemap = newGround;
         GridManager.Instance.obstacleTilemap = newObstacle;
 
-        if (newGround == null) Debug.LogError("Ground tilemap NOT FOUND!");
-        if (newObstacle == null) Debug.LogError("Obstacle tilemap NOT FOUND!");
+        if (newGround == null) Debug.LogError("Ground tilemap not found!");
+        if (newObstacle == null) Debug.LogError("Obstacle tilemap not found!");
     }
 
-    public void LoadNextLevelWithDelay(float delay)
+    private void ResetPangolinPosition()
     {
-        StartCoroutine(LoadNextLevelCoroutine(delay));
+        var player = FindObjectOfType<PlayerMovement>();
+        if (player != null)
+        {
+            player.SetStartPositionFromLevel();
+        }
     }
 
     private IEnumerator LoadNextLevelCoroutine(float delay)
     {
-        Debug.Log($"Next level will load in {delay} seconds...");
+
         yield return new WaitForSeconds(delay);
 
-        // Save progress if this level is higher than saved
+        // save progress
         if (currentLevelIndex > PlayerProgress.GetHighestLevel())
         {
             PlayerProgress.SetHighestLevel(currentLevelIndex);
 
-            // Refresh menu now that progress is updated
-            LevelMenuManager menu = FindObjectOfType<LevelMenuManager>();
+            var menu = FindObjectOfType<LevelMenuManager>();
             if (menu != null)
                 menu.PopulatePage(0);
         }
 
-
-        // Disable current level
-        if (currentLevelIndex < levels.Length)
-            levels[currentLevelIndex].SetActive(false);
-
-        // Advance index
         currentLevelIndex++;
 
-        // Load next if available
-        if (currentLevelIndex < levels.Length)
+        if (currentLevelIndex < levelPrefabs.Length)
         {
             InitializeLevel(currentLevelIndex);
             Debug.Log("Level " + (currentLevelIndex + 1) + " loaded.");
@@ -147,8 +167,16 @@ public class LevelManager : MonoBehaviour
         else
         {
             Debug.Log("No more levels! Game complete.");
-            // TODO: trigger game-end screen
         }
     }
 
+    public void LoadNextLevelWithDelay(float delay)
+    {
+        StartCoroutine(LoadNextLevelCoroutine(delay));
+    }
+
+    public int GetCurrentIndex()
+    {
+        return currentLevelIndex;
+    }
 }

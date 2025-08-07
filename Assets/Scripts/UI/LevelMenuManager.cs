@@ -47,7 +47,7 @@ public class LevelMenuManager : MonoBehaviour
         // Clear the existing buttons
         ClearButtons();
 
-        int totalLevels = levelManager.levels.Length;
+        int totalLevels = levelManager.levelPrefabs.Length;
 
         // Calculate start and end levels for this page
         int startLevel = page * levelsPerPage;
