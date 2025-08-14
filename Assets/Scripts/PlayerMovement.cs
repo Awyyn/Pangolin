@@ -49,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         // Get starting position from level
-        SetStartPositionFromLevel();
+       // SetStartPositionFromLevel(levelManager.currentLevelInstance);
     }
 
 
@@ -133,6 +133,9 @@ public class PlayerMovement : MonoBehaviour
                             Rock rockScript = hitCollider.GetComponent<Rock>();
                             if (rockScript != null && !rockScript.rockBlocked)
                             {
+                                StartCoroutine(BumpAnimation());
+                                PlayBumpSound();
+
                                 // If rock can be moved, interact with it
                                 rockScript.Interact(direction);
                             }
@@ -140,14 +143,14 @@ public class PlayerMovement : MonoBehaviour
                             {
                                 StartCoroutine(BumpAnimation());
                                 PlayBumpSound();
+
                                 Debug.Log("Blocked by wall or unknown obstacle");
                             }
                         }
                     }
                     if (!reacted)
                     {
-                        // Play bump animation                                                       TODO
-                        //   animator.SetTrigger("isBumped");
+                        // Play bump animation                                                       TODO                         //   animator.SetTrigger("isBumped");
                         StartCoroutine(BumpAnimation());
                         PlayBumpSound();
                         Debug.Log("Blocked by wall or unknown obstacle");
@@ -166,14 +169,21 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void SetStartPositionFromLevel()
+    public void SetStartPositionFromLevel(GameObject levelInstance)
     {
-        LevelData levelData = FindObjectOfType<LevelData>();
-        if (levelData != null && levelData.pangolinStartPoint != null)
+        LevelData levelData = levelInstance.GetComponent<LevelData>();
+        if (levelData != null && levelData.PangolinStartPoint != null)
         {
-            startingPosition = levelData.pangolinStartPoint.position;
+            startingPosition = levelData.PangolinStartPoint.position;
             transform.position = startingPosition;
             targetPosition = startingPosition;
+
+            // Always face right
+            spriteRenderer.flipX = false;
+            animator.SetBool("isMoving", false);
+            animator.SetFloat("moveX", 1f);
+            animator.SetFloat("moveY", 0f);
+            animator.SetFloat("tailAngleIndex", 0f);
         }
         else
         {
@@ -182,6 +192,7 @@ public class PlayerMovement : MonoBehaviour
             targetPosition = transform.position;
         }
     }
+
 
     private IEnumerator moveToPosition(Vector3 destination)
     {
@@ -257,7 +268,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator BumpAnimation()
     {
         Vector3 originalPos = transform.position;
-        float bumpDistance = 0.1f;
+        float bumpDistance = 0.15f;
         float bumpSpeed = 0.05f;
 
         // Move back opposite to the bump direction
@@ -320,12 +331,12 @@ public class PlayerMovement : MonoBehaviour
     {
         spriteRenderer.flipX = false;
         animator.SetBool("isMoving", false);
-        animator.SetFloat("moveX", 0f);
+        animator.SetFloat("moveX", 1f);
         animator.SetFloat("moveY", 0f);
         animator.SetFloat("tailAngleIndex", 0f);
 
         // Move this line ABOVE transform.position reset
-        SetStartPositionFromLevel(); // <-- sets startingPosition again from new level
+        SetStartPositionFromLevel(levelManager.currentLevelInstance); // <-- sets startingPosition again from new level
 
         levelManager.ResetLevel(); // <-- resets the level & moves
 

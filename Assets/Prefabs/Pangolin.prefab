@@ -30,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6202408108734590070}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -2.5, y: -1.5, z: -0.01}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
+  m_LocalPosition: {x: -2.5, y: -1.8535862, z: 0}
   m_LocalScale: {x: -0.45, y: -0.35999998, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!212 &1804253476329792177
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -175,11 +175,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movesManager: {fileID: 0}
   levelManager: {fileID: 0}
-  button: {fileID: 0}
-  groundTilemap: {fileID: 0}
-  obstacleTilemap: {fileID: 0}
   moveSpeed: 10
+  targetPosition: {x: -2.5, y: -1.8535862, z: 0}
+  startingPosition: {x: -2.5, y: -1.8535862, z: 0}
   inputCooldown: 0.25
+  animator: {fileID: 5556812785336252897}
+  spriteRenderer: {fileID: 1804253476329792177}
   bumpAudioSource: {fileID: 744110159799853701}
 --- !u!82 &744110159799853701
 AudioSource:

@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1efc39e43cc1ff24c9fba4028c6dcbdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movesManager: {fileID: 1514760806}
   levelPrefabs:
   - {fileID: 3574759573098946759, guid: d58d1fcab55c0b344bdcdb61fe9a771b, type: 3}
   - {fileID: 5991766993720950721, guid: df692df6b9b184e48b1c4f8122ef7859, type: 3}
@@ -174,8 +175,9 @@ MonoBehaviour:
   - {fileID: 3420564231357660508, guid: e4f5580d77c7db446af5c3cd468960f0, type: 3}
   - {fileID: 2959854103081712264, guid: 9142d597188d44147add4b6c5713f0aa, type: 3}
   - {fileID: 3984131970686508394, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
+  soulPrefab: {fileID: 4802441766335753387, guid: 59a4d41b5fd6d5c42b667123a4067b66, type: 3}
+  pangolin: {fileID: 1460575938}
   transitionDelay: 2
-  movesManager: {fileID: 1514760806}
 --- !u!114 &59632843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4145,6 +4147,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1455253236}
   m_CullTransparentMesh: 1
+--- !u!114 &1460575938 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
+  m_PrefabInstance: {fileID: 914431280}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc3b165d45876f043ac6ec05b7993728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1500716054
 GameObject:
   m_ObjectHideFlags: 0

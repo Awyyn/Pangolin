@@ -9,6 +9,7 @@ TagManager:
   - Mushroom
   - Soul
   - Level
+  - PlayerStart
   layers:
   - Default
   - TransparentFX

@@ -8,7 +8,14 @@ public class LevelManager : MonoBehaviour
     public MovesManager movesManager;
 
     public GameObject[] levelPrefabs;
-    private GameObject currentLevelInstance;
+    public GameObject currentLevelInstance;
+    public GameObject soulPrefab;
+    private GameObject currentSoulInstance;
+
+    public PlayerMovement pangolin; 
+
+
+
     public bool levelCompleted { get; private set; } = false;
 
     public float transitionDelay = 2f;
@@ -49,13 +56,16 @@ public class LevelManager : MonoBehaviour
         CleanupOldLevel();
 
         currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
-
         AssignTilemaps();
-
+        SpawnSoul();
         SetLevelMoves(levelIndex);
         movesManager.ResetMoves(movesLeft);
 
-        ResetPangolinPosition();
+        if (pangolin != null)
+        {
+            pangolin.SetStartPositionFromLevel(currentLevelInstance);
+        }
+
 
         Debug.Log("Initialized level " + (levelIndex + 1) + " with " + movesLeft + " moves.");
     }
@@ -70,10 +80,15 @@ public class LevelManager : MonoBehaviour
         currentLevelInstance = Instantiate(levelPrefabs[currentLevelIndex]);
 
         AssignTilemaps();
+
+        SpawnSoul();
+
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
 
-        ResetPangolinPosition();
+        pangolin.SetStartPositionFromLevel(currentLevelInstance);
+
+
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset.");
     }
@@ -132,13 +147,31 @@ public class LevelManager : MonoBehaviour
         if (newGround == null) Debug.LogError("Ground tilemap not found!");
         if (newObstacle == null) Debug.LogError("Obstacle tilemap not found!");
     }
-
-    private void ResetPangolinPosition()
+    private void SpawnSoul()
     {
-        var player = FindObjectOfType<PlayerMovement>();
-        if (player != null)
+        // despawn old soul
+        if (currentSoulInstance != null)
         {
-            player.SetStartPositionFromLevel();
+            Destroy(currentSoulInstance);
+            currentSoulInstance = null;
+        }
+
+        if (soulPrefab == null)
+        {
+            Debug.LogError("Soul prefab not assigned in LevelManager!");
+            return;
+        }
+
+        Transform spawnPoint = currentLevelInstance.transform
+            .Find("Grid/SoulSpawnPoint");
+
+        if (spawnPoint != null)
+        {
+            currentSoulInstance = Instantiate(soulPrefab, spawnPoint.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("SoulSpawnPoint not found in level prefab " + currentLevelInstance.name);
         }
     }
 
