@@ -64,6 +64,7 @@ public class LevelManager : MonoBehaviour
         if (pangolin != null)
         {
             pangolin.SetStartPositionFromLevel(currentLevelInstance);
+
         }
 
 
@@ -87,6 +88,7 @@ public class LevelManager : MonoBehaviour
         movesManager.ResetMoves(movesLeft);
 
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
+        pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
 
 
 
@@ -212,4 +214,7 @@ public class LevelManager : MonoBehaviour
     {
         return currentLevelIndex;
     }
+
+
+
 }

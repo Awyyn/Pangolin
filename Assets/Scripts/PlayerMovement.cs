@@ -172,26 +172,42 @@ public class PlayerMovement : MonoBehaviour
     public void SetStartPositionFromLevel(GameObject levelInstance)
     {
         LevelData levelData = levelInstance.GetComponent<LevelData>();
+
         if (levelData != null && levelData.PangolinStartPoint != null)
         {
             startingPosition = levelData.PangolinStartPoint.position;
             transform.position = startingPosition;
             targetPosition = startingPosition;
 
-            // Always face right
-            spriteRenderer.flipX = false;
-            animator.SetBool("isMoving", false);
-            animator.SetFloat("moveX", 1f);
-            animator.SetFloat("moveY", 0f);
-            animator.SetFloat("tailAngleIndex", 0f);
+            // Reset movement state
+            isMoving = false;
+            inputLocked = false;
+            previousDirection = Vector3.zero;
+            lastDirection = Vector3.right;
+
+            // Read facing from the start point & apply next frame
+            var sp = levelData.PangolinStartPoint.GetComponent<PangolinStartPoint>();
+            var face = sp ? sp.startFacing : PangolinStartPoint.FacingDirection.Right;
+            StartCoroutine(ApplyFacingNextFrame(face));
         }
         else
         {
             Debug.LogWarning("Pangolin start position not assigned in LevelData!");
             startingPosition = transform.position;
             targetPosition = transform.position;
+
+            // Safe default
+            StartCoroutine(ApplyFacingNextFrame(PangolinStartPoint.FacingDirection.Right));
         }
     }
+
+    private IEnumerator ApplyFacingNextFrame(PangolinStartPoint.FacingDirection facing)
+    {
+        // Wait a frame so Animator finishes re-binding after prefab spawn
+        yield return null;
+        ForceFacing(facing);
+    }
+
 
 
     private IEnumerator moveToPosition(Vector3 destination)
@@ -329,30 +345,55 @@ public class PlayerMovement : MonoBehaviour
 
     public void RestartGame()
     {
-        spriteRenderer.flipX = false;
-        animator.SetBool("isMoving", false);
-        animator.SetFloat("moveX", 1f);
-        animator.SetFloat("moveY", 0f);
-        animator.SetFloat("tailAngleIndex", 0f);
+        levelManager.ResetLevel();
+    }
 
-        // Move this line ABOVE transform.position reset
-        SetStartPositionFromLevel(levelManager.currentLevelInstance); // <-- sets startingPosition again from new level
-
-        levelManager.ResetLevel(); // <-- resets the level & moves
-
-        transform.position = startingPosition;
-        targetPosition = startingPosition;
-        isMoving = false;
-
-        foreach (var interactable in FindObjectsOfType<MonoBehaviour>(true))
+    /*public void ForceFacingRight()
+    {
+        if (animator != null)
         {
-            if (interactable is IInteractable resettable && resettable != null)
-            {
-                resettable.ResetState();
-            }
+            animator.SetFloat("moveX", 1f);
+            animator.SetFloat("moveY", 0f);
+            animator.SetFloat("tailAngleIndex", 0f);
+            animator.SetBool("isMoving", false);
         }
 
-        Debug.Log("Game Restarted!");
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = false;
+        }
+    }*/
+    public void ForceFacing(PangolinStartPoint.FacingDirection facing)
+    {
+        if (!animator) return;
+
+        // Clear any leftover state from previous level
+        animator.Rebind();
+        animator.Update(0f);
+
+        float mx = 0f, my = 0f;
+        string idleState = "SideIdle"; // change if your state is named differently
+
+        switch (facing)
+        {
+            case PangolinStartPoint.FacingDirection.Right:
+                mx = 1f; my = 0f; spriteRenderer.flipX = false; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Left:
+                mx = -1f; my = 0f; spriteRenderer.flipX = true; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Up:
+                mx = 0f; my = 1f; spriteRenderer.flipX = false; idleState = "UpIdle"; break;
+            case PangolinStartPoint.FacingDirection.Down:
+                mx = 0f; my = -1f; spriteRenderer.flipX = false; idleState = "DownIdle"; break;
+        }
+
+        animator.SetFloat("moveX", mx);
+        animator.SetFloat("moveY", my);
+        animator.SetFloat("tailAngleIndex", 0f);
+        animator.SetBool("isMoving", false);
+
+        // Snap to the correct idle clip immediately
+        animator.Play(idleState, 0, 0f);
+        animator.Update(0f);
     }
 
 

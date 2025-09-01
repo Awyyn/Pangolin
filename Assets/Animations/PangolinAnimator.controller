@@ -436,7 +436,7 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: tailAngleIndex
     m_Type: 1
-    m_DefaultFloat: 1
+    m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
@@ -692,7 +692,7 @@ AnimatorStateMachine:
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 610, y: -170, z: 0}
   m_EntryPosition: {x: 130, y: -20, z: 0}
-  m_ExitPosition: {x: 1220, y: 250, z: 0}
+  m_ExitPosition: {x: 940, y: -100, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 8246173291283852447}
 --- !u!1102 &8246173291283852447
