@@ -75,8 +75,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1437824741
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5d9390977274cc04782f69391d6cce6e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -187,7 +187,7 @@ AudioSource:
   m_GameObject: {fileID: 6202408108734590070}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -4491376281250583220, guid: cdc330fc8585f0f49804625fd6a38411, type: 2}
   m_audioClip: {fileID: 8300000, guid: d4b7a73d451c5a445a47c590592656d9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1

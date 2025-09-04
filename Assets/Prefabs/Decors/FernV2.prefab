@@ -9,12 +9,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
-      propertyPath: m_LocalPosition.x
+      propertyPath: m_LocalScale.x
+      value: -0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
+      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.8896925
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26,15 +34,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -48,9 +56,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 810652820707255375, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5219689590880577893, guid: 95ee7c1467155e34e84736d02f11ec3a, type: 3}
       propertyPath: m_Name
-      value: Fern
+      value: FernV2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

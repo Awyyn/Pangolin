@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
-    public AudioSource bumpAudioSource;
+    public AudioClip bumpSound;
 
 
     private void Awake() => instance = this;
@@ -299,9 +299,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayBumpSound()
     {
-        if (bumpAudioSource != null)
+        if (bumpSound != null)
         {
-            bumpAudioSource.Play();
+            SFXManager.instance.PlaySFX(bumpSound);
         }
     }
 

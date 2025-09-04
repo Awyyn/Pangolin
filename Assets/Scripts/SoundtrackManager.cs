@@ -1,68 +1,46 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class SoundtrackManager : MonoBehaviour
 {
-    public AudioClip[] soundtrack;  // Array to hold your songs
+    public Slider musicSlider;
+    public AudioMixer audioMixer;
+
     private AudioSource audioSource;
+    private float savedVolume;
 
-    private int currentSongIndex = 0; // Track the current song
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject); // keep music manager across scenes
 
-    public Slider musicSlider;  // Reference to your slider
-    private float savedVolume;  // To store the saved volume for the music
+        audioSource = GetComponent<AudioSource>();
+
+        // load saved volume first
+        savedVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f); // default 0.5
+        SetVolume(savedVolume); // apply to mixer
+    }
 
     private void Start()
     {
-        Application.runInBackground = true;                                                        // BE MINDFUL OF THIS. Keeps playing songs when the window is not active
-
-        audioSource = GetComponent<AudioSource>();
-        PlayNextSong();  // Play the first song at the start
-
-        // Initialize the music volume slider if it exists
+        // update slider to reflect saved value
         if (musicSlider != null)
         {
-            savedVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);  // Default volume is 50%
             musicSlider.value = savedVolume;
 
-            // Add listener for slider value change
-            musicSlider.onValueChanged.AddListener(AdjustVolume);
-        }
-
-        // Set the initial music volume
-        audioSource.volume = savedVolume;
-    }
-
-    private void Update()
-    {
-        // Check if the song has finished playing
-        if (!audioSource.isPlaying)
-        {
-            PlayNextSong(); // Play the next song when the current one ends
+            // add listener after initial value is applied
+            musicSlider.onValueChanged.AddListener(SetVolume);
         }
     }
 
-    // Play the next song in the array
-    private void PlayNextSong()
+    public void SetVolume(float value)
     {
-        if (soundtrack.Length == 0) return;
+        // apply to audiomixer
+        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        audioMixer.SetFloat("MusicVolume", dB);
 
-        audioSource.clip = soundtrack[currentSongIndex];
-        audioSource.Play();
-
-        currentSongIndex++;
-        if (currentSongIndex >= soundtrack.Length)
-        {
-            currentSongIndex = 0;  // Restart the soundtrack when it reaches the end
-        }
-    }
-
-    // Method to adjust the volume based on the slider's value
-    private void AdjustVolume(float volume)
-    {
-        audioSource.volume = volume;
-
-        // Save the music volume for the next game start
-        PlayerPrefs.SetFloat("MusicVolume", volume);
+        // save value for next launch
+        PlayerPrefs.SetFloat("MusicVolume", value);
         PlayerPrefs.Save();
     }
 }

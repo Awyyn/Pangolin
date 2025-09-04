@@ -12,9 +12,8 @@ public class DebugTools : MonoBehaviour
 
     public void ResetProgress()
     {
-        PlayerPrefs.DeleteKey("HighestLevelCompleted");
-        PlayerPrefs.Save();
-
+        PlayerProgress.ResetProgress(); // use the proper method
         Debug.Log("Progress reset!");
     }
 }
+

@@ -20,8 +20,11 @@ public static class PlayerProgress
 
     public static bool IsLevelUnlocked(int levelIndex)
     {
+        // Level 0 is always unlocked
+        if (levelIndex == 0) return true;
         return levelIndex <= GetHighestLevel();
     }
+
 
     public static void ResetProgress()
     {

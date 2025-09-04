@@ -105,14 +105,18 @@ public class LevelManager : MonoBehaviour
     {
         var leftovers = GameObject.FindGameObjectsWithTag("Level");
         foreach (var obj in leftovers)
-            Destroy(obj);
+        {
+            if (obj.scene.IsValid()) // only destroy scene objects
+                Destroy(obj);
+        }
 
-        if (currentLevelInstance != null)
+        if (currentLevelInstance != null && currentLevelInstance.scene.IsValid())
         {
             Destroy(currentLevelInstance);
             currentLevelInstance = null;
         }
     }
+
 
     public void SetLevelMoves(int levelIndex)
     {
@@ -179,24 +183,24 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator LoadNextLevelCoroutine(float delay)
     {
-
         yield return new WaitForSeconds(delay);
 
-        // save progress
+        currentLevelIndex++; // move to next level first
+
+        // Unlock the next level in the menu
         if (currentLevelIndex > PlayerProgress.GetHighestLevel())
         {
-            PlayerProgress.SetHighestLevel(currentLevelIndex);
-
-            var menu = FindObjectOfType<LevelMenuManager>();
-            if (menu != null)
-                menu.PopulatePage(0);
+            PlayerProgress.SetHighestLevel(currentLevelIndex); // unlock next level
         }
 
-        currentLevelIndex++;
+        // Refresh the menu so unlocked levels show up
+        var menu = FindObjectOfType<LevelMenuManager>();
+        if (menu != null)
+            menu.PopulatePage(menu.CurrentPage); // refresh the currently visible page
 
         if (currentLevelIndex < levelPrefabs.Length)
         {
-            InitializeLevel(currentLevelIndex);
+            InitializeLevel(currentLevelIndex); // start next level
             Debug.Log("Level " + (currentLevelIndex + 1) + " loaded.");
         }
         else
@@ -204,6 +208,8 @@ public class LevelManager : MonoBehaviour
             Debug.Log("No more levels! Game complete.");
         }
     }
+
+
 
     public void LoadNextLevelWithDelay(float delay)
     {
