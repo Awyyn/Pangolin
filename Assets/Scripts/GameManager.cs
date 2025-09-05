@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Application.targetFrameRate = 60;                //BE MINDFUL OF THIS
+    }
+
     public void RestartLevel()
     {
         currentLevelManager.ResetLevel();
