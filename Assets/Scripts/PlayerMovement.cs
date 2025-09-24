@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.Tilemaps;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
-using UnityEngine.UI;
 using Unity.Burst.CompilerServices;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UI;
+using static PangolinStartPoint;
 
 /// <summary>
 /// Controls the player movement 
@@ -67,6 +68,9 @@ public class PlayerMovement : MonoBehaviour
         {
             // Optionally, you can play a sound or animation indicating no moves left
             Debug.Log("No moves left!");
+
+
+            animator.SetTrigger("Sleep");
             return;
         }
 

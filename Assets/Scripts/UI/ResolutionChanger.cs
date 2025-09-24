@@ -3,62 +3,103 @@ using TMPro;
 
 public class ResolutionChanger : MonoBehaviour
 {
-    public TMP_Dropdown resolutionDropdown; // Reference to the dropdown UI
+    public TMP_Dropdown resolutionDropdown; // Dropdown UI for resolutions
+    public TMP_Dropdown fullscreenDropdown; // Dropdown UI for fullscreen/windowed
     private Resolution[] resolutions;
 
     void Start()
     {
-        resolutions = Screen.resolutions;  // Get all available resolutions
+        resolutions = Screen.resolutions;
 
-        // Populate the dropdown with available resolutions
-        PopulateDropdown();
+        PopulateResolutionDropdown();
+        PopulateFullscreenDropdown();
 
-        // Set the default resolution to Full HD
-        resolutionDropdown.value = GetIndexForResolution(1920, 1080);
+        // Load saved resolution index or fallback to current resolution
+        int savedResIndex = PlayerPrefs.GetInt("ResolutionIndex", GetIndexForResolution(Screen.currentResolution.width, Screen.currentResolution.height));
+        resolutionDropdown.value = savedResIndex;
+        resolutionDropdown.RefreshShownValue();
+        OnResolutionChange(savedResIndex); // apply it
+
+        // Load saved fullscreen state (default = fullscreen)
+        int savedFullscreen = PlayerPrefs.GetInt("Fullscreen", 1);
+        fullscreenDropdown.value = savedFullscreen == 1 ? 0 : 1;
+        fullscreenDropdown.RefreshShownValue();
+        OnFullscreenChange(fullscreenDropdown.value); // apply it
+
+        // Add listeners after applying saved settings
         resolutionDropdown.onValueChanged.AddListener(OnResolutionChange);
+        fullscreenDropdown.onValueChanged.AddListener(OnFullscreenChange);
     }
 
-    // Populate the dropdown with predefined resolutions
-    void PopulateDropdown()
+
+    void PopulateResolutionDropdown()
     {
-        resolutionDropdown.ClearOptions();  // Clear any existing options
-        var options = new System.Collections.Generic.List<TMP_Dropdown.OptionData>();
+        resolutionDropdown.ClearOptions();
+        var options = new System.Collections.Generic.List<string>();
 
-        // Add some resolutions to the dropdown manually (or dynamically)
-        options.Add(new TMP_Dropdown.OptionData("1920x1080"));
-        options.Add(new TMP_Dropdown.OptionData("1600x900"));
-        options.Add(new TMP_Dropdown.OptionData("1280x720"));
-        options.Add(new TMP_Dropdown.OptionData("1024x768"));
+        foreach (var res in resolutions)
+        {
+            string option = res.width + "x" + res.height;
+            if (!options.Contains(option)) // Avoid duplicates
+                options.Add(option);
+        }
 
-        resolutionDropdown.AddOptions(options); // Add them to the dropdown list
+        resolutionDropdown.AddOptions(options);
     }
 
-    // Get the index of a resolution in the available list (for the selected resolution)
+    void PopulateFullscreenDropdown()
+    {
+        fullscreenDropdown.ClearOptions();
+        fullscreenDropdown.AddOptions(new System.Collections.Generic.List<string> { "Fullscreen", "Windowed" });
+    }
+
     int GetIndexForResolution(int width, int height)
     {
+
         for (int i = 0; i < resolutions.Length; i++)
         {
             if (resolutions[i].width == width && resolutions[i].height == height)
             {
-                return i; // Return the index of the matching resolution
+                return i;
             }
         }
-        return 0;  // Default index if no match
+        return 0; // fallback
     }
 
-    // Called when a new resolution is selected in the dropdown
     void OnResolutionChange(int index)
     {
-        // Get the selected resolution from the dropdown list
-        string selectedResolution = resolutionDropdown.options[index].text;
-        string[] dimensions = selectedResolution.Split('x');
-        int width = int.Parse(dimensions[0]);
-        int height = int.Parse(dimensions[1]);
+        if (resolutions == null || resolutions.Length == 0)
+        {
+            Debug.LogWarning("No resolutions available");
+            return;
+        }
 
-        // Apply the new resolution to the screen
-        Screen.SetResolution(width, height, Screen.fullScreen);
+        if (index < 0 || index >= resolutions.Length)
+        {
+            Debug.LogWarning($"Resolution index {index} out of range. Resetting to 0.");
+            index = 0;
+        }
 
-        // Log the new resolution to confirm it's being set correctly
-        Debug.Log("Resolution set to: " + width + "x" + height);
+        Resolution res = resolutions[index];
+        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+
+        PlayerPrefs.SetInt("ResolutionIndex", index);
+        PlayerPrefs.Save();
+
+        Debug.Log("Resolution set to: " + res.width + "x" + res.height);
     }
+
+
+    void OnFullscreenChange(int index)
+    {
+        bool fullscreen = (index == 0); // 0 = Fullscreen, 1 = Windowed
+        Screen.fullScreen = fullscreen;
+
+        // Save fullscreen state
+        PlayerPrefs.SetInt("Fullscreen", fullscreen ? 1 : 0);
+        PlayerPrefs.Save();
+
+        Debug.Log("Fullscreen: " + fullscreen);
+    }
+
 }

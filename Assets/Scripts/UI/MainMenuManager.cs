@@ -6,18 +6,21 @@ public class MainMenuManager : MonoBehaviour
 {
     public Button continueButton;
     public GameObject confirmationPanel;
+    public GameObject optionsPanel;
 
     private void Start()
     {
+        Application.targetFrameRate = 60;                                             //BE MINDFUL OF THIS (this is a dublicate, not sure if needed)
+
         // Disable continue if no saved progress
         if (!PlayerPrefs.HasKey("HighestLevel"))
         {
             continueButton.interactable = false;
         }
 
-        confirmationPanel.SetActive(false);
+        confirmationPanel.SetActive(false);// start hidden
+        optionsPanel.SetActive(false); 
     }
-
     public void ContinueGame()
     {
         // Load the main game scene (the one that has your level menu UI inside it)
@@ -43,7 +46,13 @@ public class MainMenuManager : MonoBehaviour
 
     public void OpenOptions()
     {
-        // Trigger your existing options menu
-        // Could be something like optionsPanel.SetActive(true)
+        // Show the options panel
+        optionsPanel.SetActive(true);
+    }
+
+    public void CloseOptions()
+    {
+        // Hide the options panel
+        optionsPanel.SetActive(false);
     }
 }

@@ -39,7 +39,7 @@ public class OptionsManager : MonoBehaviour
 
     public void SetMusicVolume(float value)
     {
-        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f; // prevent absolute 0
         audioMixer.SetFloat("MusicVolume", dB);
         PlayerPrefs.SetFloat("MusicVolume", value);
         PlayerPrefs.Save();
