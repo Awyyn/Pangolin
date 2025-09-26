@@ -28,6 +28,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastDirection = Vector3.zero;
     private Vector3 previousDirection = Vector3.zero;
     private bool inputLocked = false;
+    public bool reachedFirefly = false;
+
+    private bool outOfMovesTriggered = false;
 
     public float inputCooldown = 0.25f; // Cooldown time for input
 
@@ -62,17 +65,20 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
             RestartGame();
-        }
-
-        if (movesManager.movesLeft <= 0)//if no moves are left, stop player movement
-        {
-            // Optionally, you can play a sound or animation indicating no moves left
-            Debug.Log("No moves left!");
-
-
-            animator.SetTrigger("Sleep");
             return;
         }
+
+        if (movesManager.movesLeft <= 0)
+        {
+            if (!outOfMovesTriggered && !isMoving) // wait until not moving
+            {
+                outOfMovesTriggered = true;
+                animator.SetTrigger("Sleep");
+                Debug.Log("Out of moves! Falling asleep.");
+            }
+            return; // skip movement input
+        }
+
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -117,7 +123,12 @@ public class PlayerMovement : MonoBehaviour
                 {
                     targetPosition = nextPos;
                     StartCoroutine(moveToPosition(targetPosition));
-                    StartCoroutine(InputCooldown());
+
+                    if (movesManager.movesLeft > 0)
+                    {
+                        StartCoroutine(InputCooldown());
+                    }
+
                 }
                 else //if the path is blocked by something
                 {
@@ -138,7 +149,6 @@ public class PlayerMovement : MonoBehaviour
                             if (rockScript != null && !rockScript.rockBlocked)
                             {
                                 StartCoroutine(BumpAnimation());
-                                PlayBumpSound();
 
                                 // If rock can be moved, interact with it
                                 rockScript.Interact(direction);
@@ -146,7 +156,6 @@ public class PlayerMovement : MonoBehaviour
                             else
                             {
                                 StartCoroutine(BumpAnimation());
-                                PlayBumpSound();
 
                                 Debug.Log("Blocked by wall or unknown obstacle");
                             }
@@ -156,7 +165,6 @@ public class PlayerMovement : MonoBehaviour
                     {
                         // Play bump animation                                                       TODO                         //   animator.SetTrigger("isBumped");
                         StartCoroutine(BumpAnimation());
-                        PlayBumpSound();
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
@@ -287,6 +295,8 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator BumpAnimation()
     {
+        PlayBumpSound();
+
         Vector3 originalPos = transform.position;
         float bumpDistance = 0.15f;
         float bumpSpeed = 0.05f;
@@ -298,6 +308,16 @@ public class PlayerMovement : MonoBehaviour
         // Move forward (return to original)
         transform.position = originalPos;
         yield return new WaitForSeconds(bumpSpeed);
+
+
+
+        // check if we are out of moves after bump
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
+        {
+            outOfMovesTriggered = true;
+            animator.SetTrigger("Sleep");
+            inputLocked = true; // lock further movement
+        }
     }
 
 
@@ -314,16 +334,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Soul") && !LevelManager.Instance.levelCompleted)
         {
+            //reachedFirefly = true; 
+
             LevelManager.Instance.MarkLevelCompleted();
-            Debug.Log("soul reached!");
+            Debug.Log("Soul reached!");
+
+            // Play your "looking up at firefly" animation
+            animator.SetTrigger("LookUp");
+
             LevelManager.Instance.LoadNextLevelWithDelay(1.5f);
         }
-
         else if (other.CompareTag("Mushroom"))
         {
             HandleMushroom(other);
         }
     }
+
+
     private void HandleMushroom(Collider2D mushroomCollider)
     {
         Debug.Log("Stepped on Mushroom!");
@@ -400,5 +427,11 @@ public class PlayerMovement : MonoBehaviour
         animator.Update(0f);
     }
 
+    public void ResetLevelFlags()
+    {
+        reachedFirefly = false;
+        outOfMovesTriggered = false;
+        inputLocked = false;
+    }
 
 }

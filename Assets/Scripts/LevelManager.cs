@@ -44,6 +44,8 @@ public class LevelManager : MonoBehaviour
 
     public void InitializeLevel(int levelIndex)
     {
+        PlayerMovement.instance.reachedFirefly = false;
+
         if (levelIndex < 0 || levelIndex >= levelPrefabs.Length)
         {
             Debug.LogError("invalid level index: " + levelIndex);
@@ -52,6 +54,7 @@ public class LevelManager : MonoBehaviour
 
         currentLevelIndex = levelIndex;
         levelCompleted = false; // reset completion status for the new level
+
 
         CleanupOldLevel();
 
@@ -76,12 +79,11 @@ public class LevelManager : MonoBehaviour
         if (currentLevelInstance == null) return;
 
         levelCompleted = false;  // <<< Reset completion status for the new level
+        pangolin.ResetLevelFlags();
         CleanupOldLevel();
 
         currentLevelInstance = Instantiate(levelPrefabs[currentLevelIndex]);
-
         AssignTilemaps();
-
         SpawnSoul();
 
         SetLevelMoves(currentLevelIndex);
