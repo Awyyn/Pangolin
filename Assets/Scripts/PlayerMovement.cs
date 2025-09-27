@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         if (levelManager == null)
             levelManager = LevelManager.Instance;
         if (movesManager == null)
-            movesManager = FindObjectOfType<MovesManager>();
+            movesManager = FindFirstObjectByType<MovesManager>();
 
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();

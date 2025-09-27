@@ -22,7 +22,7 @@ public class LevelMenuManager : MonoBehaviour
     void Start()
     {
         // Get the reference to LevelManager in your scene
-        levelManager = FindObjectOfType<LevelManager>();
+        levelManager = FindFirstObjectByType<LevelManager>();
 
         // Populate the level menu with the first page of levels
         PopulatePage(currentPage);

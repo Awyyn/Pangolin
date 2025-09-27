@@ -196,7 +196,7 @@ public class LevelManager : MonoBehaviour
         }
 
         // Refresh the menu so unlocked levels show up
-        var menu = FindObjectOfType<LevelMenuManager>();
+        var menu = FindFirstObjectByType<LevelMenuManager>();
         if (menu != null)
             menu.PopulatePage(menu.CurrentPage); // refresh the currently visible page
 

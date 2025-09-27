@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Rock
   - LeafPile
@@ -53,12 +53,20 @@ TagManager:
   - name: Decoration
     uniqueID: 692476059
     locked: 0
+  - name: Interactable
+    uniqueID: 4274224821
+    locked: 0
   - name: Player
     uniqueID: 1437824741
     locked: 0
   - name: Foreground
     uniqueID: 1382046359
     locked: 0
+  - name: Foreground 2
+    uniqueID: 2117255465
+    locked: 0
   - name: UI
     uniqueID: 1488442815
     locked: 0
+  m_RenderingLayers:
+  - Default

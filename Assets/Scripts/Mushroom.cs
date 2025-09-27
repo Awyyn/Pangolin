@@ -13,7 +13,7 @@ public class Mushroom : MonoBehaviour, IInteractable
 
     public void Interact(Vector3 direction)
     {
-        FindObjectOfType<MovesManager>().ModifyMoves(-2);
+        FindFirstObjectByType<MovesManager>().ModifyMoves(-2);
         spriteRenderer.enabled = false;
         col.enabled = false;
     }
