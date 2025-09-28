@@ -379,21 +379,6 @@ public class PlayerMovement : MonoBehaviour
         levelManager.ResetLevel();
     }
 
-    /*public void ForceFacingRight()
-    {
-        if (animator != null)
-        {
-            animator.SetFloat("moveX", 1f);
-            animator.SetFloat("moveY", 0f);
-            animator.SetFloat("tailAngleIndex", 0f);
-            animator.SetBool("isMoving", false);
-        }
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = false;
-        }
-    }*/
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {
         if (!animator) return;

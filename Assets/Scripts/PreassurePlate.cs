@@ -35,4 +35,13 @@ public class PressurePlate : MonoBehaviour
     {
         return other.CompareTag("Player") || other.CompareTag("Rock");
     }
+
+    public void ResetState()
+    {
+        pressers = 0;         // reset internal counter and animator
+        if (animator != null) animator.SetBool("Pressed", false);
+
+        linkedDoor?.PlatePressed(this, false); // notify linked door that this plate is not pressed anymore
+    }
+
 }

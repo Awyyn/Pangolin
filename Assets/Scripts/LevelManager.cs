@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -78,23 +79,45 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevelInstance == null) return;
 
-        levelCompleted = false;  // <<< Reset completion status for the new level
+        levelCompleted = false;
         pangolin.ResetLevelFlags();
-        CleanupOldLevel();
 
-        currentLevelInstance = Instantiate(levelPrefabs[currentLevelIndex]);
-        AssignTilemaps();
+        // Reset all interactables (rocks, leafpiles, mushrooms) that implement IInteractable
+        var monoBehaviours = currentLevelInstance.GetComponentsInChildren<MonoBehaviour>(true);
+        var interactables = monoBehaviours.OfType<IInteractable>();
+        foreach (var it in interactables)
+        {
+            // stop coroutines and reset state on the concrete MonoBehaviour if needed
+            var mb = it as MonoBehaviour;
+            if (mb != null) mb.StopAllCoroutines();
+            it.ResetState();
+        }
+
+        // Reset plates (clear their press counts and animator)
+        var plates = currentLevelInstance.GetComponentsInChildren<PressurePlate>(true);
+        foreach (var p in plates) p.ResetState();
+
+        // Reset doors (close them and reset indicators)
+        var doors = currentLevelInstance.GetComponentsInChildren<DoorController>(true);
+        foreach (var d in doors) d.ResetState();
+
+        // Respawn soul (remove old instance and spawn fresh in the same spawn point)
+        if (currentSoulInstance != null)
+        {
+            Destroy(currentSoulInstance);
+            currentSoulInstance = null;
+        }
         SpawnSoul();
 
+        // Reset moves
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
 
+        // Reset player position and state
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
         pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
 
-
-
-        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset.");
+        Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
 
     public void MarkLevelCompleted()

@@ -18,13 +18,8 @@ public class GridManager : MonoBehaviour
 
     public bool CanMoveTo(Vector3 worldPosition)
     {
-        if (obstacleTilemap == null)
-        {
-            Debug.LogError("ObstacleTilemap is NULL!");
-            return false;
-        }
-
-
+        if (groundTilemap == null || obstacleTilemap == null)
+            return false; // grid isn’t ready yet
 
         Vector3Int cellPos = groundTilemap.WorldToCell(worldPosition);
 
@@ -42,4 +37,5 @@ public class GridManager : MonoBehaviour
 
         return true;
     }
+
 }
