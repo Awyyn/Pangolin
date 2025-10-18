@@ -71,37 +71,45 @@ public class LevelManager : MonoBehaviour
 
         }
 
+        // Now that the level grid and objects are ready, initialize all rocks
+        foreach (Rock rock in FindObjectsByType<Rock>(FindObjectsSortMode.None))
+        {
+            rock.Initialize();
+        }
 
-        Debug.Log("Initialized level " + (levelIndex + 1) + " with " + movesLeft + " moves.");
+
+        Debug.Log("[Rock] Initialize done at time " + Time.time);
+
+        //Debug.Log("[LevelManager] Finished initializing level " + (levelIndex + 1));
+
+        Debug.Log("Finished initializing level " + (levelIndex + 1) + " with " + movesLeft + " moves.");
     }
 
     public void ResetLevel()
     {
         if (currentLevelInstance == null) return;
 
+        DestroyAllDustFX(); // ensures all ongoing dust animations stop instantly
+
         levelCompleted = false;
         pangolin.ResetLevelFlags();
 
-        // Reset all interactables (rocks, leafpiles, mushrooms) that implement IInteractable
+        // Reset interactables
         var monoBehaviours = currentLevelInstance.GetComponentsInChildren<MonoBehaviour>(true);
         var interactables = monoBehaviours.OfType<IInteractable>();
         foreach (var it in interactables)
         {
-            // stop coroutines and reset state on the concrete MonoBehaviour if needed
             var mb = it as MonoBehaviour;
             if (mb != null) mb.StopAllCoroutines();
             it.ResetState();
         }
 
-        // Reset plates (clear their press counts and animator)
         var plates = currentLevelInstance.GetComponentsInChildren<PressurePlate>(true);
         foreach (var p in plates) p.ResetState();
 
-        // Reset doors (close them and reset indicators)
         var doors = currentLevelInstance.GetComponentsInChildren<DoorController>(true);
         foreach (var d in doors) d.ResetState();
 
-        // Respawn soul (remove old instance and spawn fresh in the same spawn point)
         if (currentSoulInstance != null)
         {
             Destroy(currentSoulInstance);
@@ -109,16 +117,15 @@ public class LevelManager : MonoBehaviour
         }
         SpawnSoul();
 
-        // Reset moves
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
 
-        // Reset player position and state
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
         pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
+
 
     public void MarkLevelCompleted()
     {
@@ -244,6 +251,13 @@ public class LevelManager : MonoBehaviour
     public int GetCurrentIndex()
     {
         return currentLevelIndex;
+    }
+
+    private void DestroyAllDustFX()
+    {
+        var dustObjects = GameObject.FindGameObjectsWithTag("DustFX");
+        foreach (var obj in dustObjects)
+            Destroy(obj);
     }
 
 

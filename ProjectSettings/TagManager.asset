@@ -10,6 +10,7 @@ TagManager:
   - Soul
   - Level
   - PlayerStart
+  - DustFX
   layers:
   - Default
   - TransparentFX
@@ -62,7 +63,13 @@ TagManager:
   - name: Foreground
     uniqueID: 1382046359
     locked: 0
-  - name: Foreground 2
+  - name: FX
+    uniqueID: 3734498513
+    locked: 0
+  - name: FX_2
+    uniqueID: 3061010157
+    locked: 0
+  - name: Foreground_2
     uniqueID: 2117255465
     locked: 0
   - name: UI

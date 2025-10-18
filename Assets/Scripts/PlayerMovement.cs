@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 lastDirection = Vector3.zero;
     private Vector3 previousDirection = Vector3.zero;
-    private bool inputLocked = false;
+    public bool inputLocked { get; set; }
     public bool reachedFirefly = false;
 
     private bool outOfMovesTriggered = false;
@@ -40,7 +40,12 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip bumpSound;
 
 
-    private void Awake() => instance = this;
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+    }
 
     private void Start()
     {
@@ -59,14 +64,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (inputLocked || LevelManager.Instance.levelCompleted) return;
-
+        if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
+            return;
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
-            RestartGame();
+            LevelManager.Instance.ResetLevel(); 
             return;
         }
+
 
         if (movesManager.movesLeft <= 0)
         {
@@ -373,11 +379,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-    public void RestartGame()
-    {
-        levelManager.ResetLevel();
-    }
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {
