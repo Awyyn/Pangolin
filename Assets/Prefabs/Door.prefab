@@ -427,6 +427,7 @@ MonoBehaviour:
   - {fileID: 4201254873072143084}
   requiredPlates: 1
   doorAnimator: {fileID: 3418172838653464308}
+  dustSpawnPoint: {fileID: 6609862607889251616}
   dustOpenPrefab: {fileID: 7983149978202041799, guid: f16c831c4253aec4bb18cd1643c51bb5, type: 3}
   dustClosePrefab: {fileID: 1008642250595308313, guid: 8c67aa4e1d3a01f4692ba3d61cba9d46, type: 3}
   doorCollider: {fileID: 1114638282341764589}
