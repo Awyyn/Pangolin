@@ -136,11 +136,9 @@ public class PlayerMovement : MonoBehaviour
                     }
 
                 }
-                else //if the path is blocked by something
+                else // if the path is blocked by something
                 {
-                    // Handle when move is blocked
                     Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);
-
                     bool reacted = false;
 
                     if (hitCollider != null)
@@ -148,32 +146,33 @@ public class PlayerMovement : MonoBehaviour
                         IInteractable interactable = hitCollider.GetComponent<IInteractable>();
                         if (interactable != null)
                         {
+                            // Interact once
                             interactable.Interact(direction);
                             reacted = true;
 
                             Rock rockScript = hitCollider.GetComponent<Rock>();
-                            if (rockScript != null && !rockScript.rockBlocked)
+                            if (rockScript != null)
                             {
+                                // Always bump after pushing the rock
                                 StartCoroutine(BumpAnimation());
-
-                                // If rock can be moved, interact with it
-                                rockScript.Interact(direction);
                             }
                             else
                             {
+                                // For other interactables, bump too
                                 StartCoroutine(BumpAnimation());
-
                                 Debug.Log("Blocked by wall or unknown obstacle");
                             }
                         }
                     }
+
                     if (!reacted)
                     {
-                        // Play bump animation                                                       TODO                         //   animator.SetTrigger("isBumped");
+                        // Nothing to interact with — wall or edge
                         StartCoroutine(BumpAnimation());
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
+
 
                 inputLocked = false;
             }

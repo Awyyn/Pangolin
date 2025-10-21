@@ -166,13 +166,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movesManager: {fileID: 1514760806}
   levelPrefabs:
+  - {fileID: 2959854103081712264, guid: 191381fab46e3d2449ef4a0440406b7e, type: 3}
+  - {fileID: 2959854103081712264, guid: 17db9ae5be27ad442a5299042ba7fd5d, type: 3}
+  - {fileID: 2959854103081712264, guid: 88ab71a60510a7048bb958eec7e40a6a, type: 3}
   - {fileID: 2959854103081712264, guid: 08f774ca17396f44ca32a863eee7a3d0, type: 3}
+  - {fileID: 3984131970686508394, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
   - {fileID: 3574759573098946759, guid: d58d1fcab55c0b344bdcdb61fe9a771b, type: 3}
   - {fileID: 5991766993720950721, guid: df692df6b9b184e48b1c4f8122ef7859, type: 3}
   - {fileID: 931549947275294655, guid: 9e12094b7e45d404f8607bf323894aa1, type: 3}
   - {fileID: 3420564231357660508, guid: e4f5580d77c7db446af5c3cd468960f0, type: 3}
   - {fileID: 2959854103081712264, guid: 9142d597188d44147add4b6c5713f0aa, type: 3}
-  - {fileID: 3984131970686508394, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
   currentLevelInstance: {fileID: 3574759573098946759, guid: d58d1fcab55c0b344bdcdb61fe9a771b, type: 3}
   soulPrefab: {fileID: 4802441766335753387, guid: 59a4d41b5fd6d5c42b667123a4067b66, type: 3}
   pangolin: {fileID: 1460575938}
