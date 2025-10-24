@@ -13,8 +13,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement instance;
 
-    public MovesManager movesManager;  // Reference to the MovesManager
-    public LevelManager levelManager;  // Reference to the LevelManager
+    public GameManager gameManager;   //new. is it needed? it shoudl be an instance or something
+    public MovesManager movesManager;  
+    public LevelManager levelManager;  
 
 
     public float moveSpeed = 10f;
@@ -125,14 +126,24 @@ public class PlayerMovement : MonoBehaviour
 
                 movesManager.ModifyMoves(-1);
 
+
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
                     targetPosition = nextPos;
                     StartCoroutine(moveToPosition(targetPosition));
 
+
                     if (movesManager.movesLeft > 0)
                     {
                         StartCoroutine(InputCooldown());
+                    }
+
+                    //after first move, start boss if in boss level
+                    if (!GameManager.Instance.bossMode)
+                    {
+                        var bossController = FindFirstObjectByType<BossFightController>();
+                        if (bossController != null)
+                            bossController.TriggerBossFight();
                     }
 
                 }

@@ -2,23 +2,26 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance { get; private set; }
 
     public int currentLevelIndex = 0;
     public LevelManager currentLevelManager;
     public MovesManager movesManager;
 
-    private void Awake()
+
+    public bool bossMode = false;
+
+    void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        // Ensure only one instance exists
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject); // persists between scenes
     }
 
     private void Start()
@@ -30,6 +33,8 @@ public class GameManager : MonoBehaviour
     {
         currentLevelManager.ResetLevel();
     }
+
+
 
     // Optional: uncomment if you want GameManager to control progression
     /*
