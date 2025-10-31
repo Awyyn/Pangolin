@@ -3,27 +3,36 @@ using UnityEngine;
 public class MapScroller : MonoBehaviour
 {
     public float scrollSpeed = 2f;
+    private bool scrolling = false;
+
     private Vector3 startPos;
-    private bool isScrolling = false;
 
     void Start()
     {
         startPos = transform.position;
     }
 
+    public void ResetPosition()
+    {
+        transform.position = startPos;
+    }
+
     void Update()
     {
-        Debug.Log("Scrolling active: " + isScrolling);
+        if (!scrolling) return;
 
-
-        if (isScrolling)
-            transform.position += Vector3.left * scrollSpeed * Time.deltaTime;
-
+        // move the level left continuously
+        transform.position += Vector3.left * scrollSpeed * Time.deltaTime;
     }
 
     public void StartScrolling()
     {
-        isScrolling = true;
+        scrolling = true;
     }
 
+    public void StopScrolling()
+    {
+        scrolling = false;
+    }
 }
+

@@ -5,6 +5,10 @@ using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
 {
+    public GameObject CurrentLevelInstance => currentLevelInstance;
+    public GameObject CurrentSoulInstance => currentSoulInstance;
+    public void RespawnSoul() => SpawnSoul();
+
     public static LevelManager Instance;
     public MovesManager movesManager;
 
@@ -59,7 +63,9 @@ public class LevelManager : MonoBehaviour
 
         CleanupOldLevel();
 
-        currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
+        Transform mapRoot = GameObject.Find("MapRoot")?.transform;
+        currentLevelInstance = Instantiate(levelPrefabs[levelIndex], mapRoot);
+
         AssignTilemaps();
         SpawnSoul();
         SetLevelMoves(levelIndex);
@@ -136,18 +142,25 @@ public class LevelManager : MonoBehaviour
     private void CleanupOldLevel()
     {
         var leftovers = GameObject.FindGameObjectsWithTag("Level");
+        Debug.Log("[LevelManager] CleanupOldLevel found " + leftovers.Length + " objects with tag 'Level'");
         foreach (var obj in leftovers)
         {
-            if (obj.scene.IsValid()) // only destroy scene objects
+            Debug.Log($"[LevelManager] Candidate for destroy: name='{obj.name}' tag='{obj.tag}' activeInHierarchy={obj.activeInHierarchy} parent={(obj.transform.parent ? obj.transform.parent.name : "null")}");
+            if (obj.scene.IsValid())
+            {
                 Destroy(obj);
+                Debug.Log("[LevelManager] Destroyed: " + obj.name);
+            }
         }
 
         if (currentLevelInstance != null && currentLevelInstance.scene.IsValid())
         {
             Destroy(currentLevelInstance);
             currentLevelInstance = null;
+            Debug.Log("[LevelManager] Destroyed currentLevelInstance");
         }
     }
+
 
 
     public void SetLevelMoves(int levelIndex)

@@ -34,6 +34,12 @@ public class GameManager : MonoBehaviour
         currentLevelManager.ResetLevel();
     }
 
+    public void StartBossFight()
+    {
+        bossMode = true;
+        FindFirstObjectByType<MapScroller>()?.StartScrolling();
+    }
+
 
 
     // Optional: uncomment if you want GameManager to control progression

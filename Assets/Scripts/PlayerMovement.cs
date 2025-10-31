@@ -138,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
                         StartCoroutine(InputCooldown());
                     }
 
-                    //after first move, start boss if in boss level
+                    // after first move, start boss if in boss level
                     if (!GameManager.Instance.bossMode)
                     {
                         var bossController = FindFirstObjectByType<BossFightController>();

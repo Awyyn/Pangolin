@@ -10,15 +10,20 @@ public class BossFightController : MonoBehaviour
     [Header("Settings")]
     public float startDelay = 0.3f;
 
-    private Vector3 bossStartPos;
     private bool bossStarted = false;
 
-    void Start()
+
+    private Vector3 playerStartPos;
+    private Vector3 bossStartPos;
+    private Vector3 mapRootStartPos;
+
+    private void Start()
     {
+        mapRootStartPos = scroller.transform.position;
+        playerStartPos = player.position;
         bossStartPos = boss.position;
-        if (scroller != null)
-            scroller.enabled = false; // off until fight begins
     }
+
 
     public void TriggerBossFight()
     {
@@ -30,6 +35,11 @@ public class BossFightController : MonoBehaviour
         {
             scroller.enabled = true;
             scroller.StartScrolling();
+            if (player != null)
+            {
+                player.SetParent(scroller.transform);
+            }
+
         }
 
         if (boss != null)
@@ -41,16 +51,35 @@ public class BossFightController : MonoBehaviour
         bossStarted = false;
         GameManager.Instance.bossMode = false;
 
+        // reset map
         if (scroller != null)
         {
-            scroller.transform.position = Vector3.zero;
-            scroller.enabled = false;
+            scroller.StopScrolling();
+            scroller.transform.position = mapRootStartPos;
         }
 
+        // reset pangolin
         if (player != null)
-            player.position = Vector3.zero;
+            player.position = playerStartPos;
 
+        // reset boss
         if (boss != null)
             boss.position = bossStartPos;
+
+
+        // reset interactables
+        var levelInstance = LevelManager.Instance.CurrentLevelInstance;
+        if (levelInstance != null)
+        {
+            var interactables = levelInstance.GetComponentsInChildren<IInteractable>(true);
+            foreach (var it in interactables)
+                it.ResetState();
+        }
+
+        // reset firefly
+        LevelManager.Instance.RespawnSoul();
     }
+
+
+
 }
