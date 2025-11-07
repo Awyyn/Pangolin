@@ -138,15 +138,37 @@ public class PlayerMovement : MonoBehaviour
                         StartCoroutine(InputCooldown());
                     }
 
+
+                    Debug.Log("Current boss mode is " + GameManager.Instance.bossMode); // debug                    delete this later
+
                     // after first move, start boss if in boss level
-                    if (!GameManager.Instance.bossMode)
+                    // only start boss fight after first successful move, and only for boss levels
+                    // After first move, start boss fight if in a boss level
+                    /*if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
                     {
-                        var bossController = FindFirstObjectByType<BossFightController>();
+                        var bossController = Object.FindFirstObjectByType<BossFightController>();
                         if (bossController != null)
                             bossController.TriggerBossFight();
+
+                        GameManager.Instance.bossMode = true;
+                    }*/
+                    if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
+                    {
+                        var bossController = Object.FindFirstObjectByType<BossFightController>();
+                        if (bossController != null)
+                        {
+                            Debug.Log("[PlayerMovement] Triggering boss fight");
+                            bossController.TriggerBossFight();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[PlayerMovement] No BossFightController found!");
+                        }
+
+                        GameManager.Instance.bossMode = true;
                     }
 
-                }
+                } 
                 else // if the path is blocked by something
                 {
                     Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);

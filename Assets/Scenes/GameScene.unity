@@ -197,8 +197,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movesManager: {fileID: 1514760806}
   levelPrefabs:
-  - {fileID: 3574759573098946759, guid: 40e6ecd145c7b9e4f992ac792eb3c91a, type: 3}
   - {fileID: 2959854103081712264, guid: c1730589e961331448b5128120defa4e, type: 3}
+  - {fileID: 3574759573098946759, guid: 40e6ecd145c7b9e4f992ac792eb3c91a, type: 3}
   - {fileID: 2959854103081712264, guid: 08f774ca17396f44ca32a863eee7a3d0, type: 3}
   - {fileID: 2959854103081712264, guid: 72ba50e2a89d00a41a1b45b2d908926d, type: 3}
   - {fileID: 2959854103081712264, guid: 7f0bb743a9436f94190e3c34d393aa23, type: 3}
@@ -2114,6 +2114,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2195,6 +2196,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddcc20dd5038d554c81af50601e350a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraScroller
+  scrollSpeed: 2
 --- !u!1 &568059430
 GameObject:
   m_ObjectHideFlags: 0
@@ -7150,10 +7164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b3e555465b2d604fb54e9f44e354b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossFightController
-  scroller: {fileID: 3574759573850597787}
+  cameraScroller: {fileID: 519420033}
   boss: {fileID: 424371702}
   player: {fileID: 914431281}
-  startDelay: 0.3
 --- !u!4 &2131001022
 Transform:
   m_ObjectHideFlags: 0
@@ -7268,7 +7281,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 127148659650974102}
-  - component: {fileID: 3574759573850597787}
   m_Layer: 0
   m_Name: MapRoot
   m_TagString: Untagged
@@ -7276,19 +7288,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &3574759573850597787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3574759573850597786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a6bad479e0b2e24eb2ca89683aa3db1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapScroller
-  scrollSpeed: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

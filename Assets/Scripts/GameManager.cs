@@ -8,12 +8,15 @@ public class GameManager : MonoBehaviour
     public LevelManager currentLevelManager;
     public MovesManager movesManager;
 
+    // Runtime flag
+    public bool bossMode;
 
-    public bool bossMode = false;
+    // Check if the current level prefab name contains "Boss"
+    public bool isBossLevel => currentLevelManager.currentLevelInstance != null &&
+                               currentLevelManager.currentLevelInstance.name.Contains("Boss");
 
     void Awake()
     {
-        // Ensure only one instance exists
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -21,12 +24,12 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject); // persists between scenes
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        Application.targetFrameRate = 60;                //BE MINDFUL OF THIS
+        Application.targetFrameRate = 60;
     }
 
     public void RestartLevel()
@@ -36,18 +39,10 @@ public class GameManager : MonoBehaviour
 
     public void StartBossFight()
     {
-        bossMode = true;
-        FindFirstObjectByType<MapScroller>()?.StartScrolling();
+        if (!isBossLevel) return;
+        var bossController = FindFirstObjectByType<BossFightController>();
+        if (bossController != null)
+            bossController.TriggerBossFight();
     }
 
-
-
-    // Optional: uncomment if you want GameManager to control progression
-    /*
-    public void LoadNextLevel()
-    {
-        currentLevel++;
-        LevelManager.Instance.LoadNextLevelWithDelay(2f);
-    }
-    */
 }

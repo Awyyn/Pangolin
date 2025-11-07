@@ -63,8 +63,10 @@ public class LevelManager : MonoBehaviour
 
         CleanupOldLevel();
 
-        Transform mapRoot = GameObject.Find("MapRoot")?.transform;
-        currentLevelInstance = Instantiate(levelPrefabs[levelIndex], mapRoot);
+        currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
+        //GameManager.Instance.isBossLevel = currentLevelInstance.GetComponent<LevelData>().isBossLevel;                            to do 
+        GameManager.Instance.currentLevelManager = this;
+
 
         AssignTilemaps();
         SpawnSoul();
@@ -83,6 +85,7 @@ public class LevelManager : MonoBehaviour
             rock.Initialize();
         }
 
+        FindFirstObjectByType<CameraScroller>()?.ResetCamera();
 
         Debug.Log("[Rock] Initialize done at time " + Time.time);
 
@@ -129,6 +132,9 @@ public class LevelManager : MonoBehaviour
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
         pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
 
+        FindFirstObjectByType<CameraScroller>()?.ResetCamera();
+
+
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
 
@@ -145,7 +151,6 @@ public class LevelManager : MonoBehaviour
         Debug.Log("[LevelManager] CleanupOldLevel found " + leftovers.Length + " objects with tag 'Level'");
         foreach (var obj in leftovers)
         {
-            Debug.Log($"[LevelManager] Candidate for destroy: name='{obj.name}' tag='{obj.tag}' activeInHierarchy={obj.activeInHierarchy} parent={(obj.transform.parent ? obj.transform.parent.name : "null")}");
             if (obj.scene.IsValid())
             {
                 Destroy(obj);
