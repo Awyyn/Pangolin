@@ -33,7 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool outOfMovesTriggered = false;
 
-    public float inputCooldown = 0.25f; // Cooldown time for input
+    public float inputCooldown = 0.25f;   // normal cooldown between moves
+    public float bumpCooldown = 0.6f;     // longer cooldown after bump
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -65,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+
         if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
 
@@ -137,9 +139,6 @@ public class PlayerMovement : MonoBehaviour
                     {
                         StartCoroutine(InputCooldown());
                     }
-
-
-                    Debug.Log("Current boss mode is " + GameManager.Instance.bossMode); // debug                    delete this later
 
                     // after first move, start boss if in boss level
                     // only start boss fight after first successful move, and only for boss levels
@@ -334,20 +333,24 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator BumpAnimation()
     {
         PlayBumpSound();
+        animator.SetTrigger("Bump");
 
+        /*
         Vector3 originalPos = transform.position;
         float bumpDistance = 0.15f;
+        float bumpDistanceBack = 0.3f;
         float bumpSpeed = 0.05f;
 
         // Move back opposite to the bump direction
-        transform.position = originalPos - lastBumpDirection.normalized * bumpDistance;
+        transform.position = originalPos - lastBumpDirection.normalized * bumpDistanceBack;
         yield return new WaitForSeconds(bumpSpeed);
 
         // Move forward (return to original)
         transform.position = originalPos;
         yield return new WaitForSeconds(bumpSpeed);
-
-
+        */
+        
+        animator.SetFloat("tailAngleIndex", 0f);
 
         // check if we are out of moves after bump
         if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
@@ -356,6 +359,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetTrigger("Sleep");
             inputLocked = true; // lock further movement
         }
+        yield break;
     }
 
 
@@ -372,13 +376,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Soul") && !LevelManager.Instance.levelCompleted)
         {
-            //reachedFirefly = true; 
-
             LevelManager.Instance.MarkLevelCompleted();
             Debug.Log("Soul reached!");
 
-            // Play your "looking up at firefly" animation
+            // Play "looking up at firefly" animation
             animator.SetTrigger("LookUp");
+
+            // Stop camera and boss scrolling
+            var cameraScroller = FindFirstObjectByType<CameraScroller>();
+            if (cameraScroller != null)
+                cameraScroller.StopScrolling();
+
+            var bossChase = FindFirstObjectByType<BossChase>();
+            if (bossChase != null)
+                bossChase.enabled = false; // stops boss from following camera
 
             LevelManager.Instance.LoadNextLevelWithDelay(1.5f);
         }

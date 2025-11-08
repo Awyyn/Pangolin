@@ -11,6 +11,7 @@ TagManager:
   - Level
   - PlayerStart
   - DustFX
+  - Boss
   layers:
   - Default
   - TransparentFX

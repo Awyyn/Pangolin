@@ -1,112 +1,74 @@
+// BossFightController.cs
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class BossFightController : MonoBehaviour
 {
-    [Header("References")]
+    [Header("References (optional)")]
     public CameraScroller cameraScroller;
     public Transform boss;
     public Transform player;
 
-    private bool bossStarted = false;
     private Vector3 bossStartPos;
     private Vector3 playerStartPos;
 
+    private void Awake()
+    {
+        // Auto-assign boss if null (self if attached to boss prefab)
+        if (boss == null)
+            boss = this.transform;
+
+        // Auto-assign player if null
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        if (player == null)
+            Debug.LogWarning("[BossFightController] Player not found!");
+
+        // Auto-assign cameraScroller if null
+        if (cameraScroller == null)
+            cameraScroller = Object.FindFirstObjectByType<CameraScroller>();
+    }
+
     private void Start()
     {
-        bossStartPos = boss.position;
-        playerStartPos = player.position;
+        if (boss != null)
+            bossStartPos = boss.position;
+
+        if (player != null)
+            playerStartPos = player.position;
     }
 
     public void TriggerBossFight()
     {
-        if (CameraScroller.Instance != null)
-            CameraScroller.Instance?.StartScrolling();
+        if (cameraScroller != null)
+            cameraScroller.StartScrolling();
         else
             Debug.LogWarning("[BossFightController] No CameraScroller instance found!");
     }
 
-
-
     public void RestartBossFight()
     {
-        Debug.Log("[BossFightController] RestartBossFight() called");
-
-        bossStarted = false;
-
-        if (cameraScroller == null)
-        {
-            // try to find one if inspector reference is missing
-            cameraScroller = Object.FindFirstObjectByType<CameraScroller>();
-            Debug.Log("[BossFightController] cameraScroller was null, found: " + (cameraScroller != null));
-        }
-
+        // Stop scrolling and reset camera
         if (cameraScroller != null)
         {
             cameraScroller.StopScrolling();
             cameraScroller.ResetCamera();
         }
-        else
-        {
-            Debug.LogWarning("[BossFightController] No CameraScroller found during RestartBossFight()");
-        }
 
-        // reset positions
+        // Reset positions
         if (boss != null) boss.position = bossStartPos;
+        if (player != null) player.position = playerStartPos;
 
-        if (player != null)
-        {
-            // restore player using LevelManager start position for consistency
-            if (LevelManager.Instance != null && LevelManager.Instance.CurrentLevelInstance != null)
-            {
-                PlayerMovement.instance.SetStartPositionFromLevel(LevelManager.Instance.CurrentLevelInstance);
-                PlayerMovement.instance.ForceFacing(PangolinStartPoint.FacingDirection.Right);
-            }
-            else
-            {
-                player.position = playerStartPos;
-            }
-        }
-
-        // reset interactables and soul
+        // Reset interactables in current level
         var levelInstance = LevelManager.Instance?.CurrentLevelInstance;
         if (levelInstance != null)
         {
             var interactables = levelInstance.GetComponentsInChildren<IInteractable>(true);
             foreach (var it in interactables) it.ResetState();
         }
+
         LevelManager.Instance?.RespawnSoul();
 
-        Debug.Log("[BossFightController] RestartBossFight() finished. camera scrolling state: " + (cameraScroller != null ? cameraScroller.IsScrolling().ToString() : "no camera"));
+        Debug.Log("[BossFightController] RestartBossFight finished.");
     }
-
-
-    /*
-
-    public void RestartBossFight()
-    {
-        // stop scrolling and snap camera back
-        if (cameraScroller != null)
-        {
-            cameraScroller.StopScrolling();
-            cameraScroller.ResetCamera();
-        }
-
-        // reset world positions
-        if (boss != null) boss.position = bossStartPos;
-        if (player != null) player.position = playerStartPos;
-
-        // reset interactables & soul
-        var levelInstance = LevelManager.Instance.CurrentLevelInstance;
-        if (levelInstance != null)
-        {
-            var interactables = levelInstance.GetComponentsInChildren<IInteractable>(true);
-            foreach (var it in interactables) it.ResetState();
-        }
-
-        LevelManager.Instance.RespawnSoul();
-        bossStarted = false;
-    }
-    */
-
 }
