@@ -42,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip bumpSound;
 
 
-
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -187,6 +186,7 @@ public class PlayerMovement : MonoBehaviour
                             {
                                 // Always bump after pushing the rock
                                 StartCoroutine(BumpAnimation());
+                                StartCoroutine(InputCooldown(bumpCooldown));
                             }
                             else
                             {
@@ -201,6 +201,7 @@ public class PlayerMovement : MonoBehaviour
                     {
                         // Nothing to interact with — wall or edge
                         StartCoroutine(BumpAnimation());
+                        StartCoroutine(InputCooldown(bumpCooldown));
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
@@ -276,12 +277,13 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private IEnumerator InputCooldown()
+    private IEnumerator InputCooldown(float delay = 0.6f) //                hard coding, woo hoo
     {
         inputLocked = true;
-        yield return new WaitForSeconds(inputCooldown);
+        yield return new WaitForSeconds(delay);
         inputLocked = false;
     }
+
     int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
     {
         // If no previous direction (e.g., first move), tail is straight

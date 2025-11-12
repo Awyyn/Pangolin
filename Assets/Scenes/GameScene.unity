@@ -166,8 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movesManager: {fileID: 1514760806}
   levelPrefabs:
-  - {fileID: 2959854103081712264, guid: c1730589e961331448b5128120defa4e, type: 3}
-  - {fileID: 3574759573098946759, guid: 40e6ecd145c7b9e4f992ac792eb3c91a, type: 3}
+  - {fileID: 3574759573098946759, guid: 5a4c09969272b492a8f8298006b2c8a3, type: 3}
   - {fileID: 2959854103081712264, guid: 08f774ca17396f44ca32a863eee7a3d0, type: 3}
   - {fileID: 2959854103081712264, guid: 72ba50e2a89d00a41a1b45b2d908926d, type: 3}
   - {fileID: 2959854103081712264, guid: 7f0bb743a9436f94190e3c34d393aa23, type: 3}
@@ -1980,7 +1979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddcc20dd5038d554c81af50601e350a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraScroller
-  scrollSpeed: 3
+  scrollSpeed: 2.5
 --- !u!1 &568059430
 GameObject:
   m_ObjectHideFlags: 0
@@ -3332,6 +3331,10 @@ PrefabInstance:
       propertyPath: movesManager
       value: 
       objectReference: {fileID: 1514760806}
+    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
+      propertyPath: inputCooldown
+      value: 0.125
+      objectReference: {fileID: 0}
     - target: {fileID: 6202408108734590070, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: m_Name
       value: Pangolin
