@@ -99,7 +99,7 @@ public class DoorController : MonoBehaviour
 
         // Reset door Animator instantly
         if (doorAnimator != null)
-            doorAnimator.Play("Closed", 0, 0f); // replace "Closed" with your door closed state name
+            doorAnimator.Play("DoorClosing", 0, 0f);
 
         // Reset door state
         pressedCount = 0;

@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // longer cooldown after bump
+    private bool isBumping = false;
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -86,7 +87,35 @@ public class PlayerMovement : MonoBehaviour
             }
             return; // skip movement input
         }
+    // If bumping, check if Animator is still in any bump state.
+    // If not, clear the flag so pangolin doesn't get stuck.
+    if (isBumping)
+    {
+        if (animator != null)
+        {
+            var state = animator.GetCurrentAnimatorStateInfo(0);
 
+            // Matches all your bump animations
+            bool stillInBump =
+                state.IsName("BumpSide") ||
+                state.IsName("BumpUp") ||
+                state.IsName("BumpDown") ||
+                animator.IsInTransition(0);
+
+            if (stillInBump)
+            {
+                return; // still playing bump → block input
+            }
+            else
+            {
+                isBumping = false; // bump finished → release
+            }
+        }
+        else
+        {
+            return; // no animator → stay blocked!
+        }
+    }
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -334,9 +363,6 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator BumpAnimation()
     {
-        PlayBumpSound();
-        animator.SetTrigger("Bump");
-
         /*
         Vector3 originalPos = transform.position;
         float bumpDistance = 0.15f;
@@ -352,16 +378,40 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(bumpSpeed);
         */
         
+        if (isBumping) yield break;
+        isBumping = true;
+
+        // Lock input immediately for the bump
+        inputLocked = true;
+
+        // Ensure a bump cooldown runs (fallback/guarantee)
+        StartCoroutine(InputCooldown(bumpCooldown));
+
+        PlayBumpSound();
+        if (animator != null)
+        {
+            animator.ResetTrigger("Bump");
+            animator.SetTrigger("Bump");
+        }
+
         animator.SetFloat("tailAngleIndex", 0f);
 
-        // check if we are out of moves after bump
         if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
         {
             outOfMovesTriggered = true;
             animator.SetTrigger("Sleep");
-            inputLocked = true; // lock further movement
+            inputLocked = true;
         }
+
         yield break;
+    }
+
+    // Called automatically by Animation Event at the end of "Bump" clip
+    public void OnBumpAnimationEnd()
+    {
+        isBumping = false;
+        animator.ResetTrigger("Bump");
+        animator.SetBool("isMoving", false);
     }
 
 
@@ -463,6 +513,7 @@ public class PlayerMovement : MonoBehaviour
         reachedFirefly = false;
         outOfMovesTriggered = false;
         inputLocked = false;
+        isBumping = false; // ensure bump lock is cleared on reset
     }
 
 }
