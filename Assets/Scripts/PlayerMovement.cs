@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastDirection = Vector3.zero;
     private Vector3 previousDirection = Vector3.zero;
     public bool inputLocked { get; set; }
+    private bool movementLocked = false;
+
     public bool reachedFirefly = false;
 
     private bool outOfMovesTriggered = false;
@@ -67,8 +69,9 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
 
-        if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
+        if (movementLocked || inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
+
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
         {
@@ -87,35 +90,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return; // skip movement input
         }
-    // If bumping, check if Animator is still in any bump state.
-    // If not, clear the flag so pangolin doesn't get stuck.
-    if (isBumping)
-    {
-        if (animator != null)
-        {
-            var state = animator.GetCurrentAnimatorStateInfo(0);
-
-            // Matches all your bump animations
-            bool stillInBump =
-                state.IsName("BumpSide") ||
-                state.IsName("BumpUp") ||
-                state.IsName("BumpDown") ||
-                animator.IsInTransition(0);
-
-            if (stillInBump)
-            {
-                return; // still playing bump → block input
-            }
-            else
-            {
-                isBumping = false; // bump finished → release
-            }
-        }
-        else
-        {
-            return; // no animator → stay blocked!
-        }
-    }
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -140,8 +114,12 @@ public class PlayerMovement : MonoBehaviour
                 lastDirection = direction;
 
                 // Animator parameters
-                animator.SetFloat("moveX", direction.x);
-                animator.SetFloat("moveY", direction.y);
+                if (!movementLocked)
+                {
+                    animator.SetFloat("moveX", direction.x);
+                    animator.SetFloat("moveY", direction.y);
+                }
+
 
                 int tailIndex = GetTailAngleIndex(previousDirection, direction);
                 animator.SetFloat("tailAngleIndex", tailIndex);
@@ -215,7 +193,6 @@ public class PlayerMovement : MonoBehaviour
                             {
                                 // Always bump after pushing the rock
                                 StartCoroutine(BumpAnimation());
-                                StartCoroutine(InputCooldown(bumpCooldown));
                             }
                             else
                             {
@@ -230,7 +207,6 @@ public class PlayerMovement : MonoBehaviour
                     {
                         // Nothing to interact with — wall or edge
                         StartCoroutine(BumpAnimation());
-                        StartCoroutine(InputCooldown(bumpCooldown));
                         Debug.Log("Blocked by wall or unknown obstacle");
                     }
                 }
@@ -306,12 +282,21 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private IEnumerator InputCooldown(float delay = 0.6f) //                hard coding, woo hoo
+    private IEnumerator InputCooldown(float delay = 0.125f) //                            hard coding, woo hoo
     {
         inputLocked = true;
         yield return new WaitForSeconds(delay);
         inputLocked = false;
     }
+
+    private IEnumerator BumpCooldownLock()
+    {
+        movementLocked = true;
+        yield return new WaitForSeconds(bumpCooldown);
+        movementLocked = false;
+        isBumping = false;
+    }
+
 
     int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
     {
@@ -360,56 +345,36 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-
     private IEnumerator BumpAnimation()
     {
-        /*
-        Vector3 originalPos = transform.position;
-        float bumpDistance = 0.15f;
-        float bumpDistanceBack = 0.3f;
-        float bumpSpeed = 0.05f;
+        if (isBumping)
+            yield break;
 
-        // Move back opposite to the bump direction
-        transform.position = originalPos - lastBumpDirection.normalized * bumpDistanceBack;
-        yield return new WaitForSeconds(bumpSpeed);
-
-        // Move forward (return to original)
-        transform.position = originalPos;
-        yield return new WaitForSeconds(bumpSpeed);
-        */
-        
-        if (isBumping) yield break;
         isBumping = true;
-
-        // Lock input immediately for the bump
         inputLocked = true;
 
-        // Ensure a bump cooldown runs (fallback/guarantee)
-        StartCoroutine(InputCooldown(bumpCooldown));
-
         PlayBumpSound();
-        if (animator != null)
-        {
-            animator.ResetTrigger("Bump");
-            animator.SetTrigger("Bump");
-        }
 
+        // make bump directional instantly
+        animator.SetFloat("moveX", lastBumpDirection.x);
+        animator.SetFloat("moveY", lastBumpDirection.y);
+
+        animator.ResetTrigger("Bump");
+        animator.SetTrigger("Bump");
         animator.SetFloat("tailAngleIndex", 0f);
 
-        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
-        {
-            outOfMovesTriggered = true;
-            animator.SetTrigger("Sleep");
-            inputLocked = true;
-        }
+        // Do NOT wait here — bump plays immediately
+        yield return null;
 
-        yield break;
+        // Start cooldown separately
+        StartCoroutine(BumpCooldownLock());
     }
+
 
     // Called automatically by Animation Event at the end of "Bump" clip
     public void OnBumpAnimationEnd()
     {
-        isBumping = false;
+        // Animator cleanup only
         animator.ResetTrigger("Bump");
         animator.SetBool("isMoving", false);
     }

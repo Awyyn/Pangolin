@@ -166,8 +166,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movesManager: {fileID: 1514760806}
   levelPrefabs:
-  - {fileID: 3574759573098946759, guid: b1ea4a20e889e804fb88d36040902c2f, type: 3}
-  - {fileID: 3574759573098946759, guid: 5a4c09969272b492a8f8298006b2c8a3, type: 3}
   - {fileID: 2959854103081712264, guid: 08f774ca17396f44ca32a863eee7a3d0, type: 3}
   - {fileID: 2959854103081712264, guid: 72ba50e2a89d00a41a1b45b2d908926d, type: 3}
   - {fileID: 2959854103081712264, guid: 7f0bb743a9436f94190e3c34d393aa23, type: 3}
@@ -182,6 +180,8 @@ MonoBehaviour:
   - {fileID: 931549947275294655, guid: 9e12094b7e45d404f8607bf323894aa1, type: 3}
   - {fileID: 3420564231357660508, guid: e4f5580d77c7db446af5c3cd468960f0, type: 3}
   - {fileID: 2959854103081712264, guid: 9142d597188d44147add4b6c5713f0aa, type: 3}
+  - {fileID: 3574759573098946759, guid: b1ea4a20e889e804fb88d36040902c2f, type: 3}
+  - {fileID: 3574759573098946759, guid: 5a4c09969272b492a8f8298006b2c8a3, type: 3}
   currentLevelInstance: {fileID: 3574759573098946759, guid: d58d1fcab55c0b344bdcdb61fe9a771b, type: 3}
   soulPrefab: {fileID: 4802441766335753387, guid: 59a4d41b5fd6d5c42b667123a4067b66, type: 3}
   pangolin: {fileID: 1460575938}
@@ -3292,34 +3292,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
-    - target: {fileID: 364263480922581081, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 744110159799853701, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: -4491376281250583220, guid: cdc330fc8585f0f49804625fd6a38411, type: 2}
-    - target: {fileID: 1804253476329792177, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1804253476329792177, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1437824741
-      objectReference: {fileID: 0}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: boss
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: scroller
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: bumpSound
-      value: 
-      objectReference: {fileID: 8300000, guid: d4b7a73d451c5a445a47c590592656d9, type: 3}
     - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: gameManager
       value: 
@@ -3332,17 +3304,9 @@ PrefabInstance:
       propertyPath: movesManager
       value: 
       objectReference: {fileID: 1514760806}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: inputCooldown
-      value: 0.125
-      objectReference: {fileID: 0}
     - target: {fileID: 6202408108734590070, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: m_Name
       value: Pangolin
-      objectReference: {fileID: 0}
-    - target: {fileID: 6202408108734590070, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

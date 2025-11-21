@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1933304499215749713}
   - component: {fileID: 744110159799853701}
   - component: {fileID: 5556812785336252897}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pangolin
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -180,12 +180,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3b165d45876f043ac6ec05b7993728, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   movesManager: {fileID: 0}
   levelManager: {fileID: 0}
   moveSpeed: 10
   reachedFirefly: 0
-  inputCooldown: 0.25
-  bumpSound: {fileID: 0}
+  inputCooldown: 0.125
+  bumpCooldown: 0.6
+  bumpSound: {fileID: 8300000, guid: d4b7a73d451c5a445a47c590592656d9, type: 3}
 --- !u!82 &744110159799853701
 AudioSource:
   m_ObjectHideFlags: 0
