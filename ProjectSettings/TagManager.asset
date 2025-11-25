@@ -13,6 +13,7 @@ TagManager:
   - DustFX
   - Boss
   - Statue
+  - Firefly
   layers:
   - Default
   - TransparentFX

@@ -36,10 +36,10 @@ public class PlayerMovement : MonoBehaviour
     private bool outOfMovesTriggered = false;
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
-    public float bumpCooldown = 0.6f;     // longer cooldown after bump
+    public float bumpCooldown = 0.35f;     // longer cooldown after bump
     private bool isBumping = false;
 
-    private Animator animator;
+    public Animator animator;
     private SpriteRenderer spriteRenderer;
 
     public AudioClip bumpSound;
@@ -49,6 +49,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
+
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
     }
 
     private void Start()
@@ -57,12 +61,6 @@ public class PlayerMovement : MonoBehaviour
             levelManager = LevelManager.Instance;
         if (movesManager == null)
             movesManager = FindFirstObjectByType<MovesManager>();
-
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Get starting position from level
-       // SetStartPositionFromLevel(levelManager.currentLevelInstance);
     }
 
 
@@ -139,6 +137,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     targetPosition = nextPos;
                     StartCoroutine(moveToPosition(targetPosition));
+                    Debug.Log(animator.runtimeAnimatorController);
+                    Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("SideIdle"));
 
 
                     if (movesManager.movesLeft > 0)
@@ -243,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
             // Read facing from the start point & apply next frame
             var sp = levelData.PangolinStartPoint.GetComponent<PangolinStartPoint>();
             var face = sp ? sp.startFacing : PangolinStartPoint.FacingDirection.Right;
-            StartCoroutine(ApplyFacingNextFrame(face));
+            StartCoroutine(ResetAnimatorNextFrame(face));
         }
         else
         {
@@ -252,10 +252,19 @@ public class PlayerMovement : MonoBehaviour
             targetPosition = transform.position;
 
             // Safe default
-            StartCoroutine(ApplyFacingNextFrame(PangolinStartPoint.FacingDirection.Right));
+            StartCoroutine(ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection.Right));
         }
     }
+    private IEnumerator ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection facing)
+    {
+        // Wait one frame so the Animator fully re-binds after a level reset or scene change
+        yield return null;
 
+        // Reset all parameters and snap to the correct idle state
+        ForceFacing(facing);
+    }
+
+    /*
     private IEnumerator ApplyFacingNextFrame(PangolinStartPoint.FacingDirection facing)
     {
         // Wait a frame so Animator finishes re-binding after prefab spawn
@@ -263,7 +272,7 @@ public class PlayerMovement : MonoBehaviour
         ForceFacing(facing);
     }
 
-
+    */
 
     private IEnumerator moveToPosition(Vector3 destination)
     {
@@ -391,26 +400,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Soul") && !LevelManager.Instance.levelCompleted)
-        {
-            LevelManager.Instance.MarkLevelCompleted();
-            Debug.Log("Soul reached!");
-
-            // Play "looking up at firefly" animation
-            animator.SetTrigger("LookUp");
-
-            // Stop camera and boss scrolling
-            var cameraScroller = FindFirstObjectByType<CameraScroller>();
-            if (cameraScroller != null)
-                cameraScroller.StopScrolling();
-
-            var bossChase = FindFirstObjectByType<BossChase>();
-            if (bossChase != null)
-                bossChase.enabled = false; // stops boss from following camera
-
-            LevelManager.Instance.LoadNextLevelWithDelay(1.5f);
-        }
-        else if (other.CompareTag("Mushroom"))
+        if (other.CompareTag("Mushroom"))
         {
             HandleMushroom(other);
         }
@@ -442,14 +432,24 @@ public class PlayerMovement : MonoBehaviour
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {
-        if (!animator) return;
+        if (!animator)
+        {
+            Debug.LogWarning("[PlayerMovement] Animator missing, trying to assign...");
+            animator = GetComponent<Animator>();
+            if (!animator)
+            {
+                Debug.LogError("[PlayerMovement] No Animator found on pangolin!");
+                return;
+            }
+        }
 
-        // Clear any leftover state from previous level
+        // Reset animator to clear leftover state
         animator.Rebind();
         animator.Update(0f);
 
+        // Set idle parameters
         float mx = 0f, my = 0f;
-        string idleState = "SideIdle"; // change if your state is named differently
+        string idleState = "SideIdle"; // default fallback
 
         switch (facing)
         {
@@ -468,17 +468,45 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("tailAngleIndex", 0f);
         animator.SetBool("isMoving", false);
 
-        // Snap to the correct idle clip immediately
+        // Play the idle state immediately
         animator.Play(idleState, 0, 0f);
         animator.Update(0f);
     }
 
+
     public void ResetLevelFlags()
     {
+        StopAllCoroutines(); // stop bump/move coroutines
         reachedFirefly = false;
         outOfMovesTriggered = false;
         inputLocked = false;
-        isBumping = false; // ensure bump lock is cleared on reset
+        isBumping = false;
+    }
+
+    private void ResetAnimator(PangolinStartPoint.FacingDirection facing)
+    {
+        if (!animator) return;
+
+        animator.Rebind();       // clears leftover internal state
+        animator.Update(0f);     // force immediate update
+
+        float mx = 0f, my = 0f;
+        string idleState = "SideIdle";
+
+        switch (facing)
+        {
+            case PangolinStartPoint.FacingDirection.Right: mx = 1f; my = 0f; spriteRenderer.flipX = false; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Left: mx = -1f; my = 0f; spriteRenderer.flipX = true; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Up: mx = 0f; my = 1f; spriteRenderer.flipX = false; idleState = "UpIdle"; break;
+            case PangolinStartPoint.FacingDirection.Down: mx = 0f; my = -1f; spriteRenderer.flipX = false; idleState = "DownIdle"; break;
+        }
+
+        animator.SetFloat("moveX", mx);
+        animator.SetFloat("moveY", my);
+        animator.SetFloat("tailAngleIndex", 0f);
+        animator.SetBool("isMoving", false);
+        animator.Play(idleState, 0, 0f);
+        animator.Update(0f);
     }
 
 }

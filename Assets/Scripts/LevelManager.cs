@@ -19,16 +19,13 @@ public class LevelManager : MonoBehaviour
 
     public PlayerMovement pangolin; 
 
-
-
     public bool levelCompleted { get; private set; } = false;
 
     public float transitionDelay = 2f;
 
-
-
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
+
 
     private void Awake()
     {
@@ -38,6 +35,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+      
         if (levelPrefabs.Length == 0)
         {
             Debug.LogError("No level prefabs assigned! please assign them in the inspector.");
@@ -49,6 +47,7 @@ public class LevelManager : MonoBehaviour
 
     public void InitializeLevel(int levelIndex)
     {
+        // Reset pangolin's firefly flag
         PlayerMovement.instance.reachedFirefly = false;
 
         if (levelIndex < 0 || levelIndex >= levelPrefabs.Length)
@@ -60,26 +59,31 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex = levelIndex;
         levelCompleted = false; // reset completion status for the new level
 
-
         CleanupOldLevel();
 
         currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
-        //GameManager.Instance.isBossLevel = currentLevelInstance.GetComponent<LevelData>().isBossLevel;                            to do 
         GameManager.Instance.currentLevelManager = this;
-
 
         AssignTilemaps();
         SpawnSoul();
         SetLevelMoves(levelIndex);
         movesManager.ResetMoves(movesLeft);
 
+        // === Pangolin setup ===
         if (pangolin != null)
         {
+            // Set position from level
             pangolin.SetStartPositionFromLevel(currentLevelInstance);
 
+            // Rebind animator to prevent it from freezing
+            if (pangolin.animator != null)
+            {
+                pangolin.animator.Rebind();
+                pangolin.animator.Update(0f);
+            }
         }
 
-        // Now that the level grid and objects are ready, initialize all rocks
+        // Initialize rocks
         foreach (Rock rock in FindObjectsByType<Rock>(FindObjectsSortMode.None))
         {
             rock.Initialize();
@@ -87,12 +91,10 @@ public class LevelManager : MonoBehaviour
 
         FindFirstObjectByType<CameraScroller>()?.ResetCamera();
 
-        Debug.Log("[Rock] Initialize done at time " + Time.time);
-
-        //Debug.Log("[LevelManager] Finished initializing level " + (levelIndex + 1));
-
-        Debug.Log("Finished initializing level " + (levelIndex + 1) + " with " + movesLeft + " moves.");
+        Debug.Log($"Finished initializing level {levelIndex + 1} with {movesLeft} moves.");
+        Debug.Log("/////////////////////////////////////////////////////////////////////////////////////");
     }
+
 
     public void ResetLevel()
     {
@@ -129,19 +131,23 @@ public class LevelManager : MonoBehaviour
         SetLevelMoves(currentLevelIndex);
         movesManager.ResetMoves(movesLeft);
 
-        pangolin.SetStartPositionFromLevel(currentLevelInstance);
-        pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
-
         FindFirstObjectByType<CameraScroller>()?.ResetCamera();
+
+        pangolin.SetStartPositionFromLevel(currentLevelInstance);
+        //pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
+   
+        StartCoroutine(DelayedForceFacing(PangolinStartPoint.FacingDirection.Right));
 
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
 
 
+
     public void MarkLevelCompleted()
     {
         levelCompleted = true;
+        PlayerProgress.MarkLevelCompletedForever(currentLevelIndex);
     }
 
 
@@ -231,6 +237,30 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public void OnFireflyCollected(int amount)
+    {
+        // Defensive checks
+        if (FireflyManager.Instance == null)
+        {
+            Debug.LogWarning("FireflyManager missing. Skipping firefly add.");
+            return;
+        }
+
+        // Only add to the global total if the level was NOT completed before (permanent completion)
+        if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
+        {
+            FireflyManager.Instance.AddFirefly(amount);
+            Debug.Log("Firefly counted for level " + (currentLevelIndex + 1));
+        }
+        else
+        {
+            Debug.Log("Firefly ignored. Level already completed before.");
+        }
+    }
+
+
+
+
     private IEnumerator LoadNextLevelCoroutine(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -259,6 +289,12 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+
+    private IEnumerator DelayedForceFacing(PangolinStartPoint.FacingDirection facing)
+    {
+        yield return null; // wait one frame for Animator to fully bind
+        pangolin.ForceFacing(facing);
+    }
 
 
     public void LoadNextLevelWithDelay(float delay)

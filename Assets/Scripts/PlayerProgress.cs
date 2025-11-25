@@ -3,6 +3,17 @@ using UnityEngine;
 public static class PlayerProgress
 {
     private const string HighestLevelKey = "HighestLevel";
+    private const string CompletedLevelsKey = "CompletedLevel_";
+    public static bool WasLevelCompletedBefore(int levelIndex)
+    {
+        return PlayerPrefs.GetInt(CompletedLevelsKey + levelIndex, 0) == 1;
+    }
+
+    public static void MarkLevelCompletedForever(int levelIndex)
+    {
+        PlayerPrefs.SetInt(CompletedLevelsKey + levelIndex, 1);
+        PlayerPrefs.Save();
+    }
 
     public static int GetHighestLevel()
     {
