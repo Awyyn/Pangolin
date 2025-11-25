@@ -35,8 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool outOfMovesTriggered = false;
 
-    public float inputCooldown = 0.25f;   // normal cooldown between moves
-    public float bumpCooldown = 0.35f;     // longer cooldown after bump
+    public float inputCooldown = 0.0f;   // normal cooldown between moves
+    public float bumpCooldown = 0.0f;     // longer cooldown after bump
     private bool isBumping = false;
 
     public Animator animator;
@@ -301,10 +301,40 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator BumpCooldownLock()
     {
         movementLocked = true;
+
+        // Wait for the tunable bump cooldown
         yield return new WaitForSeconds(bumpCooldown);
+
         movementLocked = false;
         isBumping = false;
+
+        // Force the pangolin back to proper idle instantly
+        ForceIdleFromLastDirection();
     }
+    private void ForceIdleFromLastDirection()
+    {
+        // Use the last direction the pangolin attempted to move toward
+        float mx = lastBumpDirection.x;
+        float my = lastBumpDirection.y;
+
+        animator.SetFloat("moveX", mx);
+        animator.SetFloat("moveY", my);
+        animator.SetFloat("tailAngleIndex", 0f);
+        animator.SetBool("isMoving", false);
+
+        string idleState = "SideIdle";
+
+        if (my > 0) idleState = "UpIdle";
+        else if (my < 0) idleState = "DownIdle";
+        else idleState = "SideIdle";
+
+        // Flip for left
+        spriteRenderer.flipX = mx < 0;
+
+        animator.Play(idleState, 0, 0f);
+        animator.Update(0f);
+    }
+
 
 
     int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
@@ -444,8 +474,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Reset animator to clear leftover state
-        animator.Rebind();
-        animator.Update(0f);
+        //animator.Rebind();
+        //animator.Update(0f);
 
         // Set idle parameters
         float mx = 0f, my = 0f;
