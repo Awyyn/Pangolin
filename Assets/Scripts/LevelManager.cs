@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
     public GameObject soulPrefab;
     private GameObject currentSoulInstance;
 
-    public PlayerMovement pangolin; 
+    public PlayerMovement pangolin;
 
     public bool levelCompleted { get; private set; } = false;
 
@@ -26,6 +26,8 @@ public class LevelManager : MonoBehaviour
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
 
+    // --- Firefly tracking ---
+    private int currentFireflyCount = 0;
 
     private void Awake()
     {
@@ -35,14 +37,17 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-      
         if (levelPrefabs.Length == 0)
         {
-            Debug.LogError("No level prefabs assigned! please assign them in the inspector.");
+            Debug.LogError("No level prefabs assigned! Please assign them in the inspector.");
             return;
         }
+    
+        currentLevelIndex = PlayerProgress.GetLastPlayedLevel();
+        currentFireflyCount = PlayerProgress.GetFireflyCount(); // load saved total
+        FireflyCounterUI.Instance?.UpdateCount(currentFireflyCount);
+        InitializeLevel(currentLevelIndex);
 
-        InitializeLevel(0);
     }
 
     public void InitializeLevel(int levelIndex)
@@ -52,7 +57,7 @@ public class LevelManager : MonoBehaviour
 
         if (levelIndex < 0 || levelIndex >= levelPrefabs.Length)
         {
-            Debug.LogError("invalid level index: " + levelIndex);
+            Debug.LogError("Invalid level index: " + levelIndex);
             return;
         }
 
@@ -72,10 +77,7 @@ public class LevelManager : MonoBehaviour
         // === Pangolin setup ===
         if (pangolin != null)
         {
-            // Set position from level
             pangolin.SetStartPositionFromLevel(currentLevelInstance);
-
-            // Rebind animator to prevent it from freezing
             if (pangolin.animator != null)
             {
                 pangolin.animator.Rebind();
@@ -83,7 +85,6 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // Initialize rocks
         foreach (Rock rock in FindObjectsByType<Rock>(FindObjectsSortMode.None))
         {
             rock.Initialize();
@@ -95,13 +96,13 @@ public class LevelManager : MonoBehaviour
         Debug.Log("/////////////////////////////////////////////////////////////////////////////////////");
     }
 
-
     public void ResetLevel()
     {
         if (currentLevelInstance == null) return;
 
-        DestroyAllDustFX(); // ensures all ongoing dust animations stop instantly
+        PlayerMovement.instance.reachedFirefly = false;
 
+        DestroyAllDustFX();
         levelCompleted = false;
         pangolin.ResetLevelFlags();
 
@@ -134,22 +135,12 @@ public class LevelManager : MonoBehaviour
         FindFirstObjectByType<CameraScroller>()?.ResetCamera();
 
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
-        //pangolin.ForceFacing(PangolinStartPoint.FacingDirection.Right);
-   
         StartCoroutine(DelayedForceFacing(PangolinStartPoint.FacingDirection.Right));
 
+        PlayerMovement.instance.reachedFirefly = false;
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
-
-
-
-    public void MarkLevelCompleted()
-    {
-        levelCompleted = true;
-        PlayerProgress.MarkLevelCompletedForever(currentLevelIndex);
-    }
-
 
     private void CleanupOldLevel()
     {
@@ -171,8 +162,6 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-
-
     public void SetLevelMoves(int levelIndex)
     {
         if (currentLevelInstance == null) return;
@@ -192,7 +181,6 @@ public class LevelManager : MonoBehaviour
     private void AssignTilemaps()
     {
         var gridTransform = currentLevelInstance.transform.Find("Grid");
-
         if (gridTransform == null)
         {
             Debug.LogError("Grid object not found in level prefab");
@@ -208,9 +196,9 @@ public class LevelManager : MonoBehaviour
         if (newGround == null) Debug.LogError("Ground tilemap not found!");
         if (newObstacle == null) Debug.LogError("Obstacle tilemap not found!");
     }
+
     private void SpawnSoul()
     {
-        // despawn old soul
         if (currentSoulInstance != null)
         {
             Destroy(currentSoulInstance);
@@ -223,9 +211,7 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        Transform spawnPoint = currentLevelInstance.transform
-            .Find("Grid/SoulSpawnPoint");
-
+        Transform spawnPoint = currentLevelInstance.transform.Find("Grid/SoulSpawnPoint");
         if (spawnPoint != null)
         {
             currentSoulInstance = Instantiate(soulPrefab, spawnPoint.position, Quaternion.identity);
@@ -236,23 +222,40 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void OnFireflyCollected(int amount)
+    public void OnFireflyCollected()
     {
-        if (FireflyManager.Instance == null)
-        {
-            Debug.LogWarning("FireflyManager missing.");
-            return;
-        }
-
-        // Add firefly only if level has never been completed
+        // Check if this level was already completed before (persistently)
         if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
         {
-            FireflyManager.Instance.AddFirefly(amount);
-            Debug.Log("Firefly counted for level " + (currentLevelIndex + 1));
+            // Increment total fireflies by 1
+            int newTotal = PlayerProgress.GetFireflyCount() + 1;
+
+            // Save persistently
+            PlayerProgress.SetFireflyCount(newTotal);
+
+            // Update UI
+            FireflyCounterUI.Instance?.UpdateCount(newTotal);
+
+            Debug.Log("[LevelManager] Firefly counted for level " + (currentLevelIndex + 1));
         }
         else
         {
-            Debug.Log("Firefly ignored. Level " + (currentLevelIndex + 1) + " already completed.");
+            Debug.Log("[LevelManager] Level already completed, firefly ignored.");
+        }
+    }
+
+
+    public void MarkLevelCompleted()
+    {
+        levelCompleted = true;
+        PlayerProgress.MarkLevelCompletedForever(currentLevelIndex);
+
+        // Also ensure firefly is counted for this level
+        if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
+        {
+            currentFireflyCount++;
+            PlayerProgress.SetFireflyCount(currentFireflyCount);
+            FireflyCounterUI.Instance?.UpdateCount(currentFireflyCount);
         }
     }
 
@@ -261,22 +264,19 @@ public class LevelManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        currentLevelIndex++; // move to next level first
+        currentLevelIndex++;
 
-        // Unlock the next level in the menu
         if (currentLevelIndex > PlayerProgress.GetHighestLevel())
         {
-            PlayerProgress.SetHighestLevel(currentLevelIndex); // unlock next level
+            PlayerProgress.SetHighestLevel(currentLevelIndex);
         }
 
-        // Refresh the menu so unlocked levels show up
         var menu = FindFirstObjectByType<LevelMenuManager>();
-        if (menu != null)
-            menu.PopulatePage(menu.CurrentPage); // refresh the currently visible page
+        if (menu != null) menu.PopulatePage(menu.CurrentPage);
 
         if (currentLevelIndex < levelPrefabs.Length)
         {
-            InitializeLevel(currentLevelIndex); // start next level
+            InitializeLevel(currentLevelIndex);
             Debug.Log("Level " + (currentLevelIndex + 1) + " loaded.");
         }
         else
@@ -285,31 +285,22 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-
     private IEnumerator DelayedForceFacing(PangolinStartPoint.FacingDirection facing)
     {
-        yield return null; // wait one frame for Animator to fully bind
+        yield return null;
         pangolin.ForceFacing(facing);
     }
-
 
     public void LoadNextLevelWithDelay(float delay)
     {
         StartCoroutine(LoadNextLevelCoroutine(delay));
     }
 
-    public int GetCurrentIndex()
-    {
-        return currentLevelIndex;
-    }
+    public int GetCurrentIndex() => currentLevelIndex;
 
     private void DestroyAllDustFX()
     {
         var dustObjects = GameObject.FindGameObjectsWithTag("DustFX");
-        foreach (var obj in dustObjects)
-            Destroy(obj);
+        foreach (var obj in dustObjects) Destroy(obj);
     }
-
-
-
 }

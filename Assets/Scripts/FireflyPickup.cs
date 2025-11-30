@@ -6,12 +6,7 @@ public class FireflyPickup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("[FireflyPickup] TriggerEnter by " + collision.name);
         if (!collision.CompareTag("Player")) return;
-        Debug.Log("[FireflyPickup] Player touched firefly");
-
-        LevelManager.Instance?.OnFireflyCollected(1);
-        LevelManager.Instance?.MarkLevelCompleted();
 
         var player = collision.GetComponent<PlayerMovement>();
         player?.animator.SetTrigger("LookUp");
@@ -20,9 +15,15 @@ public class FireflyPickup : MonoBehaviour
         var boss = FindFirstObjectByType<BossChase>();
         if (boss != null) boss.enabled = false;
 
+        // Increment firefly for the level if not already completed
+        LevelManager.Instance?.OnFireflyCollected();
+
+        // Mark the level as completed
+        LevelManager.Instance?.MarkLevelCompleted();
+
+        // Load next level after delay
         LevelManager.Instance?.LoadNextLevelWithDelay(nextLevelDelay);
 
         Destroy(gameObject);
     }
-
 }

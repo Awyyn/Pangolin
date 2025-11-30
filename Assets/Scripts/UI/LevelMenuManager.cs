@@ -24,14 +24,22 @@ public class LevelMenuManager : MonoBehaviour
         // Get the reference to LevelManager in your scene
         levelManager = FindFirstObjectByType<LevelManager>();
 
-        // Populate the level menu with the first page of levels
+        // Get last played level from PlayerPrefs
+        int lastPlayedLevel = PlayerProgress.GetLastPlayedLevel();
+        currentPage = lastPlayedLevel / levelsPerPage; // make sure the page is correct
+
+        // Populate the level menu on that page
         PopulatePage(currentPage);
+
+        // Highlight/select last played level button (optional)
+        // You could add a method in LevelButton to visually select it
 
         previousPageButton.onClick.AddListener(GoToPreviousPage);
         nextPageButton.onClick.AddListener(GoToNextPage);
 
-        levelMenuPanel.SetActive(false); // hide at start
+        levelMenuPanel.SetActive(true); // show menu at start
     }
+
 
     public void ToggleMenu()
     {

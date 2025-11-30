@@ -12,8 +12,13 @@ public class DebugTools : MonoBehaviour
 
     public void ResetProgress()
     {
-        PlayerProgress.ResetProgress(LevelManager.Instance.levelPrefabs.Length);
+        int totalLevels = FindFirstObjectByType<LevelManager>().levelPrefabs.Length;
+        PlayerProgress.ResetProgress(totalLevels);
+
+        PlayerProgress.ResetFireflies();           // reset fireflies
+        FireflyCounterUI.Instance?.UpdateCount(0); // update UI
         Debug.Log("Progress reset!");
     }
+
 }
 
