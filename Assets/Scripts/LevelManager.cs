@@ -26,8 +26,6 @@ public class LevelManager : MonoBehaviour
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
 
-    // --- Firefly tracking ---
-    private int currentFireflyCount = 0;
 
     private void Awake()
     {
@@ -44,17 +42,13 @@ public class LevelManager : MonoBehaviour
         }
     
         currentLevelIndex = PlayerProgress.GetLastPlayedLevel();
-        currentFireflyCount = PlayerProgress.GetFireflyCount(); // load saved total
-        FireflyCounterUI.Instance?.UpdateCount(currentFireflyCount);
+        FireflyCounterUI.Instance?.UpdateCount(PlayerProgress.GetFireflyCount());
         InitializeLevel(currentLevelIndex);
 
     }
 
     public void InitializeLevel(int levelIndex)
     {
-        // Reset pangolin's firefly flag
-        PlayerMovement.instance.reachedFirefly = false;
-
         if (levelIndex < 0 || levelIndex >= levelPrefabs.Length)
         {
             Debug.LogError("Invalid level index: " + levelIndex);
@@ -100,8 +94,6 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevelInstance == null) return;
 
-        PlayerMovement.instance.reachedFirefly = false;
-
         DestroyAllDustFX();
         levelCompleted = false;
         pangolin.ResetLevelFlags();
@@ -136,8 +128,6 @@ public class LevelManager : MonoBehaviour
 
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
         StartCoroutine(DelayedForceFacing(PangolinStartPoint.FacingDirection.Right));
-
-        PlayerMovement.instance.reachedFirefly = false;
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
@@ -249,14 +239,6 @@ public class LevelManager : MonoBehaviour
     {
         levelCompleted = true;
         PlayerProgress.MarkLevelCompletedForever(currentLevelIndex);
-
-        // Also ensure firefly is counted for this level
-        if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
-        {
-            currentFireflyCount++;
-            PlayerProgress.SetFireflyCount(currentFireflyCount);
-            FireflyCounterUI.Instance?.UpdateCount(currentFireflyCount);
-        }
     }
 
 
