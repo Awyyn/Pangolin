@@ -12,7 +12,7 @@ public class DebugTools : MonoBehaviour
 
     public void ResetProgress()
     {
-        PlayerProgress.ResetProgress(); // use the proper method
+        PlayerProgress.ResetProgress(LevelManager.Instance.levelPrefabs.Length);
         Debug.Log("Progress reset!");
     }
 }

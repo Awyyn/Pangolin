@@ -154,7 +154,6 @@ public class LevelManager : MonoBehaviour
     private void CleanupOldLevel()
     {
         var leftovers = GameObject.FindGameObjectsWithTag("Level");
-        Debug.Log("[LevelManager] CleanupOldLevel found " + leftovers.Length + " objects with tag 'Level'");
         foreach (var obj in leftovers)
         {
             if (obj.scene.IsValid())
@@ -239,14 +238,13 @@ public class LevelManager : MonoBehaviour
 
     public void OnFireflyCollected(int amount)
     {
-        // Defensive checks
         if (FireflyManager.Instance == null)
         {
-            Debug.LogWarning("FireflyManager missing. Skipping firefly add.");
+            Debug.LogWarning("FireflyManager missing.");
             return;
         }
 
-        // Only add to the global total if the level was NOT completed before (permanent completion)
+        // Add firefly only if level has never been completed
         if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
         {
             FireflyManager.Instance.AddFirefly(amount);
@@ -254,11 +252,9 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Firefly ignored. Level already completed before.");
+            Debug.Log("Firefly ignored. Level " + (currentLevelIndex + 1) + " already completed.");
         }
     }
-
-
 
 
     private IEnumerator LoadNextLevelCoroutine(float delay)
