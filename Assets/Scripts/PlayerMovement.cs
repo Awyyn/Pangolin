@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using TMPro;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -13,10 +12,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement instance;
 
-    public GameManager gameManager;   //new. is it needed? it shoudl be an instance or something
+    public GameManager gameManager;
     public MovesManager movesManager;  
     public LevelManager levelManager;  
-
 
     public float moveSpeed = 10f;
 
@@ -25,25 +23,20 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving = false;
     private Vector3 lastBumpDirection;
 
-
     private Vector3 lastDirection = Vector3.zero;
     private Vector3 previousDirection = Vector3.zero;
+
     public bool inputLocked { get; set; }
-    private bool movementLocked = false;
-
     public bool reachedFirefly = false;
-
     private bool outOfMovesTriggered = false;
 
-    public float inputCooldown = 0.0f;   // normal cooldown between moves
-    public float bumpCooldown = 0.0f;     // longer cooldown after bump
-    private bool isBumping = false;
+    public float inputCooldown = 0.25f;   // normal cooldown between moves
+    public float bumpCooldown = 0.6f;     // cooldown after bump
 
     public Animator animator;
     private SpriteRenderer spriteRenderer;
 
     public AudioClip bumpSound;
-
 
     private void Awake()
     {
@@ -52,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
 
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
     }
 
     private void Start()
@@ -63,30 +55,26 @@ public class PlayerMovement : MonoBehaviour
             movesManager = FindFirstObjectByType<MovesManager>();
     }
 
-
     private void Update()
     {
-
-        if (movementLocked || inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
+        if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
 
-
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R)) //restart the level
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R))
         {
-            LevelManager.Instance.ResetLevel(); 
+            LevelManager.Instance.ResetLevel();
             return;
         }
 
-
         if (movesManager.movesLeft <= 0)
         {
-            if (!outOfMovesTriggered && !isMoving) // wait until not moving
+            if (!outOfMovesTriggered && !isMoving)
             {
                 outOfMovesTriggered = true;
                 animator.SetTrigger("Sleep");
                 Debug.Log("Out of moves! Falling asleep.");
             }
-            return; // skip movement input
+            return;
         }
 
         if (!isMoving && movesManager.movesLeft > 0)
@@ -102,7 +90,6 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 direction = Vector3.right;
 
-
             if (direction != Vector3.zero)
             {
                 inputLocked = true;
@@ -112,51 +99,26 @@ public class PlayerMovement : MonoBehaviour
                 lastDirection = direction;
 
                 // Animator parameters
-                if (!movementLocked)
-                {
-                    animator.SetFloat("moveX", direction.x);
-                    animator.SetFloat("moveY", direction.y);
-                }
-
-
+                animator.SetFloat("moveX", direction.x);
+                animator.SetFloat("moveY", direction.y);
                 int tailIndex = GetTailAngleIndex(previousDirection, direction);
                 animator.SetFloat("tailAngleIndex", tailIndex);
                 animator.SetBool("isMoving", true);
 
-                // Flip sprite if player moves left. Don't flip if moving right
+                // Flip sprite if moving left
                 spriteRenderer.flipX = direction == Vector3.left;
 
-                // Handle movement logic
+                // Handle movement
                 lastBumpDirection = direction;
                 Vector3 nextPos = targetPosition + direction;
 
                 movesManager.ModifyMoves(-1);
 
-
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
                     targetPosition = nextPos;
-                    StartCoroutine(moveToPosition(targetPosition));
-                    Debug.Log(animator.runtimeAnimatorController);
-                    Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("SideIdle"));
-
-
-                    if (movesManager.movesLeft > 0)
-                    {
-                        StartCoroutine(InputCooldown());
-                    }
-
-                    // after first move, start boss if in boss level
-                    // only start boss fight after first successful move, and only for boss levels
-                    // After first move, start boss fight if in a boss level
-                    /*if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
-                    {
-                        var bossController = Object.FindFirstObjectByType<BossFightController>();
-                        if (bossController != null)
-                            bossController.TriggerBossFight();
-
-                        GameManager.Instance.bossMode = true;
-                    }*/
+                    StartCoroutine(MoveToPosition(targetPosition));
+                    StartCoroutine(InputCooldown());
                     if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
                     {
                         var bossController = Object.FindFirstObjectByType<BossFightController>();
@@ -172,10 +134,10 @@ public class PlayerMovement : MonoBehaviour
 
                         GameManager.Instance.bossMode = true;
                     }
-
-                } 
-                else // if the path is blocked by something
+                }
+                else
                 {
+                    // blocked by wall or interactable
                     Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);
                     bool reacted = false;
 
@@ -184,46 +146,165 @@ public class PlayerMovement : MonoBehaviour
                         IInteractable interactable = hitCollider.GetComponent<IInteractable>();
                         if (interactable != null)
                         {
-                            // Interact once
                             interactable.Interact(direction);
                             reacted = true;
 
                             Rock rockScript = hitCollider.GetComponent<Rock>();
                             if (rockScript != null)
                             {
-                                // Always bump after pushing the rock
                                 StartCoroutine(BumpAnimation());
+                                StartCoroutine(InputCooldown(bumpCooldown));
                             }
                             else
                             {
-                                // For other interactables, bump too
                                 StartCoroutine(BumpAnimation());
-                                Debug.Log("Blocked by wall or unknown obstacle");
+                                StartCoroutine(InputCooldown(bumpCooldown));
                             }
                         }
                     }
 
                     if (!reacted)
                     {
-                        // Nothing to interact with — wall or edge
                         StartCoroutine(BumpAnimation());
-                        Debug.Log("Blocked by wall or unknown obstacle");
+                        StartCoroutine(InputCooldown(bumpCooldown));
                     }
                 }
-
 
                 inputLocked = false;
             }
             else
             {
-                //idle
                 animator.SetBool("isMoving", false);
-
             }
         }
-
     }
 
+    private IEnumerator MoveToPosition(Vector3 destination)
+    {
+        isMoving = true;
+
+        while ((transform.position - destination).sqrMagnitude > 0.001f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.position = destination;
+        isMoving = false;
+        animator.SetBool("isMoving", false);
+    }
+
+    private IEnumerator InputCooldown(float delay = 0.25f)
+    {
+        inputLocked = true;
+        yield return new WaitForSeconds(delay);
+        inputLocked = false;
+    }
+
+    private IEnumerator BumpAnimation()
+    {
+        PlayBumpSound();
+
+        // Make bump directional instantly
+        animator.SetFloat("moveX", lastBumpDirection.x);
+        animator.SetFloat("moveY", lastBumpDirection.y);
+
+        animator.ResetTrigger("Bump");
+        animator.SetTrigger("Bump");
+        animator.SetFloat("tailAngleIndex", 0f);
+
+        // No waiting; animation plays immediately
+        yield break;
+    }
+
+    // Called automatically by Animation Event at the end of "Bump" clip
+    public void OnBumpAnimationEnd()
+    {
+        // Clean up bump trigger, but do NOT block movement
+        animator.ResetTrigger("Bump");
+        animator.SetBool("isMoving", false);
+        SnapToIdleAfterBump();
+
+    }
+    private void PlayBumpSound()
+    {
+        if (bumpSound != null)
+            SFXManager.instance.PlaySFX(bumpSound);
+    }
+
+    private void SnapToIdleAfterBump()
+    {
+        // choose idle based on last bump direction
+        string idleState = "SideIdle";
+        if (lastBumpDirection.y > 0) idleState = "UpIdle";
+        else if (lastBumpDirection.y < 0) idleState = "DownIdle";
+        // flipX already set when bump happened
+
+        animator.Play(idleState, 0, 0f);   // snap immediately
+        animator.Update(0f);              // force immediate apply
+    }
+
+
+    private int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
+    {
+        if (previousDir == Vector3.zero || previousDir == currentDir)
+            return 0;
+
+        if (currentDir == Vector3.up)
+        {
+            if (previousDir == Vector3.right) return 1;
+            if (previousDir == Vector3.left) return 2;
+        }
+        else if (currentDir == Vector3.down)
+        {
+            if (previousDir == Vector3.right) return 2;
+            if (previousDir == Vector3.left) return 1;
+        }
+        else if (currentDir == Vector3.right)
+        {
+            if (previousDir == Vector3.up) return 2;
+            if (previousDir == Vector3.down) return 1;
+        }
+        else if (currentDir == Vector3.left)
+        {
+            if (previousDir == Vector3.up) return 2;
+            if (previousDir == Vector3.down) return 1;
+        }
+
+        return 0;
+    }
+
+    public void ResetLevelFlags()
+    {
+        StopAllCoroutines();
+        reachedFirefly = false;
+        outOfMovesTriggered = false;
+        inputLocked = false;
+    }
+
+    public void ForceFacing(PangolinStartPoint.FacingDirection facing)
+    {
+        if (!animator) return;
+
+        float mx = 0f, my = 0f;
+        string idleState = "SideIdle";
+
+        switch (facing)
+        {
+            case PangolinStartPoint.FacingDirection.Right: mx = 1f; my = 0f; spriteRenderer.flipX = false; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Left: mx = -1f; my = 0f; spriteRenderer.flipX = true; idleState = "SideIdle"; break;
+            case PangolinStartPoint.FacingDirection.Up: mx = 0f; my = 1f; spriteRenderer.flipX = false; idleState = "UpIdle"; break;
+            case PangolinStartPoint.FacingDirection.Down: mx = 0f; my = -1f; spriteRenderer.flipX = false; idleState = "DownIdle"; break;
+        }
+
+        animator.SetFloat("moveX", mx);
+        animator.SetFloat("moveY", my);
+        animator.SetFloat("tailAngleIndex", 0f);
+        animator.SetBool("isMoving", false);
+
+        animator.Play(idleState, 0, 0f);
+        animator.Update(0f);
+    }
     public void SetStartPositionFromLevel(GameObject levelInstance)
     {
         LevelData levelData = levelInstance.GetComponent<LevelData>();
@@ -251,292 +332,14 @@ public class PlayerMovement : MonoBehaviour
             startingPosition = transform.position;
             targetPosition = transform.position;
 
-            // Safe default
             StartCoroutine(ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection.Right));
         }
     }
+
     private IEnumerator ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection facing)
     {
-        // Wait one frame so the Animator fully re-binds after a level reset or scene change
-        yield return null;
-
-        // Reset all parameters and snap to the correct idle state
-        ForceFacing(facing);
-    }
-
-    /*
-    private IEnumerator ApplyFacingNextFrame(PangolinStartPoint.FacingDirection facing)
-    {
-        // Wait a frame so Animator finishes re-binding after prefab spawn
         yield return null;
         ForceFacing(facing);
-    }
-
-    */
-
-    private IEnumerator moveToPosition(Vector3 destination)
-    {
-        isMoving = true;
-
-        // move smoothly to the destination
-        while ((transform.position - destination).sqrMagnitude > 0.001f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-        transform.position = destination;
-        isMoving = false;
-
-        animator.SetBool("isMoving", false);
-
-    }
-
-    private IEnumerator InputCooldown(float delay = 0.125f) //                            hard coding, woo hoo
-    {
-        inputLocked = true;
-        yield return new WaitForSeconds(delay);
-        inputLocked = false;
-    }
-
-    private IEnumerator BumpCooldownLock()
-    {
-        movementLocked = true;
-
-        // Wait for the tunable bump cooldown
-        yield return new WaitForSeconds(bumpCooldown);
-
-        movementLocked = false;
-        isBumping = false;
-
-        // Force the pangolin back to proper idle instantly
-        ForceIdleFromLastDirection();
-    }
-    private void ForceIdleFromLastDirection()
-    {
-        // Use the last direction the pangolin attempted to move toward
-        float mx = lastBumpDirection.x;
-        float my = lastBumpDirection.y;
-
-        animator.SetFloat("moveX", mx);
-        animator.SetFloat("moveY", my);
-        animator.SetFloat("tailAngleIndex", 0f);
-        animator.SetBool("isMoving", false);
-
-        string idleState = "SideIdle";
-
-        if (my > 0) idleState = "UpIdle";
-        else if (my < 0) idleState = "DownIdle";
-        else idleState = "SideIdle";
-
-        // Flip for left
-        spriteRenderer.flipX = mx < 0;
-
-        animator.Play(idleState, 0, 0f);
-        animator.Update(0f);
-    }
-
-
-
-    int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
-    {
-        // If no previous direction (e.g., first move), tail is straight
-        if (previousDir == Vector3.zero)
-            return 0;
-
-        // If same direction, tail stays straight
-        if (previousDir == currentDir)
-            return 0;
-
-        // Determine relative tail curve based on previous move vs current move
-        // Tail curves opposite the direction the pangolin just came from
-
-        if (currentDir == Vector3.up)
-        {
-            if (previousDir == Vector3.right)
-                return 1; // tail curves left (index 1)
-            if (previousDir == Vector3.left)
-                return 2; // tail curves right (index 2)
-        }
-        else if (currentDir == Vector3.down)
-        {
-            if (previousDir == Vector3.right)
-                return 2; // tail curves right (index 2)
-            if (previousDir == Vector3.left)
-                return 1; // tail curves left (index 1)
-        }
-        else if (currentDir == Vector3.right)
-        {
-            if (previousDir == Vector3.up)
-                return 2; // tail curves downwards (index 2)
-            if (previousDir == Vector3.down)
-                return 1; // tail curves upwards (index 1)
-        }
-        else if (currentDir == Vector3.left)
-        {
-            if (previousDir == Vector3.up)
-                return 2; // tail curves downwards (index 2)
-            if (previousDir == Vector3.down)
-                return 1; // tail curves upwards (index 1)
-        }
-
-        // Default tail straight
-        return 0;
-    }
-
-
-    private IEnumerator BumpAnimation()
-    {
-        if (isBumping)
-            yield break;
-
-        isBumping = true;
-        inputLocked = true;
-
-        PlayBumpSound();
-
-        // make bump directional instantly
-        animator.SetFloat("moveX", lastBumpDirection.x);
-        animator.SetFloat("moveY", lastBumpDirection.y);
-
-        animator.ResetTrigger("Bump");
-        animator.SetTrigger("Bump");
-        animator.SetFloat("tailAngleIndex", 0f);
-
-        // Do NOT wait here — bump plays immediately
-        yield return null;
-
-        // Start cooldown separately
-        StartCoroutine(BumpCooldownLock());
-    }
-
-
-    // Called automatically by Animation Event at the end of "Bump" clip
-    public void OnBumpAnimationEnd()
-    {
-        // Animator cleanup only
-        animator.ResetTrigger("Bump");
-        animator.SetBool("isMoving", false);
-    }
-
-
-    private void PlayBumpSound()
-    {
-        if (bumpSound != null)
-        {
-            SFXManager.instance.PlaySFX(bumpSound);
-        }
-    }
-
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Mushroom"))
-        {
-            HandleMushroom(other);
-        }
-    }
-
-
-    private void HandleMushroom(Collider2D mushroomCollider)
-    {
-        Debug.Log("Stepped on Mushroom!");
-
-        // Subtract 2 moves when stepping on a mushroom
-        movesManager.ModifyMoves(-2);
-
-        // Hide the mushroom by disabling its sprite
-        SpriteRenderer mushroomSprite = mushroomCollider.GetComponent<SpriteRenderer>();
-        if (mushroomSprite != null)
-        {
-            mushroomSprite.enabled = false;  // Hide the mushroom's sprite
-        }
-
-        // Optionally, disable the collider to prevent further interactions
-        Collider2D mushroomColliderComponent = mushroomCollider.GetComponent<Collider2D>();
-        if (mushroomColliderComponent != null)
-        {
-            mushroomColliderComponent.enabled = false;  // Disable the collider
-        }
-    }
-
-
-    public void ForceFacing(PangolinStartPoint.FacingDirection facing)
-    {
-        if (!animator)
-        {
-            Debug.LogWarning("[PlayerMovement] Animator missing, trying to assign...");
-            animator = GetComponent<Animator>();
-            if (!animator)
-            {
-                Debug.LogError("[PlayerMovement] No Animator found on pangolin!");
-                return;
-            }
-        }
-
-        // Reset animator to clear leftover state
-        //animator.Rebind();
-        //animator.Update(0f);
-
-        // Set idle parameters
-        float mx = 0f, my = 0f;
-        string idleState = "SideIdle"; // default fallback
-
-        switch (facing)
-        {
-            case PangolinStartPoint.FacingDirection.Right:
-                mx = 1f; my = 0f; spriteRenderer.flipX = false; idleState = "SideIdle"; break;
-            case PangolinStartPoint.FacingDirection.Left:
-                mx = -1f; my = 0f; spriteRenderer.flipX = true; idleState = "SideIdle"; break;
-            case PangolinStartPoint.FacingDirection.Up:
-                mx = 0f; my = 1f; spriteRenderer.flipX = false; idleState = "UpIdle"; break;
-            case PangolinStartPoint.FacingDirection.Down:
-                mx = 0f; my = -1f; spriteRenderer.flipX = false; idleState = "DownIdle"; break;
-        }
-
-        animator.SetFloat("moveX", mx);
-        animator.SetFloat("moveY", my);
-        animator.SetFloat("tailAngleIndex", 0f);
-        animator.SetBool("isMoving", false);
-
-        // Play the idle state immediately
-        animator.Play(idleState, 0, 0f);
-        animator.Update(0f);
-    }
-
-
-    public void ResetLevelFlags()
-    {
-        StopAllCoroutines(); // stop bump/move coroutines
-        reachedFirefly = false;
-        outOfMovesTriggered = false;
-        inputLocked = false;
-        isBumping = false;
-    }
-
-    private void ResetAnimator(PangolinStartPoint.FacingDirection facing)
-    {
-        if (!animator) return;
-
-        animator.Rebind();       // clears leftover internal state
-        animator.Update(0f);     // force immediate update
-
-        float mx = 0f, my = 0f;
-        string idleState = "SideIdle";
-
-        switch (facing)
-        {
-            case PangolinStartPoint.FacingDirection.Right: mx = 1f; my = 0f; spriteRenderer.flipX = false; idleState = "SideIdle"; break;
-            case PangolinStartPoint.FacingDirection.Left: mx = -1f; my = 0f; spriteRenderer.flipX = true; idleState = "SideIdle"; break;
-            case PangolinStartPoint.FacingDirection.Up: mx = 0f; my = 1f; spriteRenderer.flipX = false; idleState = "UpIdle"; break;
-            case PangolinStartPoint.FacingDirection.Down: mx = 0f; my = -1f; spriteRenderer.flipX = false; idleState = "DownIdle"; break;
-        }
-
-        animator.SetFloat("moveX", mx);
-        animator.SetFloat("moveY", my);
-        animator.SetFloat("tailAngleIndex", 0f);
-        animator.SetBool("isMoving", false);
-        animator.Play(idleState, 0, 0f);
-        animator.Update(0f);
     }
 
 }
