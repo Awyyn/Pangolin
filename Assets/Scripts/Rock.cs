@@ -32,8 +32,6 @@ public class Rock : MonoBehaviour, IInteractable
         originalPosition = transform.position;
         rockBlocked = false;
 
-        Debug.Log("[Rock] Initialize done at time " + Time.time);
-
         // Run delayed setup only once
         StartCoroutine(InitializeDelayed());
     }
@@ -41,12 +39,10 @@ public class Rock : MonoBehaviour, IInteractable
     private IEnumerator InitializeDelayed()
     {
         yield return null; // wait 1 frame
-        Debug.Log("[Rock] Initialize done (delayed) at time " + Time.time);
     }
 
     public void Interact(Vector3 direction)
     {
-        Debug.Log("[Rock] Interact called with dir=" + direction + " at time " + Time.time);
 
         rockBlocked = false;
         Vector3 targetPos = transform.position + direction;
@@ -55,8 +51,6 @@ public class Rock : MonoBehaviour, IInteractable
         var cell = GridManager.Instance.groundTilemap.WorldToCell(targetPos);
         var ground = GridManager.Instance.groundTilemap.GetTile(cell);
         var obstacle = GridManager.Instance.obstacleTilemap.GetTile(cell);
-        Debug.Log($"[Rock] Trying move to {targetPos}, Cell={cell}, Ground={ground}, Obstacle={obstacle}");
-
         if (GridManager.Instance.CanMoveTo(targetPos, GetComponent<Collider2D>()))
         {
             StartCoroutine(MoveTo(targetPos));

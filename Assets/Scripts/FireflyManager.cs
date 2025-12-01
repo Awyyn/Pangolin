@@ -4,7 +4,7 @@ public class FireflyManager : MonoBehaviour
 {
     public static FireflyManager Instance;
 
-    public int totalFireflies = 0;
+    public int totalFireflies { get; private set; }
 
     private void Awake()
     {
@@ -16,30 +16,27 @@ public class FireflyManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-        // Ensure UI is updated immediately
-        if (FireflyCounterUI.Instance != null)
-            FireflyCounterUI.Instance.UpdateCount(totalFireflies);
+        // Load saved total from PlayerPrefs
+        totalFireflies = PlayerProgress.GetFireflyTotal();
+        FireflyCounterUI.Instance?.UpdateCount(totalFireflies);
     }
-
 
     public void AddFirefly(int amount)
     {
         totalFireflies += amount;
-        if (FireflyCounterUI.Instance != null) FireflyCounterUI.Instance.UpdateCount(totalFireflies);
+        PlayerProgress.SetFireflyTotal(totalFireflies);
+        FireflyCounterUI.Instance?.UpdateCount(totalFireflies);
 
-        Debug.Log("Fireflies: " + totalFireflies);
+        Debug.Log("[FireflyManager] Fireflies: " + totalFireflies);
     }
 
-    public bool SpendFireflies(int amount)
+    public void ResetFireflies()
     {
-        if (totalFireflies < amount)
-            return false;
-
-        totalFireflies -= amount;
-        Debug.Log("Spent " + amount + ", remaining: " + totalFireflies);
-        return true;
+        totalFireflies = 0;
+        PlayerProgress.SetFireflyTotal(0);
+        FireflyCounterUI.Instance?.UpdateCount(totalFireflies);
     }
-
 }
