@@ -6,7 +6,6 @@ public class MainMenuManager : MonoBehaviour
 {
     public Button continueButton;
     public GameObject confirmationPanel;
-    public GameObject optionsPanel;
 
     private void Start()
     {
@@ -19,7 +18,6 @@ public class MainMenuManager : MonoBehaviour
         }
 
         confirmationPanel.SetActive(false);// start hidden
-        optionsPanel.SetActive(false); 
     }
     public void ContinueGame()
     {
@@ -43,16 +41,14 @@ public class MainMenuManager : MonoBehaviour
     {
         confirmationPanel.SetActive(false);
     }
-
     public void OpenOptions()
     {
-        // Show the options panel
-        optionsPanel.SetActive(true);
+        OptionsManager.Instance.OpenOptions();
     }
 
     public void CloseOptions()
     {
-        // Hide the options panel
-        optionsPanel.SetActive(false);
+        OptionsManager.Instance.CloseOptions();
     }
+
 }
