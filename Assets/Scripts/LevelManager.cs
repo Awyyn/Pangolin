@@ -46,6 +46,12 @@ public class LevelManager : MonoBehaviour
         InitializeLevel(currentLevelIndex);
 
     }
+    public void StartNewGame()
+    {
+        PlayerProgress.SetLastPlayedLevel(0);
+        InitializeLevel(0);
+    }
+
 
     public void InitializeLevel(int levelIndex)
     {

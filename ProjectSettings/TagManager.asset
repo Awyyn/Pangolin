@@ -48,11 +48,14 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
+  - name: FarBackground
+    uniqueID: 4055052083
     locked: 0
   - name: Background
     uniqueID: 2264975291
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: Decoration
     uniqueID: 692476059

@@ -78,6 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowedMoves: 69000
   PangolinStartPoint: {fileID: 1534260704075409757}
+  isBossLevel: 0
 --- !u!1 &5275096855517377383
 GameObject:
   m_ObjectHideFlags: 0
@@ -1287,7 +1288,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8467854729116082340, guid: 3c687f22b30b2b24896b6816765dede2, type: 3}
       propertyPath: m_SortingLayer
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8467854729116082340, guid: 3c687f22b30b2b24896b6816765dede2, type: 3}
       propertyPath: m_SortingLayerID

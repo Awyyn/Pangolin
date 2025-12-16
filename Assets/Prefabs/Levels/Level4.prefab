@@ -719,6 +719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowedMoves: 7
   PangolinStartPoint: {fileID: 7858136891016038924}
+  isBossLevel: 0
 --- !u!1 &6754014823390523543
 GameObject:
   m_ObjectHideFlags: 0

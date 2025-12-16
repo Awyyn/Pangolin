@@ -13,7 +13,7 @@ public class LevelMenuManager : MonoBehaviour
 
     private LevelManager levelManager;  // Reference to the LevelManager
 
-    public int levelsPerPage = 10;
+    public int levelsPerPage = 8;
     private int currentPage = 0;
     private List<GameObject> spawnedButtons = new List<GameObject>();
     public int CurrentPage => currentPage; // expose current page for menu refresh

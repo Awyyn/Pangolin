@@ -1,39 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
-    public GameObject optionsMenu;
-    public GameObject levelMenuPanel;  // The level menu panel to show/hide
-    public LevelMenuManager levelMenuManager;  // Reference to LevelMenuManager to control paging
+    [Header("Main Menu")]
+    public GameObject mainMenuPanel;
 
+    [Header("Level Menu")]
+    public GameObject levelMenuPanel;
+    public LevelMenuManager levelMenuManager;
+
+    private void Start()
+    {
+        // Main menu should be visible when the game starts
+        mainMenuPanel.SetActive(true);
+    }
+
+    public void ToggleMainMenu()
+    {
+        mainMenuPanel.SetActive(!mainMenuPanel.activeSelf);
+    }
+
+    public void ContinueGame()
+    {
+        // Hide main menu when continuing
+        mainMenuPanel.SetActive(false);
+    }
 
     public void ToggleOptionsMenu()
     {
-        // Toggle the active state of the options menu
-        optionsMenu.SetActive(!optionsMenu.activeSelf);
+        if (OptionsManager.Instance != null)
+        {
+            OptionsManager.Instance.ToggleOptions(); 
+        }
     }
 
     public void ToggleLevelMenu()
     {
-        // Toggle the visibility of the level menu
         bool isActive = levelMenuPanel.activeSelf;
         levelMenuPanel.SetActive(!isActive);
 
-        // If the menu is being shown, ensure the first page is populated
         if (!isActive)
         {
-            levelMenuManager.PopulatePage(0);  // Show the first page
+            levelMenuManager.PopulatePage(levelMenuManager.CurrentPage);
         }
     }
-
-    public void LoadMainMenu()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
-
-
-
 }
