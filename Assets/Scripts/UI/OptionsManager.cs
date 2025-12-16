@@ -19,8 +19,8 @@ public class OptionsManager : MonoBehaviour
 
     private void Start()
     {
-        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
-        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.3f);
+        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 0.3f);
 
         SetMusicVolume(musicVol);
         SetSFXVolume(sfxVol);
