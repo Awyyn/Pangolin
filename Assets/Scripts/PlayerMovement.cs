@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     public LevelManager levelManager;  
 
     public float moveSpeed = 10f;
+    private bool inputEnabled = true; // default: input allowed
+
 
     private Vector3 targetPosition;
     private Vector3 startingPosition;
@@ -57,6 +59,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!inputEnabled)
+            return;
         if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
 
@@ -341,5 +345,10 @@ public class PlayerMovement : MonoBehaviour
         yield return null;
         ForceFacing(facing);
     }
+    public void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
+    }
+
 
 }

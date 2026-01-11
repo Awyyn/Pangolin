@@ -13,10 +13,20 @@ public class LevelMenuManager : MonoBehaviour
 
     private LevelManager levelManager;  // Reference to the LevelManager
 
+
     public int levelsPerPage = 8;
     private int currentPage = 0;
     private List<GameObject> spawnedButtons = new List<GameObject>();
     public int CurrentPage => currentPage; // expose current page for menu refresh
+
+
+    public Transform pageDotsParent;
+    public GameObject pageDotPrefab;
+    public Sprite activeDot;
+    public Sprite inactiveDot;
+
+    private List<Image> dots = new();
+
 
 
     void Start()
@@ -48,9 +58,15 @@ public class LevelMenuManager : MonoBehaviour
 
         if (!isActive)
         {
-            PopulatePage(0);  // Show the first page when opening
+            currentPage = 0;              // always start on first page
+            PopulatePage(currentPage);
         }
+
+        //looks for pangolin and makes the player unable to move when menu is open 
+        FindFirstObjectByType<PlayerMovement>()?.SetInputEnabled(!levelMenuPanel.activeSelf);
+
     }
+
 
     public void PopulatePage(int page)
     {
@@ -75,9 +91,9 @@ public class LevelMenuManager : MonoBehaviour
             spawnedButtons.Add(buttonObj);
         }
 
-        // Disable previous/next page buttons when on the first/last page
-        previousPageButton.interactable = (page > 0);
-        nextPageButton.interactable = (endLevel < totalLevels);
+        UpdateArrowState();
+
+
     }
 
     void ClearButtons()
@@ -89,17 +105,21 @@ public class LevelMenuManager : MonoBehaviour
         spawnedButtons.Clear();
     }
 
+
+//important: clamping pages so we never go out of range
     void GoToNextPage()
     {
-        currentPage++;
+        int maxPage = Mathf.FloorToInt((levelManager.levelPrefabs.Length - 1) / (float)levelsPerPage);
+        currentPage = Mathf.Min(currentPage + 1, maxPage);
         PopulatePage(currentPage);
     }
 
     void GoToPreviousPage()
     {
-        currentPage--;
+        currentPage = Mathf.Max(currentPage - 1, 0);
         PopulatePage(currentPage);
     }
+
 
     void OnLevelSelected(int index)
     {
@@ -114,5 +134,36 @@ public class LevelMenuManager : MonoBehaviour
 
         ToggleMenu();  // Close the level menu
     }
+
+    void UpdateArrowState()
+    {
+        int totalLevels = levelManager.levelPrefabs.Length;
+        int maxPage = Mathf.FloorToInt((totalLevels - 1) / (float)levelsPerPage);
+
+        previousPageButton.interactable = currentPage > 0;
+        nextPageButton.interactable = currentPage < maxPage;
+    }
+
+    void CreatePageDots()
+    {
+        foreach (Transform t in pageDotsParent)
+            Destroy(t.gameObject);
+
+        dots.Clear();
+
+        int totalPages = Mathf.CeilToInt(levelManager.levelPrefabs.Length / (float)levelsPerPage);
+
+        for (int i = 0; i < totalPages; i++)
+        {
+            var dotObj = Instantiate(pageDotPrefab, pageDotsParent);
+            dots.Add(dotObj.GetComponent<Image>());
+        }
+    }
+    void UpdateDots()
+    {
+        for (int i = 0; i < dots.Count; i++)
+            dots[i].sprite = (i == currentPage) ? activeDot : inactiveDot;
+    }
+
 
 }
