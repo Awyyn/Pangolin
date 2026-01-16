@@ -14,7 +14,7 @@ public class LevelMenuManager : MonoBehaviour
     private LevelManager levelManager;  // Reference to the LevelManager
 
 
-    public int levelsPerPage = 8;
+    public int levelsPerPage = 10;
     private int currentPage = 0;
     private List<GameObject> spawnedButtons = new List<GameObject>();
     public int CurrentPage => currentPage; // expose current page for menu refresh
@@ -40,6 +40,9 @@ public class LevelMenuManager : MonoBehaviour
 
         // Populate the level menu on that page
         PopulatePage(currentPage);
+        
+        CreatePageDots();
+        UpdateDots();
 
         // Highlight/select last played level button (optional)
         // You could add a method in LevelButton to visually select it
@@ -92,7 +95,7 @@ public class LevelMenuManager : MonoBehaviour
         }
 
         UpdateArrowState();
-
+        UpdateDots();
 
     }
 
@@ -151,19 +154,23 @@ public class LevelMenuManager : MonoBehaviour
 
         dots.Clear();
 
-        int totalPages = Mathf.CeilToInt(levelManager.levelPrefabs.Length / (float)levelsPerPage);
+        int totalPages = Mathf.CeilToInt(
+            levelManager.levelPrefabs.Length / (float)levelsPerPage
+        );
 
         for (int i = 0; i < totalPages; i++)
         {
             var dotObj = Instantiate(pageDotPrefab, pageDotsParent);
-            dots.Add(dotObj.GetComponent<Image>());
+            var img = dotObj.GetComponent<Image>();
+            img.sprite = inactiveDot;
+            dots.Add(img);
         }
     }
+
     void UpdateDots()
     {
         for (int i = 0; i < dots.Count; i++)
             dots[i].sprite = (i == currentPage) ? activeDot : inactiveDot;
     }
-
-
+    
 }
