@@ -5,16 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
-    public GameObject optionsMenu;
+    public static ButtonManager Instance { get; private set; }
+
     public GameObject levelMenuPanel;  // The level menu panel to show/hide
     public LevelMenuManager levelMenuManager;  // Reference to LevelMenuManager to control paging
 
+    public GameObject optionsPanel;
+    public GameObject mainMenu;
 
-    public void ToggleOptionsMenu()
+    private void Awake()
     {
-        // Toggle the active state of the options menu
-        optionsMenu.SetActive(!optionsMenu.activeSelf);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
+
 
     public void ToggleLevelMenu()
     {
@@ -31,7 +40,7 @@ public class ButtonManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        mainMenu.SetActive(true);
     }
 
 

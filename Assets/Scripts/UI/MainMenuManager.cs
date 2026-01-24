@@ -6,6 +6,8 @@ public class MainMenuManager : MonoBehaviour
 {
     public Button continueButton;
     public GameObject confirmationPanel;
+    public GameObject mainMenu;
+    public ButtonManager buttonManager;
 
     private void Start()
     {
@@ -21,14 +23,26 @@ public class MainMenuManager : MonoBehaviour
     }
     public void ContinueGame()
     {
-        // Load the main game scene (the one that has your level menu UI inside it)
-        SceneManager.LoadScene("GameScene");
+        confirmationPanel.SetActive(false);
+        mainMenu.SetActive(false);
+    }
+
+    public void OpenOptions()
+    {
+        OptionsManager.Instance.OpenOptions();
+    }
+    public void CloseOptions()
+    {
+        Debug.Log("CLOSE CLICKED");
+        OptionsManager.Instance.CloseOptions();
     }
 
     public void ConfirmNewGame()
     {
         PlayerPrefs.DeleteAll(); // resets all progress
-        SceneManager.LoadScene("GameScene");         // also load the GameScene, so player starts fresh
+        // set the main menu inactve and level menu active 
+
+        mainMenu.SetActive(false);
     }
 
 
@@ -40,15 +54,6 @@ public class MainMenuManager : MonoBehaviour
     public void CancelNewGame()
     {
         confirmationPanel.SetActive(false);
-    }
-    public void OpenOptions()
-    {
-        OptionsManager.Instance.OpenOptions();
-    }
-
-    public void CloseOptions()
-    {
-        OptionsManager.Instance.CloseOptions();
     }
 
 }

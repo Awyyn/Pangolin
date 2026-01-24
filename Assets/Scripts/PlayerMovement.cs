@@ -233,7 +233,7 @@ public class PlayerMovement : MonoBehaviour
     private void PlayBumpSound()
     {
         if (bumpSound != null)
-            SFXManager.instance.PlaySFX(bumpSound);
+            SFXManager.Instance.PlaySFX(bumpSound);
     }
 
     private void SnapToIdleAfterBump()

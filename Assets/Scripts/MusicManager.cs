@@ -1,48 +1,42 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Audio;
-
 
 public class MusicManager : MonoBehaviour
 {
+    public static MusicManager Instance;
+
     public AudioSource audioSource;
     public AudioClip[] soundtrack;
     public AudioMixer audioMixer;
-
-    public Slider musicSlider;
-    private float savedVolume;
-
 
     private int currentSongIndex = 0;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         DontDestroyOnLoad(gameObject);
 
-        // make sure we have an audiosource
-        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
 
-        Application.runInBackground = true; // keeps music playing even when Unity window is not active. be mindful of this!!
-                                            // load saved volume
-        savedVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+        Application.runInBackground = true;
 
-        // apply saved volume to mixer immediately
-        audioMixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Clamp(savedVolume, 0.0001f, 1f)) * 20f);
+        // Load and APPLY saved volume
+        float savedVolume = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
+        ApplyVolume(savedVolume);
     }
-
 
     private void Start()
     {
-        if (musicSlider != null)
-        {
-            musicSlider.SetValueWithoutNotify(savedVolume);
-            
-        }
-
         if (soundtrack.Length > 0)
-            PlayNextSong(); 
+            PlayNextSong();
     }
-
 
     private void Update()
     {
@@ -57,4 +51,10 @@ public class MusicManager : MonoBehaviour
         currentSongIndex = (currentSongIndex + 1) % soundtrack.Length;
     }
 
+    // Called by OptionsManager
+    public void ApplyVolume(float value)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        audioMixer.SetFloat("MusicVolume", dB);
+    }
 }
