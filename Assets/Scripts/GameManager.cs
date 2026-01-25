@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
+            // For debugging purposes: clear all PlayerPrefs on start
+            
         //PlayerPrefs.DeleteAll(); 
         //PlayerPrefs.Save();
 
