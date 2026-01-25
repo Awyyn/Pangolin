@@ -58,6 +58,10 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex = levelIndex;
         levelCompleted = false; // reset completion status for the new level
 
+        PlayerProgress.SetLastPlayedLevel(currentLevelIndex); // remember progress session
+        PlayerProgress.MarkGameStarted();                     // ensures state B survives restart (in-progress run without 1. level completed)
+
+
         CleanupOldLevel();
 
         currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);

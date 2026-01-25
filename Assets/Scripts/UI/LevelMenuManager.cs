@@ -23,9 +23,11 @@ public class LevelMenuManager : MonoBehaviour
     public Transform pageDotsParent;
     public GameObject pageDotPrefab;
     public Sprite activeDot;
-    public Sprite inactiveDot;
 
+    [Header("Page Dots")]
     private List<Image> dots = new();
+    public Color activeDotColor = new Color(1f, 1f, 1f, 1f);   // 100%
+    public Color inactiveDotColor = new Color(1f, 1f, 1f, 0.5f); // 50%
 
 
 
@@ -95,7 +97,9 @@ public class LevelMenuManager : MonoBehaviour
         }
 
         UpdateArrowState();
+        CreatePageDots();
         UpdateDots();
+
 
     }
 
@@ -126,17 +130,15 @@ public class LevelMenuManager : MonoBehaviour
 
     void OnLevelSelected(int index)
     {
-        Debug.Log($"Selected level {index + 1}");
+        GameSession.Instance.MarkRunStarted(); // ← ADD
 
         if (index > PlayerProgress.GetHighestLevel())
-        {
             PlayerProgress.SetHighestLevel(index);
-        }
 
-        levelManager.InitializeLevel(index);  // Restart the level
-
-        ToggleMenu();  // Close the level menu
+        levelManager.InitializeLevel(index);
+        ToggleMenu();
     }
+
 
     void UpdateArrowState()
     {
@@ -149,28 +151,39 @@ public class LevelMenuManager : MonoBehaviour
 
     void CreatePageDots()
     {
+        if (pageDotPrefab == null || pageDotsParent == null) return;
+
         foreach (Transform t in pageDotsParent)
             Destroy(t.gameObject);
 
         dots.Clear();
 
-        int totalPages = Mathf.CeilToInt(
-            levelManager.levelPrefabs.Length / (float)levelsPerPage
-        );
+        int totalPages = Mathf.CeilToInt(levelManager.levelPrefabs.Length / (float)levelsPerPage);
 
         for (int i = 0; i < totalPages; i++)
         {
-            var dotObj = Instantiate(pageDotPrefab, pageDotsParent);
-            var img = dotObj.GetComponent<Image>();
-            img.sprite = inactiveDot;
+            GameObject dotObj = Instantiate(pageDotPrefab, pageDotsParent);
+            Image img = dotObj.GetComponent<Image>();
+            img.enabled = true;
             dots.Add(img);
         }
     }
 
+
     void UpdateDots()
     {
         for (int i = 0; i < dots.Count; i++)
-            dots[i].sprite = (i == currentPage) ? activeDot : inactiveDot;
+        {
+            dots[i].color = (i == currentPage)
+                ? activeDotColor
+                : inactiveDotColor;
+        }
     }
-    
+
+    public void RefreshMenu()
+    {
+        currentPage = 0;
+        PopulatePage(currentPage);
+    }
+
 }

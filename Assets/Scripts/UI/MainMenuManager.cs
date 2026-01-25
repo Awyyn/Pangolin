@@ -9,22 +9,31 @@ public class MainMenuManager : MonoBehaviour
     public GameObject mainMenu;
     public ButtonManager buttonManager;
 
-    private void Start()
+    private void OnEnable()          // Called every time menu becomes active
     {
-        Application.targetFrameRate = 60;                                             //BE MINDFUL OF THIS (this is a dublicate, not sure if needed)
-
-        // Disable continue if no saved progress
-        if (!PlayerPrefs.HasKey("HighestLevel"))
-        {
-            continueButton.interactable = false;
-        }
-
-        confirmationPanel.SetActive(false);// start hidden
+        RefreshContinueButton();
     }
+
+    private void Start()             // Called once when scene first loads
+    {
+        Application.targetFrameRate = 60;
+        confirmationPanel.SetActive(false);
+
+        RefreshContinueButton();
+    }
+
+    private void RefreshContinueButton()
+    {
+        bool hasStarted = PlayerProgress.HasStartedGame();
+        continueButton.interactable = hasStarted;
+    }
+
+
     public void ContinueGame()
     {
         confirmationPanel.SetActive(false);
         mainMenu.SetActive(false);
+        CloseOptions();
     }
 
     public void OpenOptions()
@@ -33,23 +42,37 @@ public class MainMenuManager : MonoBehaviour
     }
     public void CloseOptions()
     {
-        Debug.Log("CLOSE CLICKED");
         OptionsManager.Instance.CloseOptions();
     }
 
     public void ConfirmNewGame()
     {
-        PlayerPrefs.DeleteAll(); // resets all progress
-        // set the main menu inactve and level menu active 
-
-        mainMenu.SetActive(false);
+        confirmationPanel.SetActive(false);
+        StartFreshGame();   // reuse the same reset logic
     }
-
 
     public void NewGame()
     {
-        confirmationPanel.SetActive(true);
+        bool finishedFirstLevel = PlayerProgress.WasLevelCompletedBefore(0);
+
+        if (finishedFirstLevel)
+            confirmationPanel.SetActive(true); // State C → show warning (at least first level completed)
+        else
+            StartFreshGame();             // State A or B → start immediately. (no progress to lose)
     }
+
+    private void StartFreshGame()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        PlayerProgress.MarkGameStarted();   // marks State B (fresh run in progress)
+
+        mainMenu.SetActive(false);
+        ButtonManager.Instance.levelMenuManager.RefreshMenu();
+    }
+
+
 
     public void CancelNewGame()
     {

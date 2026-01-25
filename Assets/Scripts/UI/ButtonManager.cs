@@ -40,6 +40,7 @@ public class ButtonManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
+        OptionsManager.Instance.CloseOptions();
         mainMenu.SetActive(true);
     }
 

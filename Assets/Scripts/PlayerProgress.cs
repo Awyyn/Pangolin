@@ -10,6 +10,20 @@ public static class PlayerProgress
 
     private const string FireflyKey = "FireflyCount";
 
+    private const string HasStartedGameKey = "HasStartedGame";
+    
+    // ----------- Game Started -----------
+    public static void MarkGameStarted()
+    {
+        PlayerPrefs.SetInt(HasStartedGameKey, 1);
+        PlayerPrefs.Save();
+    }
+
+    public static bool HasStartedGame()
+    {
+        return PlayerPrefs.GetInt(HasStartedGameKey, 0) == 1;
+    }
+
         // ----------- Fireflies -----------
     public static void SetFireflyCount(int count)
     {

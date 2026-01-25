@@ -1,14 +1,14 @@
 using UnityEngine;
 
 public class LevelKeySwitcher : MonoBehaviour
-{
+{/*
     private int currentIndex = 0;
 
     void Update()
     {
         if (LevelManager.Instance == null || LevelManager.Instance.levelPrefabs.Length == 0) return;
 
-        // Number keys 1–9 to jump to a specific level
+        // Number keys 1ï¿½9 to jump to a specific level
         for (int i = 0; i < 9; i++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + i) && i < LevelManager.Instance.levelPrefabs.Length)
@@ -29,5 +29,5 @@ public class LevelKeySwitcher : MonoBehaviour
             currentIndex = (currentIndex - 1 + LevelManager.Instance.levelPrefabs.Length) % LevelManager.Instance.levelPrefabs.Length;
             LevelManager.Instance.InitializeLevel(currentIndex);
         }
-    }
+    }*/
 }
