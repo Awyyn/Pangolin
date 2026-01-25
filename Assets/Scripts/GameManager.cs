@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
 
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
+        //PlayerPrefs.DeleteAll(); 
+        //PlayerPrefs.Save();
 
 
         QualitySettings.vSyncCount = 1; //Synchronizes the frame rate to the monitor's refresh rate (e.g., 60Hz = 60 FPS). 0 disables it. i am not sure how it works, but i am trying to make my laptop pverheat less :,D 

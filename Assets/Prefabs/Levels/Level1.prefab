@@ -1151,6 +1151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowedMoves: 4
   PangolinStartPoint: {fileID: 2469430814277471778}
+  isBossLevel: 0
 --- !u!1001 &280599088864564133
 PrefabInstance:
   m_ObjectHideFlags: 0

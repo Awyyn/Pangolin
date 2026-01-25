@@ -71,12 +71,18 @@ public class MainMenuManager : MonoBehaviour
         mainMenu.SetActive(false);
         ButtonManager.Instance.levelMenuManager.RefreshMenu();
     }
-
-
-
     public void CancelNewGame()
     {
         confirmationPanel.SetActive(false);
+    }
+
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // stops play mode in editor
+        #else
+        Application.Quit(); // quits the build
+        #endif
     }
 
 }
