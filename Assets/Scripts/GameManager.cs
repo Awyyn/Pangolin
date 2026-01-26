@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public int currentLevelIndex = 0;
     public LevelManager currentLevelManager;
     public MovesManager movesManager;
+    public LevelNumberUI levelNumberUI; 
+
 
     // Runtime flag
     public bool bossMode;

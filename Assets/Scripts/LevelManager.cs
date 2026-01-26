@@ -26,6 +26,8 @@ public class LevelManager : MonoBehaviour
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
 
+    
+
 
     private void Awake()
     {
@@ -66,6 +68,13 @@ public class LevelManager : MonoBehaviour
 
         currentLevelInstance = Instantiate(levelPrefabs[levelIndex]);
         GameManager.Instance.currentLevelManager = this;
+        GameManager.Instance.currentLevelIndex = levelIndex;
+        // Update UI level number
+        if (GameManager.Instance.levelNumberUI != null)
+        {
+            GameManager.Instance.levelNumberUI.SetLevelNumber(levelIndex);
+        }
+
 
         AssignTilemaps();
         SpawnSoul();
