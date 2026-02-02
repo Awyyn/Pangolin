@@ -40,6 +40,9 @@ public class PlayerMovement : MonoBehaviour
 
     public AudioClip bumpSound;
 
+    public static System.Action OnPlayerStepComplete;
+
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -187,6 +190,9 @@ public class PlayerMovement : MonoBehaviour
     {
         isMoving = true;
 
+        //ANNOUNCE STEP COMPLETE -> Poacher listenes.
+        OnPlayerStepComplete?.Invoke();
+
         while ((transform.position - destination).sqrMagnitude > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
@@ -196,6 +202,7 @@ public class PlayerMovement : MonoBehaviour
         transform.position = destination;
         isMoving = false;
         animator.SetBool("isMoving", false);
+
     }
 
     private IEnumerator InputCooldown(float delay = 0.25f)

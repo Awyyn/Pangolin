@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f41970341994ead41aa59f7b1507e01e
+guid: daffb9f086fa648379b72fba86d24704
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6760120115481013373
-    second: PoacherTurn1-2_0
+      213: -810526271006744505
+    second: PoacherTurn3-1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PoacherTurn1-2_0
+      name: PoacherTurn3-1_0
       rect:
         serializedVersion: 2
-        x: 58
-        y: 12
-        width: 235
-        height: 567
+        x: 79
+        y: 11
+        width: 244
+        height: 574
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d7ce73aad65c0dd50800000000000000
-      internalID: 6760120115481013373
+      spriteID: 740658f96ae60c4f0800000000000000
+      internalID: -810526271006744505
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PoacherTurn1-2_0: 6760120115481013373
+      PoacherTurn3-1_0: -810526271006744505
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

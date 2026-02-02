@@ -4398,8 +4398,6 @@ MonoBehaviour:
   allowedMoves: 1000
   PangolinStartPoint: {fileID: 2469430814277471778}
   isBossLevel: 1
-  thumbnail: {fileID: 0}
-  thumbnailCamera: {fileID: 354286449318799735}
 --- !u!1 &4607964751821654540
 GameObject:
   m_ObjectHideFlags: 0

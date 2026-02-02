@@ -15,7 +15,6 @@ public class OptionsManager : MonoBehaviour
 
     private void Awake()
     {
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -23,11 +22,19 @@ public class OptionsManager : MonoBehaviour
         }
 
         Instance = this;
-        optionsPanel.SetActive(false);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
     }
 
-    private void Start()
+    void Start()
     {
+        if (musicSlider == null || sfxSlider == null || audioMixer == null)
+        {
+            Debug.LogError("OptionsManager: Missing references in Inspector!");
+            return;
+        }
+
         float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
         float sfxVol   = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
 
@@ -42,13 +49,18 @@ public class OptionsManager : MonoBehaviour
     }
 
 
-    public void SetMusicVolume(float value) // called by slider
+    public void SetMusicVolume(float value)
     {
         ApplyMusicVolume(value);
-
         PlayerPrefs.SetFloat("MusicVolume", value);
-        PlayerPrefs.Save();
     }
+
+    public void SetSFXVolume(float value)
+    {
+        ApplySFXVolume(value);
+        PlayerPrefs.SetFloat("SFXVolume", value);
+    }
+
 
     private void ApplyMusicVolume(float value) // used internally on load
     {
@@ -56,14 +68,6 @@ public class OptionsManager : MonoBehaviour
         audioMixer.SetFloat("MusicVolume", dB);
     }
 
-
-    public void SetSFXVolume(float value)
-    {
-        ApplySFXVolume(value);
-
-        PlayerPrefs.SetFloat("SFXVolume", value);
-        PlayerPrefs.Save();
-    }
         private void ApplySFXVolume(float value) 
     {
         float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
@@ -83,6 +87,7 @@ public class OptionsManager : MonoBehaviour
 
     public void CloseOptions()
     {
+        PlayerPrefs.Save();   // Save once when closing
         optionsPanel.SetActive(false);
     }
     
