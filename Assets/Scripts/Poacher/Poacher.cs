@@ -53,10 +53,29 @@ public class Poacher : MonoBehaviour
 
     private void PlayTurnAnimation(Direction newDir)
     {
-        currentDirection = newDir;   // move state update here
+        currentDirection = newDir;
         animator.SetInteger("Facing", (int)newDir);
-        animator.SetTrigger("Turn");
+
+        // Force restart of the correct turn animation
+        switch (newDir)
+        {
+            case Direction.Right:
+                animator.Play("PoacherTurnRight", 0, 0f);
+                break;
+            case Direction.Up:
+                animator.Play("PoacherTurnUp", 0, 0f);
+                break;
+            case Direction.Left:
+                animator.Play("PoacherTurnLeft", 0, 0f);
+                break;
+            case Direction.Down:
+                animator.Play("PoacherTurnDown", 0, 0f);
+                break;
+        }
+
+        animator.Update(0f); // apply immediately this frame
     }
+
 
 
     // Called at the end of the turn animation using an Animation Event

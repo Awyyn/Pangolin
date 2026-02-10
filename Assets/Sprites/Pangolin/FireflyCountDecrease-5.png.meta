@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: 3840d4a2114484c838c3374a01f441be
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1351935522432102922
+    second: FireflyCountDecrease-5_0
+  - first:
+      213: 6586333777686704624
+    second: FireflyCountDecrease-5_1
+  - first:
+      213: -8706754523634645383
+    second: FireflyCountDecrease-5_2
+  - first:
+      213: -4292607615564873735
+    second: FireflyCountDecrease-5_3
+  - first:
+      213: -5555776933631111861
+    second: FireflyCountDecrease-5_4
+  - first:
+      213: -5601345691371267638
+    second: FireflyCountDecrease-5_5
+  - first:
+      213: -8031170620905441390
+    second: FireflyCountDecrease-5_6
+  - first:
+      213: 2952437234155754355
+    second: FireflyCountDecrease-5_7
+  - first:
+      213: -3922464718501398724
+    second: FireflyCountDecrease-5_8
+  - first:
+      213: 7493979796437484046
+    second: FireflyCountDecrease-5_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_0
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 149
+        width: 11
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a023ccdd13a03c210800000000000000
+      internalID: 1351935522432102922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_1
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 121
+        width: 14
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f13c27ccab576b50800000000000000
+      internalID: 6586333777686704624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_2
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 144
+        width: 10
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9764b3024e46b2780800000000000000
+      internalID: -8706754523634645383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_3
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 71
+        width: 13
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ff7e1aed189d64c0800000000000000
+      internalID: -4292607615564873735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_4
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 109
+        width: 11
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4dcb9b805ae5e2b0800000000000000
+      internalID: -5555776933631111861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_5
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 27
+        width: 14
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac996a955c50442b0800000000000000
+      internalID: -5601345691371267638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_6
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 56
+        width: 12
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 297b06a0fdc8b8090800000000000000
+      internalID: -8031170620905441390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_7
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 42
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3739d73950a29f820800000000000000
+      internalID: 2952437234155754355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_8
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 3
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c37b8b1ee1b9099c0800000000000000
+      internalID: -3922464718501398724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FireflyCountDecrease-5_9
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 4
+        width: 12
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e024c988be6fff760800000000000000
+      internalID: 7493979796437484046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      FireflyCountDecrease-5_0: 1351935522432102922
+      FireflyCountDecrease-5_1: 6586333777686704624
+      FireflyCountDecrease-5_2: -8706754523634645383
+      FireflyCountDecrease-5_3: -4292607615564873735
+      FireflyCountDecrease-5_4: -5555776933631111861
+      FireflyCountDecrease-5_5: -5601345691371267638
+      FireflyCountDecrease-5_6: -8031170620905441390
+      FireflyCountDecrease-5_7: 2952437234155754355
+      FireflyCountDecrease-5_8: -3922464718501398724
+      FireflyCountDecrease-5_9: 7493979796437484046
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

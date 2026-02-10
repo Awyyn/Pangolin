@@ -120,6 +120,8 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 nextPos = targetPosition + direction;
 
                 movesManager.ModifyMoves(-1);
+                //ANNOUNCE STEP COMPLETE -> Poacher listenes.
+                OnPlayerStepComplete?.Invoke();
 
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
@@ -189,9 +191,6 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator MoveToPosition(Vector3 destination)
     {
         isMoving = true;
-
-        //ANNOUNCE STEP COMPLETE -> Poacher listenes.
-        OnPlayerStepComplete?.Invoke();
 
         while ((transform.position - destination).sqrMagnitude > 0.001f)
         {

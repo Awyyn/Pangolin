@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -103,12 +103,12 @@ TextureImporter:
       name: PoacherTurn1-3_0
       rect:
         serializedVersion: 2
-        x: 71
-        y: 11
-        width: 313
-        height: 571
+        x: 0
+        y: 0
+        width: 384
+        height: 640
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ce1a086f80a684f54b5075b56c5aaa72
     internalID: 0
     vertices: []
     indices: 

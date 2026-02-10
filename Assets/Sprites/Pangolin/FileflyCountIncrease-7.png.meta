@@ -1,0 +1,455 @@
+fileFormatVersion: 2
+guid: 39d31321b9f7a483bbeeb592d7cd495b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2082556317170259009
+    second: FileflyCountIncrease-7_0
+  - first:
+      213: 2017961340975113094
+    second: FileflyCountIncrease-7_1
+  - first:
+      213: -4458721437017515701
+    second: FileflyCountIncrease-7_2
+  - first:
+      213: 474905180892847907
+    second: FileflyCountIncrease-7_3
+  - first:
+      213: 3215114975202548402
+    second: FileflyCountIncrease-7_4
+  - first:
+      213: -3744338822667646079
+    second: FileflyCountIncrease-7_5
+  - first:
+      213: 5999136059524636366
+    second: FileflyCountIncrease-7_6
+  - first:
+      213: 388944360687610745
+    second: FileflyCountIncrease-7_7
+  - first:
+      213: 7275627513960118855
+    second: FileflyCountIncrease-7_8
+  - first:
+      213: -287628347333697108
+    second: FileflyCountIncrease-7_9
+  - first:
+      213: -2973531277299708603
+    second: FileflyCountIncrease-7_10
+  - first:
+      213: 5715632950039600476
+    second: FileflyCountIncrease-7_11
+  - first:
+      213: -4652462071906785921
+    second: FileflyCountIncrease-7_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_0
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 164
+        width: 30
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbb225a30164913e0800000000000000
+      internalID: -2082556317170259009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_1
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 169
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 683ea43e52d310c10800000000000000
+      internalID: 2017961340975113094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_2
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 159
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b49d622f9707f12c0800000000000000
+      internalID: -4458721437017515701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_3
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 145
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32f5c11feb3379600800000000000000
+      internalID: 474905180892847907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_4
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 141
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ba9cf819026e9c20800000000000000
+      internalID: 3215114975202548402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 114
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18bc03cddaf690cc0800000000000000
+      internalID: -3744338822667646079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_6
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 118
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eced33b1676314350800000000000000
+      internalID: 5999136059524636366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_7
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 98
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97b2d28d5dec56500800000000000000
+      internalID: 388944360687610745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_8
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 74
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74ab6af0da838f460800000000000000
+      internalID: 7275627513960118855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_9
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 80
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca1a7d1ca83220cf0800000000000000
+      internalID: -287628347333697108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_10
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 60
+        width: 19
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54d8908ce05ebb6d0800000000000000
+      internalID: -2973531277299708603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_11
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 29
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5dd0a5a2e1025f40800000000000000
+      internalID: 5715632950039600476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FileflyCountIncrease-7_12
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 36
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f75a40935622f6fb0800000000000000
+      internalID: -4652462071906785921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      FileflyCountIncrease-7_0: -2082556317170259009
+      FileflyCountIncrease-7_1: 2017961340975113094
+      FileflyCountIncrease-7_10: -2973531277299708603
+      FileflyCountIncrease-7_11: 5715632950039600476
+      FileflyCountIncrease-7_12: -4652462071906785921
+      FileflyCountIncrease-7_2: -4458721437017515701
+      FileflyCountIncrease-7_3: 474905180892847907
+      FileflyCountIncrease-7_4: 3215114975202548402
+      FileflyCountIncrease-7_5: -3744338822667646079
+      FileflyCountIncrease-7_6: 5999136059524636366
+      FileflyCountIncrease-7_7: 388944360687610745
+      FileflyCountIncrease-7_8: 7275627513960118855
+      FileflyCountIncrease-7_9: -287628347333697108
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
