@@ -109,7 +109,6 @@ public class LevelManager : MonoBehaviour
 
         DestroyAllDustFX();
         levelCompleted = false;
-        pangolin.ResetLevelFlags();
 
         // Reset interactables
         var monoBehaviours = currentLevelInstance.GetComponentsInChildren<MonoBehaviour>(true);
@@ -139,8 +138,10 @@ public class LevelManager : MonoBehaviour
 
         FindFirstObjectByType<CameraScroller>()?.ResetCamera();
 
+        PlayerMovement.instance.ResetLevelFlags();
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
-        StartCoroutine(DelayedForceFacing(PangolinStartPoint.FacingDirection.Right));
+        pangolin.ResetAnimatorState(PangolinStartPoint.FacingDirection.Right);
+
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
@@ -280,12 +281,6 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private IEnumerator DelayedForceFacing(PangolinStartPoint.FacingDirection facing)
-    {
-        yield return null;
-        pangolin.ForceFacing(facing);
-    }
-
     public void LoadNextLevelWithDelay(float delay)
     {
         StartCoroutine(LoadNextLevelCoroutine(delay));
@@ -298,4 +293,7 @@ public class LevelManager : MonoBehaviour
         var dustObjects = GameObject.FindGameObjectsWithTag("DustFX");
         foreach (var obj in dustObjects) Destroy(obj);
     }
+
+
+
 }

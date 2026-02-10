@@ -73,16 +73,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (movesManager.movesLeft <= 0)
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
         {
-            if (!outOfMovesTriggered && !isMoving)
-            {
-                outOfMovesTriggered = true;
-                animator.SetTrigger("Sleep");
-                Debug.Log("Out of moves! Falling asleep.");
-            }
+            HandleOutOfMoves();
             return;
         }
+
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -123,11 +119,20 @@ public class PlayerMovement : MonoBehaviour
                 //ANNOUNCE STEP COMPLETE -> Poacher listenes.
                 OnPlayerStepComplete?.Invoke();
 
+                // Check for out of moves right after the move
+                if (movesManager.movesLeft <= 0)
+                {
+                    HandleOutOfMoves();
+                }
+
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
                     StartCoroutine(InputCooldown());
+                    if (movesManager.movesLeft <= 0) // Check for out of moves after bump
+                        HandleOutOfMoves();
+
                     if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
                     {
                         var bossController = Object.FindFirstObjectByType<BossFightController>();
@@ -163,11 +168,15 @@ public class PlayerMovement : MonoBehaviour
                             {
                                 StartCoroutine(BumpAnimation());
                                 StartCoroutine(InputCooldown(bumpCooldown));
+                                if (movesManager.movesLeft <= 0) // Check for out of moves after bump
+                                    HandleOutOfMoves();
                             }
                             else
                             {
                                 StartCoroutine(BumpAnimation());
                                 StartCoroutine(InputCooldown(bumpCooldown));
+                                if (movesManager.movesLeft <= 0) // Check for out of moves after bump
+                                    HandleOutOfMoves();
                             }
                         }
                     }
@@ -176,6 +185,8 @@ public class PlayerMovement : MonoBehaviour
                     {
                         StartCoroutine(BumpAnimation());
                         StartCoroutine(InputCooldown(bumpCooldown));
+                        if (movesManager.movesLeft <= 0) // Check for out of moves after bump
+                            HandleOutOfMoves();
                     }
                 }
 
@@ -215,27 +226,38 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayBumpSound();
 
-        // Make bump directional instantly
         animator.SetFloat("moveX", lastBumpDirection.x);
         animator.SetFloat("moveY", lastBumpDirection.y);
-
-        animator.ResetTrigger("Bump");
-        animator.SetTrigger("Bump");
         animator.SetFloat("tailAngleIndex", 0f);
 
-        // No waiting; animation plays immediately
+        // Only trigger bump if player still has moves
+        if (movesManager.movesLeft > 0)
+        {
+            animator.ResetTrigger("Bump");
+            animator.SetTrigger("Bump");
+        }
+
         yield break;
     }
+
 
     // Called automatically by Animation Event at the end of "Bump" clip
     public void OnBumpAnimationEnd()
     {
-        // Clean up bump trigger, but do NOT block movement
         animator.ResetTrigger("Bump");
         animator.SetBool("isMoving", false);
         SnapToIdleAfterBump();
 
+        // Check if out of moves after bump finished
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
+        {
+            outOfMovesTriggered = true;
+            animator.SetBool("isSleeping", true);
+
+            Debug.Log("Out of moves! Falling asleep after bump.");
+        }
     }
+
     private void PlayBumpSound()
     {
         if (bumpSound != null)
@@ -290,7 +312,39 @@ public class PlayerMovement : MonoBehaviour
         reachedFirefly = false;
         outOfMovesTriggered = false;
         inputLocked = false;
+        inputEnabled = true;           // re-enable input after level reset
+
+        // Reset the animator sleep state
+        if (animator != null)
+        {
+            animator.SetBool("isMoving", false);
+            animator.SetBool("isSleeping", false); // optional if you have an isSleeping bool
+        }
     }
+    private void HandleOutOfMoves()
+    {
+        if (outOfMovesTriggered) return;
+        outOfMovesTriggered = true;
+
+        // Stop movement
+        isMoving = false;
+        inputLocked = false;
+
+        // Stop all bump coroutines
+        StopCoroutine(BumpAnimation());
+        
+        // Reset animator triggers so Sleep can play
+        animator.ResetTrigger("Bump");
+        animator.SetBool("isMoving", false);
+
+        animator.SetBool("isSleeping", true);
+        Debug.Log("isSleeping set to TRUE");
+
+
+        Debug.Log("Out of moves! Falling asleep.");
+    }
+
+
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {
@@ -351,6 +405,21 @@ public class PlayerMovement : MonoBehaviour
         yield return null;
         ForceFacing(facing);
     }
+    public void ResetAnimatorState(PangolinStartPoint.FacingDirection facing)
+    {
+        if (!animator) return;
+
+        animator.Rebind();          // fully resets state machine
+        animator.Update(0f);        // forces evaluation immediately
+
+        animator.ResetTrigger("Bump");
+
+        animator.SetBool("isMoving", false);
+        animator.SetFloat("tailAngleIndex", 0f);
+
+        ForceFacing(facing);
+    }
+
     public void SetInputEnabled(bool enabled)
     {
         inputEnabled = enabled;
