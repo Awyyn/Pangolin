@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: c7e5d0e372d9f4c1a9a253f95d0cfdb1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 867412574713517162
+    second: Puma-38_0
+  - first:
+      213: -1726862230286878288
+    second: Puma-38_1
+  - first:
+      213: 1247012466580074925
+    second: Puma-38_2
+  - first:
+      213: 8514993931190957609
+    second: Puma-38_3
+  - first:
+      213: -3374411606699292513
+    second: Puma-38_4
+  - first:
+      213: -8828625209558239368
+    second: Puma-38_5
+  - first:
+      213: -1835314270040937158
+    second: Puma-38_6
+  - first:
+      213: -3018445317936112822
+    second: Puma-38_7
+  - first:
+      213: 9027484757705157671
+    second: Puma-38_8
+  - first:
+      213: 633097735068209142
+    second: Puma-38_9
+  - first:
+      213: -2303667654398557574
+    second: Puma-38_10
+  - first:
+      213: -6854483459704489367
+    second: Puma-38_11
+  - first:
+      213: -1144069655677525198
+    second: Puma-38_12
+  - first:
+      213: 4895403720533673996
+    second: Puma-38_13
+  - first:
+      213: -4232508226021762875
+    second: Puma-38_14
+  - first:
+      213: 4473457993527947435
+    second: Puma-38_15
+  - first:
+      213: 1251968992476925896
+    second: Puma-38_16
+  - first:
+      213: 6231642580745918447
+    second: Puma-38_17
+  - first:
+      213: 4115907656425194260
+    second: Puma-38_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Puma-38_0
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 526
+        width: 191
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a649185142ba90c00800000000000000
+      internalID: 867412574713517162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_1
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 451
+        width: 49
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b936bb63f3f808e0800000000000000
+      internalID: -1726862230286878288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_2
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 389
+        width: 72
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da13dfc3b374e4110800000000000000
+      internalID: 1247012466580074925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_3
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 479
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9267e35bdd55b2670800000000000000
+      internalID: 8514993931190957609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_4
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 465
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f98cbb8a58eab21d0800000000000000
+      internalID: -3374411606699292513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_5
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 476
+        width: 65
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 877f831e52c6a7580800000000000000
+      internalID: -8828625209558239368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_6
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 394
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3d21033567a786e0800000000000000
+      internalID: -1835314270040937158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_7
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 407
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4b1a7ac9f35c16d0800000000000000
+      internalID: -3018445317936112822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_8
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 406
+        width: 64
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72ce446be81184d70800000000000000
+      internalID: 9027484757705157671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_9
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 171
+        width: 60
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ff48d6290739c800800000000000000
+      internalID: 633097735068209142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_10
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 152
+        width: 145
+        height: 202
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a724403497ab700e0800000000000000
+      internalID: -2303667654398557574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_11
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 323
+        width: 91
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96af5892c9bffd0a0800000000000000
+      internalID: -6854483459704489367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_12
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 103
+        width: 383
+        height: 293
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 233a90fa5b27f10f0800000000000000
+      internalID: -1144069655677525198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_13
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 247
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0809823fb7ffe340800000000000000
+      internalID: 4895403720533673996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_14
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 264
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c8dd07713c1345c0800000000000000
+      internalID: -4232508226021762875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_15
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 84
+        width: 30
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba07dddf75ae41e30800000000000000
+      internalID: 4473457993527947435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_16
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 85
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cf046a5a23ef5110800000000000000
+      internalID: 1251968992476925896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_17
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 102
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe71f8819ed3b7650800000000000000
+      internalID: 6231642580745918447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puma-38_18
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 42
+        width: 84
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 413c88dd434ae1930800000000000000
+      internalID: 4115907656425194260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Puma-38_0: 867412574713517162
+      Puma-38_1: -1726862230286878288
+      Puma-38_10: -2303667654398557574
+      Puma-38_11: -6854483459704489367
+      Puma-38_12: -1144069655677525198
+      Puma-38_13: 4895403720533673996
+      Puma-38_14: -4232508226021762875
+      Puma-38_15: 4473457993527947435
+      Puma-38_16: 1251968992476925896
+      Puma-38_17: 6231642580745918447
+      Puma-38_18: 4115907656425194260
+      Puma-38_2: 1247012466580074925
+      Puma-38_3: 8514993931190957609
+      Puma-38_4: -3374411606699292513
+      Puma-38_5: -8828625209558239368
+      Puma-38_6: -1835314270040937158
+      Puma-38_7: -3018445317936112822
+      Puma-38_8: 9027484757705157671
+      Puma-38_9: 633097735068209142
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

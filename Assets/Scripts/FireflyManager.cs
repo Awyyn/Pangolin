@@ -19,7 +19,11 @@ public class FireflyManager : MonoBehaviour
             return;
         }
 
-        // Load saved total from PlayerPrefs
+        LoadFireflyTotal();
+    }
+
+    private void LoadFireflyTotal()
+    {
         totalFireflies = PlayerProgress.GetFireflyTotal();
         FireflyCounterUI.Instance?.UpdateCount(totalFireflies);
     }
@@ -38,5 +42,7 @@ public class FireflyManager : MonoBehaviour
         totalFireflies = 0;
         PlayerProgress.SetFireflyTotal(0);
         FireflyCounterUI.Instance?.UpdateCount(totalFireflies);
+
+        Debug.Log("[FireflyManager] Fireflies reset.");
     }
 }

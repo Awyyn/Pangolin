@@ -4,6 +4,7 @@ public class MovesManager : MonoBehaviour
 {
     public int movesLeft;
     public MovesLeftDisplay movesLeftDisplay;
+    [SerializeField] private Animator movesAnimator;
 
     public static MovesManager Instance;
 
@@ -22,6 +23,9 @@ public class MovesManager : MonoBehaviour
     public void ModifyMoves(int amount)
     {
         movesLeft += amount;
+
+        movesAnimator.ResetTrigger("Decrease");
+        movesAnimator.SetTrigger("Decrease");
 
         if (movesLeft < 0)
         {

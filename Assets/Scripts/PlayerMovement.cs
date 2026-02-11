@@ -133,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
                     if (movesManager.movesLeft <= 0) // Check for out of moves after bump
                         HandleOutOfMoves();
 
-                    if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)
+                    if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)         //change this later, the placement is stupid.
                     {
                         var bossController = Object.FindFirstObjectByType<BossFightController>();
                         if (bossController != null)

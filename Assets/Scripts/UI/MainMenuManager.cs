@@ -63,6 +63,8 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartFreshGame()
     {
+        FireflyManager.Instance.ResetFireflies();
+
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
 
