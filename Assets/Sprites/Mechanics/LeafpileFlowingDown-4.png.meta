@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 350684b58049c453d88fe53b10025af0
+guid: 5507647ea9fe546faaf9ef5e26b56804
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7915392242252028736
-    second: TrapBack-24_0
+      213: 8387422285654671828
+    second: LeafpileFlowingDown-4_0
+  - first:
+      213: 4986152320436266605
+    second: LeafpileFlowingDown-4_1
+  - first:
+      213: -6812401358968483848
+    second: LeafpileFlowingDown-4_2
+  - first:
+      213: 5074133345189523305
+    second: LeafpileFlowingDown-4_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TrapBack-24_0
+      name: LeafpileFlowingDown-4_0
       rect:
         serializedVersion: 2
-        x: 13
-        y: 0
-        width: 129
-        height: 117
+        x: 3
+        y: 107
+        width: 12
+        height: 47
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +124,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04b90598e4f19dd60800000000000000
-      internalID: 7915392242252028736
+      spriteID: 4d144ad512c166470800000000000000
+      internalID: 8387422285654671828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingDown-4_1
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 59
+        width: 111
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d66e79f1e1f523540800000000000000
+      internalID: 4986152320436266605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingDown-4_2
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 132
+        width: 47
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ff8b43ce0d7571a0800000000000000
+      internalID: -6812401358968483848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingDown-4_3
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 52
+        width: 29
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96f6cfeb461fa6640800000000000000
+      internalID: 5074133345189523305
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      TrapBack-24_0: 7915392242252028736
+      LeafpileFlowingDown-4_0: 8387422285654671828
+      LeafpileFlowingDown-4_1: 4986152320436266605
+      LeafpileFlowingDown-4_2: -6812401358968483848
+      LeafpileFlowingDown-4_3: 5074133345189523305
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

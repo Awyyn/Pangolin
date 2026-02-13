@@ -1,16 +1,28 @@
 fileFormatVersion: 2
-guid: cf7bb928b75ff6a44bf7100974ba4bbf
+guid: bd916f5dd99534a3483c631e6e2b3965
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7762740878659598694
-    second: BigStatue1_0
+      213: -1706329400705967770
+    second: LeafpileFlowingUp-9_0
   - first:
-      213: -2164787022381456745
-    second: BigStatue1_1
+      213: -4886807071398726492
+    second: LeafpileFlowingUp-9_1
   - first:
-      213: -6939802922792747339
-    second: BigStatue1_2
+      213: 944094934233880004
+    second: LeafpileFlowingUp-9_2
+  - first:
+      213: -2377729558585556924
+    second: LeafpileFlowingUp-9_3
+  - first:
+      213: -5976154290223967670
+    second: LeafpileFlowingUp-9_4
+  - first:
+      213: 485229030908997060
+    second: LeafpileFlowingUp-9_5
+  - first:
+      213: 6190490623254782351
+    second: LeafpileFlowingUp-9_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,13 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BigStatue1_0
+      name: LeafpileFlowingUp-9_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 33
-        width: 218
-        height: 311
+        x: 33
+        y: 268
+        width: 16
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -121,20 +133,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 669b8eb43bbcabb60800000000000000
-      internalID: 7762740878659598694
+      spriteID: 6699d195376e158e0800000000000000
+      internalID: -1706329400705967770
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BigStatue1_1
+      name: LeafpileFlowingUp-9_1
       rect:
         serializedVersion: 2
-        x: 229
-        y: 51
-        width: 57
-        height: 45
+        x: 50
+        y: 272
+        width: 14
+        height: 12
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -143,20 +155,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 792e3943ca125f1e0800000000000000
-      internalID: -2164787022381456745
+      spriteID: 4a479672cd29e2cb0800000000000000
+      internalID: -4886807071398726492
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BigStatue1_2
+      name: LeafpileFlowingUp-9_2
       rect:
         serializedVersion: 2
-        x: 267
-        y: 7
-        width: 86
-        height: 80
+        x: 76
+        y: 280
+        width: 20
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -165,8 +177,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5be78b7a20ed0bf90800000000000000
-      internalID: -6939802922792747339
+      spriteID: 4c5914537591a1d00800000000000000
+      internalID: 944094934233880004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingUp-9_3
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 251
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 440cf80709b900fd0800000000000000
+      internalID: -2377729558585556924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingUp-9_4
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 259
+        width: 20
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a421648065f601da0800000000000000
+      internalID: -5976154290223967670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingUp-9_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 200
+        width: 28
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cda9069b31ebb600800000000000000
+      internalID: 485229030908997060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeafpileFlowingUp-9_6
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 237
+        width: 30
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f81ec785c6a09e550800000000000000
+      internalID: 6190490623254782351
       vertices: []
       indices: 
       edges: []
@@ -185,9 +285,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BigStatue1_0: 7762740878659598694
-      BigStatue1_1: -2164787022381456745
-      BigStatue1_2: -6939802922792747339
+      LeafpileFlowingUp-9_0: -1706329400705967770
+      LeafpileFlowingUp-9_1: -4886807071398726492
+      LeafpileFlowingUp-9_2: 944094934233880004
+      LeafpileFlowingUp-9_3: -2377729558585556924
+      LeafpileFlowingUp-9_4: -5976154290223967670
+      LeafpileFlowingUp-9_5: 485229030908997060
+      LeafpileFlowingUp-9_6: 6190490623254782351
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

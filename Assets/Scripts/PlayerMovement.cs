@@ -213,6 +213,21 @@ public class PlayerMovement : MonoBehaviour
         isMoving = false;
         animator.SetBool("isMoving", false);
 
+            // check for walkable interactable at the new position      !!!
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position); //ignore player mask so it can interact with anything at the position (like pressure plates)
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject == gameObject)
+                continue;
+
+            IInteractable interactable = hit.GetComponent<IInteractable>();
+            if (interactable != null)
+            {
+                interactable.Interact(Vector3.zero);
+            }
+        }
+
+
     }
 
     private IEnumerator InputCooldown(float delay = 0.25f)
@@ -338,8 +353,6 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isMoving", false);
 
         animator.SetBool("isSleeping", true);
-        Debug.Log("isSleeping set to TRUE");
-
 
         Debug.Log("Out of moves! Falling asleep.");
     }
