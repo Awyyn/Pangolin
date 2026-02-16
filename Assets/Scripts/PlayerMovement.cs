@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool inputLocked { get; set; }
     public bool reachedFirefly = false;
-    private bool outOfMovesTriggered = false;
+    public bool outOfMovesTriggered = false;
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // cooldown after bump
@@ -73,11 +73,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
+        // After movement and interactions are resolved
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered && !reachedFirefly)
         {
             HandleOutOfMoves();
-            return;
         }
+
 
 
         if (!isMoving && movesManager.movesLeft > 0)
@@ -321,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
         return 0;
     }
 
-    public void ResetLevelFlags()
+   /* public void ResetLevelFlags()
     {
         StopAllCoroutines();
         reachedFirefly = false;
@@ -335,35 +336,63 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isMoving", false);
             animator.SetBool("isSleeping", false); // optional if you have an isSleeping bool
         }
+    }*/
+    public void ResetLevelFlags()
+    {
+        StopAllCoroutines();
+        reachedFirefly = false;
+        outOfMovesTriggered = false;
+        inputLocked = false;
+        inputEnabled = true;
+
+        if (animator != null)
+        {
+            animator.Rebind();          // FULL reset
+            animator.Update(0f);        // force evaluation
+            animator.ResetTrigger("Bump");
+            animator.ResetTrigger("LookUp");
+            animator.SetBool("isMoving", false);
+            animator.SetBool("isSleeping", false);
+        }
     }
+
+
+    // Call this when the player reaches a firefly
+    public void OnReachedFirefly()
+    {
+        reachedFirefly = true;      // prevents sleep
+        outOfMovesTriggered = false; // ensure sleep won't trigger after this
+        animator.SetTrigger("LookUp");
+    }
+
     private void HandleOutOfMoves()
     {
-        if (outOfMovesTriggered) return;
-
-        if (reachedFirefly)
-        {
-            // Already got the firefly, don’t play sleep animation
-            return;
-        }
+        // Never sleep if we already reached the firefly
+        if (outOfMovesTriggered || reachedFirefly) return;
 
         outOfMovesTriggered = true;
 
         isMoving = false;
         inputLocked = false;
-
-        // Stop bump animation coroutines
         StopCoroutine(BumpAnimation());
-        
+
         animator.ResetTrigger("Bump");
         animator.SetBool("isMoving", false);
 
-        // Play sleep animation
+        // Face the correct idle direction
+        ForceFacing(lastDirection.x > 0 ? FacingDirection.Right :
+                    lastDirection.x < 0 ? FacingDirection.Left :
+                    lastDirection.y > 0 ? FacingDirection.Up :
+                                        FacingDirection.Down);
+
         animator.SetBool("isSleeping", true);
 
         Debug.Log("Out of moves! Falling asleep.");
     }
 
-    public void OnReachedFirefly()
+
+
+    /*public void OnReachedFirefly()
     {
         reachedFirefly = true;
         outOfMovesTriggered = true; // block sleep animation
@@ -376,6 +405,27 @@ public class PlayerMovement : MonoBehaviour
         animator.SetTrigger("LookUp");
 
         Debug.Log("Player reached firefly! Playing LookUp animation.");
+    }*/
+
+    private void PlaySleepAnimation()
+    {
+        string idleState = "SideIdle";
+        float mx = 0f, my = 0f;
+
+        if (lastDirection.y > 0) { idleState = "UpIdle"; mx = 0; my = 1; }
+        else if (lastDirection.y < 0) { idleState = "DownIdle"; mx = 0; my = -1; }
+        else if (lastDirection.x < 0) { idleState = "SideIdle"; mx = -1; my = 0; spriteRenderer.flipX = true; }
+        else { idleState = "SideIdle"; mx = 1; my = 0; spriteRenderer.flipX = false; }
+
+        animator.SetFloat("moveX", mx);
+        animator.SetFloat("moveY", my);
+        animator.SetFloat("tailAngleIndex", 0f);
+        animator.SetBool("isMoving", false);
+        
+        animator.Play(idleState, 0, 0f);  // snap to correct facing
+        animator.Update(0f);
+
+        animator.SetBool("isSleeping", true);
     }
 
 
@@ -423,7 +473,9 @@ public class PlayerMovement : MonoBehaviour
             // Read facing from the start point & apply next frame
             var sp = levelData.PangolinStartPoint.GetComponent<PangolinStartPoint>();
             var face = sp ? sp.startFacing : PangolinStartPoint.FacingDirection.Right;
-            StartCoroutine(ResetAnimatorNextFrame(face));
+
+            // USE THIS instead of ResetAnimatorNextFrame
+            StartCoroutine(ForceAnimatorFirstFrame(face));
         }
         else
         {
@@ -431,9 +483,23 @@ public class PlayerMovement : MonoBehaviour
             startingPosition = transform.position;
             targetPosition = transform.position;
 
-            StartCoroutine(ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection.Right));
+            StartCoroutine(ForceAnimatorFirstFrame(PangolinStartPoint.FacingDirection.Right));
         }
     }
+
+    // Add this method inside the class
+    private IEnumerator ForceAnimatorFirstFrame(PangolinStartPoint.FacingDirection facing)
+    {
+        yield return null; // wait one frame for physics & animator
+        ForceFacing(facing);
+
+        // If player has no moves left at start, force sleep
+        if (movesManager.movesLeft <= 0 && !reachedFirefly)
+        {
+            HandleOutOfMoves();
+        }
+    }
+
 
     private IEnumerator ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection facing)
     {
