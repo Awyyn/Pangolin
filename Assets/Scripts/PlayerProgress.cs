@@ -8,8 +8,6 @@ public static class PlayerProgress
     private const string CompletedLevelKeyPrefix = "CompletedLevel_";
     private const string LastPlayedLevelKey = "LastPlayedLevel";
 
-    private const string FireflyKey = "FireflyCount";
-
     private const string HasStartedGameKey = "HasStartedGame";
     
     // ----------- Game Started -----------
@@ -25,45 +23,28 @@ public static class PlayerProgress
     }
 
         // ----------- Fireflies -----------
-    public static void SetFireflyCount(int count)
+
+        public static int GetFireflyCount(int totalLevels)
     {
-        PlayerPrefs.SetInt(FireflyKey, count);
-        PlayerPrefs.Save();
+        int count = 0;
+
+        for (int i = 0; i < totalLevels; i++)
+        {
+            if (WasLevelCompletedBefore(i))
+                count++;
+        }
+
+        return count;
     }
 
-    public static int GetFireflyCount()
-    {
-        return PlayerPrefs.GetInt(FireflyKey, 0); // 0 if not saved yet
-    }
-
-    public static void ResetFireflies()
-    {
-        SetFireflyCount(0);
-    }
-
-    public static int GetFireflyTotal()
-    {
-        return PlayerPrefs.GetInt(FireflyTotalKey, 0);
-    }
-
-    public static void SetFireflyTotal(int total)
-    {
-        PlayerPrefs.SetInt(FireflyTotalKey, total);
-        PlayerPrefs.Save();
-    }
-
-    public static void AddFireflies(int amount)
-    {
-        SetFireflyTotal(GetFireflyTotal() + amount);
-    }
-
+/*
     public static bool SpendFireflies(int amount)
     {
         int total = GetFireflyTotal();
         if (total < amount) return false;
         SetFireflyTotal(total - amount);
         return true;
-    }
+    }*/
 
     // ----------- Levels -----------
     public static bool WasLevelCompletedBefore(int levelIndex)
@@ -111,11 +92,14 @@ public static class PlayerProgress
     }
 
     // ----------- Reset Progress -----------
-    public static void ResetProgress(int totalLevels)
+    public static void ResetProgress()
     {
-        PlayerPrefs.DeleteKey(FireflyTotalKey);
         PlayerPrefs.DeleteKey(HighestLevelKey);
         PlayerPrefs.DeleteKey(LastPlayedLevelKey);
+        PlayerPrefs.DeleteKey(HasStartedGameKey);
+
+        // Remove completed level flags
+        int totalLevels = LevelManager.Instance.levelPrefabs.Length;
 
         for (int i = 0; i < totalLevels; i++)
         {
@@ -123,6 +107,8 @@ public static class PlayerProgress
         }
 
         PlayerPrefs.Save();
-        Debug.Log("Progress reset!");
+        Debug.Log("Progress reset.");
     }
+
+
 }

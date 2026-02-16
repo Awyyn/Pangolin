@@ -339,23 +339,45 @@ public class PlayerMovement : MonoBehaviour
     private void HandleOutOfMoves()
     {
         if (outOfMovesTriggered) return;
+
+        if (reachedFirefly)
+        {
+            // Already got the firefly, don’t play sleep animation
+            return;
+        }
+
         outOfMovesTriggered = true;
 
-        // Stop movement
         isMoving = false;
         inputLocked = false;
 
-        // Stop all bump coroutines
+        // Stop bump animation coroutines
         StopCoroutine(BumpAnimation());
         
-        // Reset animator triggers so Sleep can play
         animator.ResetTrigger("Bump");
         animator.SetBool("isMoving", false);
 
+        // Play sleep animation
         animator.SetBool("isSleeping", true);
 
         Debug.Log("Out of moves! Falling asleep.");
     }
+
+    public void OnReachedFirefly()
+    {
+        reachedFirefly = true;
+        outOfMovesTriggered = true; // block sleep animation
+        inputLocked = true;          // stop further input
+
+        animator.ResetTrigger("Bump");
+        animator.SetBool("isMoving", false);
+
+        // Play look-up animation
+        animator.SetTrigger("LookUp");
+
+        Debug.Log("Player reached firefly! Playing LookUp animation.");
+    }
+
 
 
 
@@ -437,6 +459,5 @@ public class PlayerMovement : MonoBehaviour
     {
         inputEnabled = enabled;
     }
-
 
 }

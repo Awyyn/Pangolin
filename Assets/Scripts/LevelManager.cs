@@ -21,7 +21,7 @@ public class LevelManager : MonoBehaviour
 
     public bool levelCompleted { get; private set; } = false;
 
-    public float transitionDelay = 2f;
+    public float transitionDelay = 0f; //testing purpouses
 
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
@@ -44,7 +44,9 @@ public class LevelManager : MonoBehaviour
         }
     
         currentLevelIndex = PlayerProgress.GetLastPlayedLevel();
-        FireflyCounterUI.Instance?.UpdateCount(PlayerProgress.GetFireflyCount());
+        int fireflies = PlayerProgress.GetFireflyCount(levelPrefabs.Length);
+        FireflyCounterUI.Instance?.UpdateCount(fireflies);
+
         InitializeLevel(currentLevelIndex);
 
     }
@@ -99,7 +101,6 @@ public class LevelManager : MonoBehaviour
 
         FindFirstObjectByType<CameraScroller>()?.ResetCamera();
 
-        Debug.Log($"Finished initializing level {levelIndex + 1} with {movesLeft} moves.");
         Debug.Log("/////////////////////////////////////////////////////////////////////////////////////");
     }
 
@@ -226,34 +227,25 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void OnFireflyCollected()
+    public void CompleteLevel()
     {
-        // Check if this level was already completed before (persistently)
-        if (!PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
+        if (PlayerProgress.WasLevelCompletedBefore(currentLevelIndex))
         {
-            // Increment total fireflies by 1
-            int newTotal = PlayerProgress.GetFireflyCount() + 1;
-
-            // Save persistently
-            PlayerProgress.SetFireflyCount(newTotal);
-
-            // Update UI
-            FireflyCounterUI.Instance?.UpdateCount(newTotal);
-
-            Debug.Log("[LevelManager] Firefly counted for level " + (currentLevelIndex + 1));
+            Debug.Log("[LevelManager] Level already completed before.");
+            return;
         }
-        else
-        {
-            Debug.Log("[LevelManager] Level already completed, firefly ignored.");
-        }
-    }
 
-
-    public void MarkLevelCompleted()
-    {
-        levelCompleted = true;
+        // Mark permanently completed
         PlayerProgress.MarkLevelCompletedForever(currentLevelIndex);
+
+        // Fireflies = completed levels count
+        int fireflies = PlayerProgress.GetFireflyCount(levelPrefabs.Length);
+        FireflyCounterUI.Instance?.UpdateCount(fireflies); //we do NOT increment anything. because marking level completed already changes the count
+
+
+        Debug.Log("[LevelManager] Level completed first time. Fireflies: " + fireflies);
     }
+
 
 
     private IEnumerator LoadNextLevelCoroutine(float delay)

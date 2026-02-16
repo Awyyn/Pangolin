@@ -63,16 +63,28 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartFreshGame()
     {
-        FireflyManager.Instance.ResetFireflies();
+        // Reset ONLY gameplay progress
+        PlayerProgress.ResetProgress();
 
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
-
-        PlayerProgress.MarkGameStarted();   // marks State B (fresh run in progress)
+        // Mark fresh run started
+        PlayerProgress.MarkGameStarted();
 
         mainMenu.SetActive(false);
+
         ButtonManager.Instance.levelMenuManager.RefreshMenu();
+
+        // Force UI refresh to 0
+        int fireflies = PlayerProgress.GetFireflyCount(             //we need to pass the total levels count to get the correct firefly count after reset.
+        LevelManager.Instance != null 
+            ? LevelManager.Instance.levelPrefabs.Length 
+            : 100
+        );
+
+        FireflyCounterUI.Instance?.UpdateCount(fireflies);
+
     }
+
+
     public void CancelNewGame()
     {
         confirmationPanel.SetActive(false);

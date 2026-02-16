@@ -18,13 +18,13 @@ public class FireflyCounterUI : MonoBehaviour
     public void UpdateCount(int newCount)
     {
         countText.text = newCount.ToString();
-        Debug.Log("[FireflyUI] Updated text to: " + countText.text);
-
+        //Debug.Log("[FireflyUI] Updated text to: " + countText.text);
+    }
+        public void PlayCollectAnimation()
+    {
         if (animator != null && !string.IsNullOrEmpty(increaseAnimationName))
         {
-            // Directly play the animation from the first frame
             animator.Play(increaseAnimationName, 0, 0f);
-            animator.Update(0f); // force immediate evaluation
         }
     }
 }
