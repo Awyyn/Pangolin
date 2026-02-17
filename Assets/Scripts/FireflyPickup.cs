@@ -19,24 +19,21 @@ public class FireflyPickup : MonoBehaviour
 
         collected = true;
 
-        // **Immediately mark firefly reached**
-        PlayerMovement.instance.reachedFirefly = true;
-        PlayerMovement.instance.outOfMovesTriggered = false;
-
-        // Trigger LookUp immediately
-        PlayerMovement.instance.animator.ResetTrigger("LookUp");
-        PlayerMovement.instance.animator.SetTrigger("LookUp");
+        PlayerMovement.instance.NotifyFireflyCollected();
 
         StartCoroutine(CollectFireflyRoutine());
-
     }
+
 
 
     private IEnumerator CollectFireflyRoutine()
     {
-        // Immediately tell the player they reached the firefly
-        PlayerMovement.instance.reachedFirefly = true;  // prevent sleep animation
-        PlayerMovement.instance.outOfMovesTriggered = false; // just in case
+        // Wait until player finishes movement completely
+        while (PlayerMovement.instance.IsMoving())
+            yield return null;
+
+        // Now safely trigger look up
+        PlayerMovement.instance.PlayLookUpAfterMove();
 
         // Flip before animation
         Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
@@ -46,26 +43,20 @@ public class FireflyPickup : MonoBehaviour
         scale.x = isOnLeftSide ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
         transform.localScale = scale;
 
-        // Play firefly animation
         animator.SetTrigger("Collect");
 
-        // Start UI animation slightly after (0.5–0.7s)
         StartCoroutine(DelayedUIAnimation(0.5f));
 
-        // Complete level immediately
         LevelManager.Instance?.CompleteLevel();
 
-        // Wait for firefly animation to finish
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
-        float waitTime = state.length;
-        yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds(state.length);
 
-        // Destroy firefly after animation
         Destroy(gameObject);
 
-        // Load next level immediately
         LevelManager.Instance?.LoadNextLevelWithDelay(0);
     }
+
 
 
 

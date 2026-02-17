@@ -29,8 +29,11 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 previousDirection = Vector3.zero;
 
     public bool inputLocked { get; set; }
-    public bool reachedFirefly = false;
-    public bool outOfMovesTriggered = false;
+    //public bool reachedFirefly = false;
+
+    private bool fireflyCollectedThisTurn = false;
+
+    //public bool outOfMovesTriggered = false;
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // cooldown after bump
@@ -73,13 +76,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // After movement and interactions are resolved
-        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered && !reachedFirefly)
-        {
-            HandleOutOfMoves();
-        }
-
-
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -120,19 +116,11 @@ public class PlayerMovement : MonoBehaviour
                 //ANNOUNCE STEP COMPLETE -> Poacher listenes.
                 OnPlayerStepComplete?.Invoke();
 
-                // Check for out of moves right after the move
-                if (movesManager.movesLeft <= 0)
-                {
-                    HandleOutOfMoves();
-                }
-
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
                     StartCoroutine(InputCooldown());
-                    if (movesManager.movesLeft <= 0) // Check for out of moves after bump
-                        HandleOutOfMoves();
 
                     if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)         //change this later, the placement is stupid.
                     {
@@ -169,15 +157,11 @@ public class PlayerMovement : MonoBehaviour
                             {
                                 StartCoroutine(BumpAnimation());
                                 StartCoroutine(InputCooldown(bumpCooldown));
-                                if (movesManager.movesLeft <= 0) // Check for out of moves after bump
-                                    HandleOutOfMoves();
                             }
                             else
                             {
                                 StartCoroutine(BumpAnimation());
                                 StartCoroutine(InputCooldown(bumpCooldown));
-                                if (movesManager.movesLeft <= 0) // Check for out of moves after bump
-                                    HandleOutOfMoves();
                             }
                         }
                     }
@@ -186,8 +170,6 @@ public class PlayerMovement : MonoBehaviour
                     {
                         StartCoroutine(BumpAnimation());
                         StartCoroutine(InputCooldown(bumpCooldown));
-                        if (movesManager.movesLeft <= 0) // Check for out of moves after bump
-                            HandleOutOfMoves();
                     }
                 }
 
@@ -228,7 +210,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-
     }
 
     private IEnumerator InputCooldown(float delay = 0.25f)
@@ -265,13 +246,13 @@ public class PlayerMovement : MonoBehaviour
         SnapToIdleAfterBump();
 
         // Check if out of moves after bump finished
-        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
+        /*if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
         {
             outOfMovesTriggered = true;
             animator.SetBool("isSleeping", true);
 
             Debug.Log("Out of moves! Falling asleep after bump.");
-        }
+        }*/
     }
 
     private void PlayBumpSound()
@@ -340,8 +321,8 @@ public class PlayerMovement : MonoBehaviour
     public void ResetLevelFlags()
     {
         StopAllCoroutines();
-        reachedFirefly = false;
-        outOfMovesTriggered = false;
+        //reachedFirefly = false;
+        //outOfMovesTriggered = false;
         inputLocked = false;
         inputEnabled = true;
 
@@ -351,8 +332,10 @@ public class PlayerMovement : MonoBehaviour
             animator.Update(0f);        // force evaluation
             animator.ResetTrigger("Bump");
             animator.ResetTrigger("LookUp");
+            fireflyCollectedThisTurn = false;
             animator.SetBool("isMoving", false);
             animator.SetBool("isSleeping", false);
+            
         }
     }
 
@@ -360,35 +343,29 @@ public class PlayerMovement : MonoBehaviour
     // Call this when the player reaches a firefly
     public void OnReachedFirefly()
     {
-        reachedFirefly = true;      // prevents sleep
-        outOfMovesTriggered = false; // ensure sleep won't trigger after this
+        //reachedFirefly = true;      // prevents sleep
+        //outOfMovesTriggered = false; // ensure sleep won't trigger after this
         animator.SetTrigger("LookUp");
     }
 
     private void HandleOutOfMoves()
     {
-        // Never sleep if we already reached the firefly
-        if (outOfMovesTriggered || reachedFirefly) return;
+        if (fireflyCollectedThisTurn)
+            return;
 
-        outOfMovesTriggered = true;
-
-        isMoving = false;
-        inputLocked = false;
-        StopCoroutine(BumpAnimation());
+        if (isMoving)
+            return;
 
         animator.ResetTrigger("Bump");
+        animator.ResetTrigger("LookUp");
+
         animator.SetBool("isMoving", false);
-
-        // Face the correct idle direction
-        ForceFacing(lastDirection.x > 0 ? FacingDirection.Right :
-                    lastDirection.x < 0 ? FacingDirection.Left :
-                    lastDirection.y > 0 ? FacingDirection.Up :
-                                        FacingDirection.Down);
-
         animator.SetBool("isSleeping", true);
 
         Debug.Log("Out of moves! Falling asleep.");
     }
+
+
 
 
 
@@ -428,7 +405,26 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isSleeping", true);
     }
 
+    public void ForceLookUpFromFirefly()
+    {
+        // Absolute override: firefly always wins
+        //reachedFirefly = true;
+        //outOfMovesTriggered = true; // permanently block sleep
 
+        // Stop anything that could interfere
+        StopAllCoroutines();
+        inputLocked = true;
+        isMoving = false;
+
+        animator.ResetTrigger("Bump");
+        animator.ResetTrigger("LookUp");
+        animator.SetBool("isMoving", false);
+        animator.SetBool("isSleeping", false);
+
+        animator.SetTrigger("LookUp");
+
+        Debug.Log("[PlayerMovement] Forced LookUp from firefly");
+    }
 
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
@@ -494,10 +490,10 @@ public class PlayerMovement : MonoBehaviour
         ForceFacing(facing);
 
         // If player has no moves left at start, force sleep
-        if (movesManager.movesLeft <= 0 && !reachedFirefly)
+        /*if (movesManager.movesLeft <= 0 && !reachedFirefly)
         {
             HandleOutOfMoves();
-        }
+        }*/
     }
 
 
@@ -525,5 +521,40 @@ public class PlayerMovement : MonoBehaviour
     {
         inputEnabled = enabled;
     }
+
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
+    public void PlayLookUpAfterMove()
+    {
+        // Absolute priority over sleep
+        //reachedFirefly = true;
+        //outOfMovesTriggered = true;
+
+        animator.SetBool("isSleeping", false);
+        animator.SetBool("isMoving", false);
+
+        animator.ResetTrigger("Bump");
+        animator.ResetTrigger("LookUp");
+        animator.SetTrigger("LookUp");
+    }
+
+    public void NotifyFireflyCollected()
+    {
+        fireflyCollectedThisTurn = true;
+
+        animator.SetBool("isSleeping", false);
+        animator.SetBool("isMoving", false);
+
+        animator.ResetTrigger("Bump");
+        animator.ResetTrigger("LookUp");
+
+        animator.SetTrigger("LookUp");
+    }
+
+
+
 
 }
