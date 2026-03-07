@@ -26,8 +26,6 @@ public class LevelManager : MonoBehaviour
     public int movesLeft { get; private set; }
     private int currentLevelIndex = 0;
 
-    
-
 
     private void Awake()
     {
@@ -146,6 +144,7 @@ public class LevelManager : MonoBehaviour
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }
+    
 
     private void CleanupOldLevel()
     {
@@ -165,6 +164,17 @@ public class LevelManager : MonoBehaviour
             currentLevelInstance = null;
             Debug.Log("[LevelManager] Destroyed currentLevelInstance");
         }
+    }
+    
+    public void RestartLevelAfterDelay(float delay)
+    {
+        StartCoroutine(RestartLevelCoroutine(delay));
+    }
+
+    private IEnumerator RestartLevelCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ResetLevel();
     }
 
     public void SetLevelMoves(int levelIndex)

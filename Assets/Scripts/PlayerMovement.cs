@@ -19,7 +19,6 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 10f;
     private bool inputEnabled = true; // default: input allowed
 
-
     private Vector3 targetPosition;
     private Vector3 startingPosition;
     private bool isMoving = false;
@@ -37,14 +36,12 @@ public class PlayerMovement : MonoBehaviour
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // cooldown after bump
-
     public Animator animator;
     private SpriteRenderer spriteRenderer;
-
     public AudioClip bumpSound;
-
     public static System.Action OnPlayerStepComplete;
 
+    public float automaticLevelRestartWait = 10f; //time ater which the level will restart acutomatically (when failing the level)
 
     private void Awake()
     {
@@ -75,7 +72,6 @@ public class PlayerMovement : MonoBehaviour
             LevelManager.Instance.ResetLevel();
             return;
         }
-
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -120,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
-                    StartCoroutine(InputCooldown());
+                    StartCoroutine(InputCooldown(inputCooldown));
 
                     if (!GameManager.Instance.bossMode && GameManager.Instance.isBossLevel)         //change this later, the placement is stupid.
                     {
@@ -195,6 +191,11 @@ public class PlayerMovement : MonoBehaviour
         transform.position = destination;
         isMoving = false;
         animator.SetBool("isMoving", false);
+        
+        if (movesManager.movesLeft <= 0)
+        {
+            HandleOutOfMoves();
+        }
 
             // check for walkable interactable at the new position      !!!
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position); //ignore player mask so it can interact with anything at the position (like pressure plates)
@@ -211,14 +212,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+    
 
-    private IEnumerator InputCooldown(float delay = 0.25f)
+    private IEnumerator InputCooldown(float delay)
     {
         inputLocked = true;
         yield return new WaitForSeconds(delay);
         inputLocked = false;
     }
-
     private IEnumerator BumpAnimation()
     {
         PlayBumpSound();
@@ -227,16 +228,11 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("moveY", lastBumpDirection.y);
         animator.SetFloat("tailAngleIndex", 0f);
 
-        // Only trigger bump if player still has moves
-        if (movesManager.movesLeft > 0)
-        {
-            animator.ResetTrigger("Bump");
-            animator.SetTrigger("Bump");
-        }
+        animator.ResetTrigger("Bump");
+        animator.SetTrigger("Bump");
 
         yield break;
     }
-
 
     // Called automatically by Animation Event at the end of "Bump" clip
     public void OnBumpAnimationEnd()
@@ -245,14 +241,10 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isMoving", false);
         SnapToIdleAfterBump();
 
-        // Check if out of moves after bump finished
-        /*if (movesManager.movesLeft <= 0 && !outOfMovesTriggered)
+        if (movesManager.movesLeft <= 0)
         {
-            outOfMovesTriggered = true;
-            animator.SetBool("isSleeping", true);
-
-            Debug.Log("Out of moves! Falling asleep after bump.");
-        }*/
+            HandleOutOfMoves();
+        }
     }
 
     private void PlayBumpSound()
@@ -272,7 +264,6 @@ public class PlayerMovement : MonoBehaviour
         animator.Play(idleState, 0, 0f);   // snap immediately
         animator.Update(0f);              // force immediate apply
     }
-
 
     private int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
     {
@@ -305,7 +296,6 @@ public class PlayerMovement : MonoBehaviour
 
    /* public void ResetLevelFlags()
     {
-        StopAllCoroutines();
         reachedFirefly = false;
         outOfMovesTriggered = false;
         inputLocked = false;
@@ -320,11 +310,11 @@ public class PlayerMovement : MonoBehaviour
     }*/
     public void ResetLevelFlags()
     {
-        StopAllCoroutines();
         //reachedFirefly = false;
         //outOfMovesTriggered = false;
         inputLocked = false;
         inputEnabled = true;
+        
 
         if (animator != null)
         {
@@ -339,7 +329,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     // Call this when the player reaches a firefly
     public void OnReachedFirefly()
     {
@@ -350,24 +339,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleOutOfMoves()
     {
-        if (fireflyCollectedThisTurn)
-            return;
-
-        if (isMoving)
-            return;
+        if (fireflyCollectedThisTurn) return;
+        if (isMoving) return;
 
         animator.ResetTrigger("Bump");
         animator.ResetTrigger("LookUp");
 
         animator.SetBool("isMoving", false);
         animator.SetBool("isSleeping", true);
+        inputEnabled = false;
 
         Debug.Log("Out of moves! Falling asleep.");
+        
+        LevelManager.Instance.RestartLevelAfterDelay(automaticLevelRestartWait);
     }
+    
+    private IEnumerator RestartLevelAfterDelay()
+    {
+        yield return new WaitForSeconds(automaticLevelRestartWait);
 
-
-
-
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.ResetLevel();
+        }
+    }
 
     /*public void OnReachedFirefly()
     {
@@ -412,7 +407,6 @@ public class PlayerMovement : MonoBehaviour
         //outOfMovesTriggered = true; // permanently block sleep
 
         // Stop anything that could interfere
-        StopAllCoroutines();
         inputLocked = true;
         isMoving = false;
 
@@ -425,7 +419,6 @@ public class PlayerMovement : MonoBehaviour
 
         Debug.Log("[PlayerMovement] Forced LookUp from firefly");
     }
-
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {
@@ -496,7 +489,6 @@ public class PlayerMovement : MonoBehaviour
         }*/
     }
 
-
     private IEnumerator ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection facing)
     {
         yield return null;
@@ -553,8 +545,5 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetTrigger("LookUp");
     }
-
-
-
 
 }
