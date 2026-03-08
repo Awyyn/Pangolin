@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool fireflyCollectedThisTurn = false;
 
-    //public bool outOfMovesTriggered = false;
+    public bool outOfMovesTriggered = false;
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // cooldown after bump
@@ -134,6 +134,20 @@ public class PlayerMovement : MonoBehaviour
                         GameManager.Instance.bossMode = true;
                     }
                 }
+                /*else
+                {
+                    // blocked by wall or interactable
+                    StartCoroutine(BumpAnimation());
+                    StartCoroutine(InputCooldown(bumpCooldown));
+
+                    // interactable still triggers
+                    Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);
+                    if (hitCollider != null)
+                    {
+                        IInteractable interactable = hitCollider.GetComponent<IInteractable>();
+                        interactable?.Interact(direction);
+                    }
+                }*/
                 else
                 {
                     // blocked by wall or interactable
@@ -168,8 +182,9 @@ public class PlayerMovement : MonoBehaviour
                         StartCoroutine(InputCooldown(bumpCooldown));
                     }
                 }
+                inputLocked = false; 
 
-                inputLocked = false;
+                
             }
             else
             {
@@ -220,6 +235,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(delay);
         inputLocked = false;
     }
+    
     private IEnumerator BumpAnimation()
     {
         PlayBumpSound();
@@ -231,8 +247,36 @@ public class PlayerMovement : MonoBehaviour
         animator.ResetTrigger("Bump");
         animator.SetTrigger("Bump");
 
-        yield break;
+        // Wait one frame for animator to update
+        yield return null;
+
+        // Wait the bump animation length
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(state.length);
+
+        // Snap to idle
+        isMoving = false;
+        SnapToIdleAfterBump();
+
+        // If out of moves, handle sleep
+        if (movesManager.movesLeft <= 0)
+        {
+            HandleOutOfMoves();
+        }
     }
+    /*private IEnumerator BumpAnimation()
+    {
+        PlayBumpSound();
+
+        animator.SetFloat("moveX", lastBumpDirection.x);
+        animator.SetFloat("moveY", lastBumpDirection.y);
+        animator.SetFloat("tailAngleIndex", 0f);
+
+        animator.ResetTrigger("Bump");
+        animator.SetTrigger("Bump");
+
+        yield break;
+    }*/
 
     // Called automatically by Animation Event at the end of "Bump" clip
     public void OnBumpAnimationEnd()
@@ -247,7 +291,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void PlayBumpSound()
+    private void PlayBumpSound() 
     {
         if (bumpSound != null)
             SFXManager.Instance.PlaySFX(bumpSound);
@@ -255,6 +299,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void SnapToIdleAfterBump()
     {
+        animator.SetBool("isMoving", false);
         // choose idle based on last bump direction
         string idleState = "SideIdle";
         if (lastBumpDirection.y > 0) idleState = "UpIdle";
@@ -310,10 +355,10 @@ public class PlayerMovement : MonoBehaviour
     }*/
     public void ResetLevelFlags()
     {
-        //reachedFirefly = false;
-        //outOfMovesTriggered = false;
         inputLocked = false;
         inputEnabled = true;
+        fireflyCollectedThisTurn = false;
+        outOfMovesTriggered = false;
         
 
         if (animator != null)
@@ -322,7 +367,6 @@ public class PlayerMovement : MonoBehaviour
             animator.Update(0f);        // force evaluation
             animator.ResetTrigger("Bump");
             animator.ResetTrigger("LookUp");
-            fireflyCollectedThisTurn = false;
             animator.SetBool("isMoving", false);
             animator.SetBool("isSleeping", false);
             
@@ -341,9 +385,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (fireflyCollectedThisTurn) return;
         if (isMoving) return;
+        if (outOfMovesTriggered) return;  // <- prevent multiple triggers
 
-        animator.ResetTrigger("Bump");
-        animator.ResetTrigger("LookUp");
+        outOfMovesTriggered = true;       // <- mark as triggered
 
         animator.SetBool("isMoving", false);
         animator.SetBool("isSleeping", true);

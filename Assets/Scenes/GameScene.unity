@@ -3462,6 +3462,10 @@ PrefabInstance:
       propertyPath: movesManager
       value: 
       objectReference: {fileID: 1514760806}
+    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
+      propertyPath: automaticLevelRestartWait
+      value: 2.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5556812785336252897, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: m_Controller
       value: 
