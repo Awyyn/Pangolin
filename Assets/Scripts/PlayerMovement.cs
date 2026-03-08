@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private bool fireflyCollectedThisTurn = false;
 
     public bool outOfMovesTriggered = false;
+    
 
     public float inputCooldown = 0.25f;   // normal cooldown between moves
     public float bumpCooldown = 0.6f;     // cooldown after bump
@@ -62,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (outOfMovesTriggered)
+            return;
         if (!inputEnabled)
             return;
         if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
@@ -94,13 +97,6 @@ public class PlayerMovement : MonoBehaviour
                 previousDirection = lastDirection;
                 lastDirection = direction;
 
-                // Animator parameters
-                animator.SetFloat("moveX", direction.x);
-                animator.SetFloat("moveY", direction.y);
-                int tailIndex = GetTailAngleIndex(previousDirection, direction);
-                animator.SetFloat("tailAngleIndex", tailIndex);
-                animator.SetBool("isMoving", true);
-
                 // Flip sprite if moving left
                 spriteRenderer.flipX = direction == Vector3.left;
 
@@ -114,6 +110,15 @@ public class PlayerMovement : MonoBehaviour
 
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
+                    
+                    // Animator parameters
+                    animator.SetFloat("moveX", direction.x);
+                    animator.SetFloat("moveY", direction.y);
+                    int tailIndex = GetTailAngleIndex(previousDirection, direction);
+                    animator.SetFloat("tailAngleIndex", tailIndex);
+                    animator.SetBool("isMoving", true);
+                    
+                    
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
                     StartCoroutine(InputCooldown(inputCooldown));
@@ -161,35 +166,28 @@ public class PlayerMovement : MonoBehaviour
                         {
                             interactable.Interact(direction);
                             reacted = true;
-
-                            Rock rockScript = hitCollider.GetComponent<Rock>();
-                            if (rockScript != null)
-                            {
-                                StartCoroutine(BumpAnimation());
-                                StartCoroutine(InputCooldown(bumpCooldown));
-                            }
-                            else
-                            {
-                                StartCoroutine(BumpAnimation());
-                                StartCoroutine(InputCooldown(bumpCooldown));
-                            }
                         }
                     }
 
-                    if (!reacted)
+                    StartCoroutine(BumpAnimation());
+                    StartCoroutine(InputCooldown(bumpCooldown));
+                    /*
+                    if (movesManager.movesLeft <= 0 && !fireflyCollectedThisTurn)
                     {
-                        StartCoroutine(BumpAnimation());
-                        StartCoroutine(InputCooldown(bumpCooldown));
-                    }
+                        HandleOutOfMoves();
+                    }*/
                 }
                 inputLocked = false; 
-
-                
             }
             else
             {
                 animator.SetBool("isMoving", false);
             }
+        }
+        
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered && !fireflyCollectedThisTurn && !isMoving)
+        {
+            HandleOutOfMoves();
         }
     }
 
@@ -207,10 +205,11 @@ public class PlayerMovement : MonoBehaviour
         isMoving = false;
         animator.SetBool("isMoving", false);
         
+        /*
         if (movesManager.movesLeft <= 0)
         {
             HandleOutOfMoves();
-        }
+        }*/
 
             // check for walkable interactable at the new position      !!!
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position); //ignore player mask so it can interact with anything at the position (like pressure plates)
@@ -259,10 +258,10 @@ public class PlayerMovement : MonoBehaviour
         SnapToIdleAfterBump();
 
         // If out of moves, handle sleep
-        if (movesManager.movesLeft <= 0)
+        /*if (movesManager.movesLeft <= 0)
         {
             HandleOutOfMoves();
-        }
+        }*/
     }
     /*private IEnumerator BumpAnimation()
     {
@@ -285,10 +284,6 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isMoving", false);
         SnapToIdleAfterBump();
 
-        if (movesManager.movesLeft <= 0)
-        {
-            HandleOutOfMoves();
-        }
     }
 
     private void PlayBumpSound() 
@@ -299,15 +294,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void SnapToIdleAfterBump()
     {
+        if (outOfMovesTriggered)
+        {
+            // Player is falling asleep, don't snap idle
+            return;
+        }
+
         animator.SetBool("isMoving", false);
-        // choose idle based on last bump direction
+
         string idleState = "SideIdle";
         if (lastBumpDirection.y > 0) idleState = "UpIdle";
         else if (lastBumpDirection.y < 0) idleState = "DownIdle";
-        // flipX already set when bump happened
 
-        animator.Play(idleState, 0, 0f);   // snap immediately
-        animator.Update(0f);              // force immediate apply
+        animator.Play(idleState, 0, 0f);
+        animator.Update(0f);
     }
 
     private int GetTailAngleIndex(Vector3 previousDir, Vector3 currentDir)
@@ -383,18 +383,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleOutOfMoves()
     {
+        if (outOfMovesTriggered) return;
         if (fireflyCollectedThisTurn) return;
         if (isMoving) return;
-        if (outOfMovesTriggered) return;  // <- prevent multiple triggers
 
-        outOfMovesTriggered = true;       // <- mark as triggered
+        outOfMovesTriggered = true;
+        Debug.Log("handleoutofmoves() called. outofmovestriggered bool:" +  outOfMovesTriggered);
 
         animator.SetBool("isMoving", false);
         animator.SetBool("isSleeping", true);
         inputEnabled = false;
+        Debug.Log("Out of moves! Falling asleep. Mimimimimi");
 
-        Debug.Log("Out of moves! Falling asleep.");
-        
         LevelManager.Instance.RestartLevelAfterDelay(automaticLevelRestartWait);
     }
     

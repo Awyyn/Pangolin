@@ -7,7 +7,6 @@
     <list default="true" id="0984a851-f24d-4987-b88b-bc382b2f50a4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlayerMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlayerMovement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Wonkyawy-Regular SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../Wonkyawy-Regular SDF.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,7 @@
       <option name="presentableId" value="Default" />
       <updated>1772904819435</updated>
       <workItem from="1772904820927" duration="1703000" />
-      <workItem from="1772920178386" duration="669000" />
+      <workItem from="1772920178386" duration="6019000" />
     </task>
     <servers />
   </component>
@@ -58,6 +57,17 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
