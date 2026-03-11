@@ -109,6 +109,11 @@ public static class PlayerProgress
         PlayerPrefs.Save();
         Debug.Log("Progress reset.");
     }
-
+    
+    public static void ResetFireflies()             //used by statues
+    {
+        PlayerPrefs.SetInt("CompletedLevelsCount", 0);
+        PlayerPrefs.Save();
+    }
 
 }

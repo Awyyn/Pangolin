@@ -63,18 +63,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered && !fireflyCollectedThisTurn && !isMoving)
+        {
+            HandleOutOfMoves();
+        }
+        
         if (outOfMovesTriggered)
             return;
         if (!inputEnabled)
             return;
         if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
-
+        /*
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R))
         {
             LevelManager.Instance.ResetLevel();
             return;
         }
+        */
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -96,6 +102,13 @@ public class PlayerMovement : MonoBehaviour
                 // Store direction history
                 previousDirection = lastDirection;
                 lastDirection = direction;
+                
+                // Animator parameters
+                animator.SetFloat("moveX", direction.x);
+                animator.SetFloat("moveY", direction.y);
+                int tailIndex = GetTailAngleIndex(previousDirection, direction);
+                animator.SetFloat("tailAngleIndex", tailIndex);
+                animator.SetBool("isMoving", true);
 
                 // Flip sprite if moving left
                 spriteRenderer.flipX = direction == Vector3.left;
@@ -110,15 +123,6 @@ public class PlayerMovement : MonoBehaviour
 
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
-                    
-                    // Animator parameters
-                    animator.SetFloat("moveX", direction.x);
-                    animator.SetFloat("moveY", direction.y);
-                    int tailIndex = GetTailAngleIndex(previousDirection, direction);
-                    animator.SetFloat("tailAngleIndex", tailIndex);
-                    animator.SetBool("isMoving", true);
-                    
-                    
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
                     StartCoroutine(InputCooldown(inputCooldown));
@@ -139,20 +143,6 @@ public class PlayerMovement : MonoBehaviour
                         GameManager.Instance.bossMode = true;
                     }
                 }
-                /*else
-                {
-                    // blocked by wall or interactable
-                    StartCoroutine(BumpAnimation());
-                    StartCoroutine(InputCooldown(bumpCooldown));
-
-                    // interactable still triggers
-                    Collider2D hitCollider = Physics2D.OverlapPoint(nextPos);
-                    if (hitCollider != null)
-                    {
-                        IInteractable interactable = hitCollider.GetComponent<IInteractable>();
-                        interactable?.Interact(direction);
-                    }
-                }*/
                 else
                 {
                     // blocked by wall or interactable
@@ -171,11 +161,6 @@ public class PlayerMovement : MonoBehaviour
 
                     StartCoroutine(BumpAnimation());
                     StartCoroutine(InputCooldown(bumpCooldown));
-                    /*
-                    if (movesManager.movesLeft <= 0 && !fireflyCollectedThisTurn)
-                    {
-                        HandleOutOfMoves();
-                    }*/
                 }
                 inputLocked = false; 
             }
@@ -183,11 +168,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 animator.SetBool("isMoving", false);
             }
-        }
-        
-        if (movesManager.movesLeft <= 0 && !outOfMovesTriggered && !fireflyCollectedThisTurn && !isMoving)
-        {
-            HandleOutOfMoves();
         }
     }
 
@@ -204,12 +184,6 @@ public class PlayerMovement : MonoBehaviour
         transform.position = destination;
         isMoving = false;
         animator.SetBool("isMoving", false);
-        
-        /*
-        if (movesManager.movesLeft <= 0)
-        {
-            HandleOutOfMoves();
-        }*/
 
             // check for walkable interactable at the new position      !!!
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position); //ignore player mask so it can interact with anything at the position (like pressure plates)
@@ -224,9 +198,7 @@ public class PlayerMovement : MonoBehaviour
                 interactable.Interact(Vector3.zero);
             }
         }
-
     }
-    
 
     private IEnumerator InputCooldown(float delay)
     {
@@ -239,6 +211,7 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayBumpSound();
 
+        // Force correct bump direction immediately
         animator.SetFloat("moveX", lastBumpDirection.x);
         animator.SetFloat("moveY", lastBumpDirection.y);
         animator.SetFloat("tailAngleIndex", 0f);
@@ -246,37 +219,10 @@ public class PlayerMovement : MonoBehaviour
         animator.ResetTrigger("Bump");
         animator.SetTrigger("Bump");
 
-        // Wait one frame for animator to update
-        yield return null;
-
-        // Wait the bump animation length
-        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSeconds(state.length);
-
-        // Snap to idle
-        isMoving = false;
-        SnapToIdleAfterBump();
-
-        // If out of moves, handle sleep
-        /*if (movesManager.movesLeft <= 0)
-        {
-            HandleOutOfMoves();
-        }*/
-    }
-    /*private IEnumerator BumpAnimation()
-    {
-        PlayBumpSound();
-
-        animator.SetFloat("moveX", lastBumpDirection.x);
-        animator.SetFloat("moveY", lastBumpDirection.y);
-        animator.SetFloat("tailAngleIndex", 0f);
-
-        animator.ResetTrigger("Bump");
-        animator.SetTrigger("Bump");
-
+        // Do NOT wait here — animation event will finish it
         yield break;
-    }*/
-
+    }
+    
     // Called automatically by Animation Event at the end of "Bump" clip
     public void OnBumpAnimationEnd()
     {
@@ -339,20 +285,6 @@ public class PlayerMovement : MonoBehaviour
         return 0;
     }
 
-   /* public void ResetLevelFlags()
-    {
-        reachedFirefly = false;
-        outOfMovesTriggered = false;
-        inputLocked = false;
-        inputEnabled = true;           // re-enable input after level reset
-
-        // Reset the animator sleep state
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", false);
-            animator.SetBool("isSleeping", false); // optional if you have an isSleeping bool
-        }
-    }*/
     public void ResetLevelFlags()
     {
         inputLocked = false;
@@ -407,21 +339,6 @@ public class PlayerMovement : MonoBehaviour
             LevelManager.Instance.ResetLevel();
         }
     }
-
-    /*public void OnReachedFirefly()
-    {
-        reachedFirefly = true;
-        outOfMovesTriggered = true; // block sleep animation
-        inputLocked = true;          // stop further input
-
-        animator.ResetTrigger("Bump");
-        animator.SetBool("isMoving", false);
-
-        // Play look-up animation
-        animator.SetTrigger("LookUp");
-
-        Debug.Log("Player reached firefly! Playing LookUp animation.");
-    }*/
 
     private void PlaySleepAnimation()
     {
@@ -525,12 +442,6 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return null; // wait one frame for physics & animator
         ForceFacing(facing);
-
-        // If player has no moves left at start, force sleep
-        /*if (movesManager.movesLeft <= 0 && !reachedFirefly)
-        {
-            HandleOutOfMoves();
-        }*/
     }
 
     private IEnumerator ResetAnimatorNextFrame(PangolinStartPoint.FacingDirection facing)

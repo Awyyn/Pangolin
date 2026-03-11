@@ -8,7 +8,8 @@ public class FireflyCounterUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private Animator animator;
 
-    [SerializeField] private string increaseAnimationName = "FireflyIncrease"; // ui firefly counter increase animation
+    [SerializeField] private string increaseAnimationName = "FireflyIncrease";
+    [SerializeField] private string decreaseAnimationName = "FireflyDecrease";
 
     private void Awake()
     {
@@ -18,13 +19,17 @@ public class FireflyCounterUI : MonoBehaviour
     public void UpdateCount(int newCount)
     {
         countText.text = newCount.ToString();
-        //Debug.Log("[FireflyUI] Updated text to: " + countText.text);
     }
-        public void PlayCollectAnimation()
+
+    public void PlayIncreaseAnimation()
     {
-        if (animator != null && !string.IsNullOrEmpty(increaseAnimationName))
-        {
+        if (animator != null)
             animator.Play(increaseAnimationName, 0, 0f);
-        }
+    }
+
+    public void PlayDecreaseAnimation()
+    {
+        if (animator != null)
+            animator.Play(decreaseAnimationName, 0, 0f);
     }
 }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+
 
 /*
 
@@ -20,15 +22,72 @@ To Idle_Down when Facing == 3
 public class Poacher : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-
-    private Direction currentDirection = Direction.Right;
+    
+    //start dir
+    [SerializeField] private Direction startingDirection = Direction.Right;
+    private Direction currentDirection;
+    
+    //for pangolin check
+    [SerializeField] private Transform pangolin;
+    [SerializeField] private float tileSize = 1f;
+    [SerializeField] private PlayerMovement player;
 
     private void Start()
     {
         if (!animator)
             animator = GetComponent<Animator>();
 
+        currentDirection = startingDirection;
         UpdateIdleAnimation();
+    }
+    
+    private void CheckForPangolin()
+    {
+        Vector2 poacherPos = transform.position;
+        Vector2 playerPos = pangolin.position;
+
+        bool caught = false;
+
+        switch (currentDirection)
+        {
+            case Direction.Right:
+                caught = Mathf.Approximately(playerPos.y, poacherPos.y) && playerPos.x > poacherPos.x;
+                break;
+
+            case Direction.Left:
+                caught = Mathf.Approximately(playerPos.y, poacherPos.y) && playerPos.x < poacherPos.x;
+                break;
+
+            case Direction.Up:
+                caught = Mathf.Approximately(playerPos.x, poacherPos.x) && playerPos.y > poacherPos.y;
+                break;
+
+            case Direction.Down:
+                caught = Mathf.Approximately(playerPos.x, poacherPos.x) && playerPos.y < poacherPos.y;
+                break;
+        }
+
+        if (caught)
+        {
+            Debug.Log("player caught");
+            CatchPlayer();
+        }
+            
+    }
+    private void CatchPlayer()
+    {
+        animator.Play(currentDirection == Direction.Right 
+            ? "PoacherAlertedRight" 
+            : "PoacherAlertedLeft");
+
+        player.animator.Play("ScaredSide");                 //idk if this works
+
+        StartCoroutine(RestartLevelDelay());
+    }
+    private IEnumerator RestartLevelDelay()
+    {
+        yield return new WaitForSeconds(1.5f);
+        LevelManager.Instance.ResetLevel();
     }
 
 
@@ -75,13 +134,16 @@ public class Poacher : MonoBehaviour
 
         animator.Update(0f); // apply immediately this frame
     }
-
-
-
     // Called at the end of the turn animation using an Animation Event
     public void OnTurnAnimationFinished()
     {
         UpdateIdleAnimation();
+        WaitABitAfterTurning();
+        CheckForPangolin();
+    }
+    private IEnumerator WaitABitAfterTurning()
+    {
+        yield return new WaitForSeconds(0.1f);
     }
 
     private void UpdateIdleAnimation()
@@ -97,6 +159,12 @@ public class Poacher : MonoBehaviour
     private void OnDisable()
     {
         PlayerMovement.OnPlayerStepComplete -= RotateCounterClockwise;
+    }
+    
+    public void ResetPoacher()
+    {
+        currentDirection = startingDirection;
+        UpdateIdleAnimation();
     }
 
 }

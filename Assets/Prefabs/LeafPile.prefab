@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2992041201760354717}
   - component: {fileID: 4519347542795926773}
   - component: {fileID: 2807189694786400705}
+  - component: {fileID: 2959829967618207322}
   m_Layer: 3
   m_Name: LeafPile
   m_TagString: LeafPile
@@ -37,6 +38,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4374797010777632452
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -82,6 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: -20742475
   m_SortingLayer: 3
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c53a19daa586c1a4192d4473b16be7fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -91,7 +94,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &2992041201760354717
 BoxCollider2D:
@@ -178,3 +180,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ef233a33e70c3344920e04154e521e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 2959829967618207322}
+--- !u!95 &2959829967618207322
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 331978585089411396}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0af70a5049f6e4849ba61d8211b01189, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

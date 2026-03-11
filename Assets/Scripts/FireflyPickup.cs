@@ -63,7 +63,7 @@ public class FireflyPickup : MonoBehaviour
     private IEnumerator DelayedUIAnimation(float delay)
     {
         yield return new WaitForSeconds(delay);
-        FireflyCounterUI.Instance?.PlayCollectAnimation();
+        FireflyCounterUI.Instance?.PlayIncreaseAnimation();
     }
 
 

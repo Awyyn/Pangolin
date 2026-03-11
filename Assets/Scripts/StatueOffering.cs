@@ -7,18 +7,29 @@ public class StatueOffering : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!hasActivated && other.CompareTag("Player"))
-        {
-            hasActivated = true;
-            Debug.Log("Player reached the statue.");
-            StartOfferingSequence();
-        }
+        if (hasActivated) return;
+        if (!other.CompareTag("Player")) return;
+
+        hasActivated = true;
+
+        ConsumeAllFireflies();
+        StartOfferingSequence();
     }
 
+    private void ConsumeAllFireflies()
+    {
+        int current = PlayerProgress.GetFireflyCount(LevelManager.Instance.levelPrefabs.Length);
+
+        if (current <= 0) return;
+
+        PlayerProgress.ResetFireflies();
+
+        FireflyCounterUI.Instance?.UpdateCount(0);
+        FireflyCounterUI.Instance?.PlayDecreaseAnimation();
+    }
 
     private void StartOfferingSequence()
     {
-        Debug.Log("Offering sequence started.");
         animator.SetTrigger("Offer");
     }
 }

@@ -26,14 +26,15 @@ Transform:
   m_GameObject: {fileID: 286273317161568975}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.003813408, z: -0, w: 0.9999927}
-  m_LocalPosition: {x: 18.3654, y: -0.4556, z: -0.1351}
-  m_LocalScale: {x: 63.400185, y: 20.697163, z: 1}
+  m_LocalPosition: {x: 20.2279, y: -0.4556, z: -0.1493}
+  m_LocalScale: {x: 67.12811, y: 20.697163, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 127148660505843915}
   m_LocalEulerAnglesHint: {x: 0, y: 0.437, z: 0}
 --- !u!212 &24632213069967593
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -79,6 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -5
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.12607795, g: 0.16202144, b: 0.18598378, a: 1}
   m_FlipX: 0
@@ -88,7 +90,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &376790908188936729
 GameObject:
@@ -1357,6 +1358,7 @@ Tilemap:
     e33: 1
 --- !u!483693784 &1664193140983185159
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1402,6 +1404,7 @@ TilemapRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1409,7 +1412,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!19719996 &5065485768355955650
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -4192,6 +4194,7 @@ Tilemap:
     e33: 1
 --- !u!483693784 &6641511865795786253
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4237,6 +4240,7 @@ TilemapRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -4244,7 +4248,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1 &1215571485766429984
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,11 +4486,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60159dfde5932f44e81f0da3e5520267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowedMoves: 1000
+  allowedMoves: 100
   PangolinStartPoint: {fileID: 2469430814277471778}
   isBossLevel: 1
-  thumbnail: {fileID: 0}
-  thumbnailCamera: {fileID: 7289401131370400654}
 --- !u!1 &6499126963010775375
 GameObject:
   m_ObjectHideFlags: 0

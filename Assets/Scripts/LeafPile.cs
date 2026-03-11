@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LeafPile : MonoBehaviour, IInteractable
 {
-    private Animator animator;
+    public Animator animator;
     private Collider2D col;
     private bool hasInteracted = false;
 
@@ -31,25 +31,32 @@ public class LeafPile : MonoBehaviour, IInteractable
 
     private void PlayFlowAnimation(Vector3 dir)
     {
-        if (animator == null) return;
+        if (animator == null)
+        {
+            Debug.LogWarning("[LeafPile] Animator missing!");
+            return;
+        }
 
-        if (dir == Vector3.up)
+        Debug.Log("[LeafPile] Playing animation based on direction: " + dir);
+
+        if (Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
         {
-            animator.Play("LeafpileFlowUp");
+            if (dir.y > 0)
+            {
+                animator.Play("LeafpileFlowUp");
+                Debug.Log("Played LeafpileFlowUp");
+            }
+            else
+            {
+                animator.Play("LeafpileFlowDown");
+                Debug.Log("Played LeafpileFlowDown");
+            }
         }
-        else if (dir == Vector3.down)
-        {
-            animator.Play("LeafpileFlowDown");
-        }
-        else if (dir == Vector3.left)
+        else
         {
             animator.Play("LeafpileFlowSide");
-            animator.transform.localScale = new Vector3(-1, 1, 1); // flip horizontally
-        }
-        else // Vector3.right or default
-        {
-            animator.Play("LeafpileFlowSide");
-            animator.transform.localScale = new Vector3(1, 1, 1); // normal
+            animator.transform.localScale = new Vector3(dir.x > 0 ? 1 : -1, 1, 1);
+            Debug.Log("Played LeafpileFlowSide, flipped: " + (dir.x > 0 ? "no" : "yes"));
         }
     }
 
@@ -63,8 +70,11 @@ public class LeafPile : MonoBehaviour, IInteractable
         // Reset animator to idle/default state
         if (animator != null)
         {
-            animator.Play("Idle"); // optional: make a default idle animation
-            animator.transform.localScale = new Vector3(1, 1, 1);
+            animator.Play("LeafIdle");
+            animator.transform.localScale = new Vector3(1, 1, 1); // reset flipping
         }
+
+        // Ensure the LeafPile GameObject is active
+        gameObject.SetActive(true);
     }
 }
