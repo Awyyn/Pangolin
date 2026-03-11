@@ -29,8 +29,13 @@ public class Poacher : MonoBehaviour
     
     //for pangolin check
     [SerializeField] private Transform pangolin;
-    [SerializeField] private float tileSize = 1f;
     [SerializeField] private PlayerMovement player;
+    
+    //flashlight sprites
+    [SerializeField] private GameObject lightRight;
+    [SerializeField] private GameObject lightLeft;
+    [SerializeField] private GameObject lightUp;
+    [SerializeField] private GameObject lightDown;
 
     private void Start()
     {
@@ -39,6 +44,14 @@ public class Poacher : MonoBehaviour
 
         currentDirection = startingDirection;
         UpdateIdleAnimation();
+        UpdateLight();
+    }
+    private void UpdateLight()
+    {
+        lightRight.SetActive(currentDirection == Direction.Right);
+        lightLeft.SetActive(currentDirection == Direction.Left);
+        lightUp.SetActive(currentDirection == Direction.Up);
+        lightDown.SetActive(currentDirection == Direction.Down);
     }
     
     private void CheckForPangolin()
@@ -46,24 +59,31 @@ public class Poacher : MonoBehaviour
         Vector2 poacherPos = transform.position;
         Vector2 playerPos = pangolin.position;
 
+        // convert world positions to grid coordinates
+        int px = Mathf.RoundToInt(playerPos.x);
+        int py = Mathf.RoundToInt(playerPos.y);
+
+        int ox = Mathf.RoundToInt(poacherPos.x);
+        int oy = Mathf.RoundToInt(poacherPos.y);
+
         bool caught = false;
 
         switch (currentDirection)
         {
             case Direction.Right:
-                caught = Mathf.Approximately(playerPos.y, poacherPos.y) && playerPos.x > poacherPos.x;
+                caught = (py == oy) && (px > ox);
                 break;
 
             case Direction.Left:
-                caught = Mathf.Approximately(playerPos.y, poacherPos.y) && playerPos.x < poacherPos.x;
+                caught = (py == oy) && (px < ox);
                 break;
 
             case Direction.Up:
-                caught = Mathf.Approximately(playerPos.x, poacherPos.x) && playerPos.y > poacherPos.y;
+                caught = (px == ox) && (py > oy);
                 break;
 
             case Direction.Down:
-                caught = Mathf.Approximately(playerPos.x, poacherPos.x) && playerPos.y < poacherPos.y;
+                caught = (px == ox) && (py < oy);
                 break;
         }
 
@@ -72,8 +92,8 @@ public class Poacher : MonoBehaviour
             Debug.Log("player caught");
             CatchPlayer();
         }
-            
     }
+    
     private void CatchPlayer()
     {
         animator.Play(currentDirection == Direction.Right 
@@ -133,12 +153,13 @@ public class Poacher : MonoBehaviour
         }
 
         animator.Update(0f); // apply immediately this frame
+        UpdateLight();
     }
     // Called at the end of the turn animation using an Animation Event
     public void OnTurnAnimationFinished()
     {
         UpdateIdleAnimation();
-        WaitABitAfterTurning();
+        //WaitABitAfterTurning();
         CheckForPangolin();
     }
     private IEnumerator WaitABitAfterTurning()
