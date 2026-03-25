@@ -141,6 +141,12 @@ public class LevelManager : MonoBehaviour
         pangolin.SetStartPositionFromLevel(currentLevelInstance);
         pangolin.ResetAnimatorState(PangolinStartPoint.FacingDirection.Right);
 
+        var poachers = currentLevelInstance.GetComponentsInChildren<Poacher>(true);
+        foreach (var p in poachers)
+        {
+            p.ResetPoacher();
+        }
+
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");
     }

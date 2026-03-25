@@ -10,12 +10,17 @@ public class SFXManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance == null)
+        {
+            Instance = this;
+            // optional but recommended:
+            // DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
             return;
         }
-        Instance = this;
 
         DontDestroyOnLoad(gameObject);
 
@@ -23,9 +28,27 @@ public class SFXManager : MonoBehaviour
         ApplyVolume(savedVolume);
     }
 
+    /*public void PlaySFX(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null) return;
+        audioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+    }*/
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         if (clip == null) return;
+        
+        if (audioSource == null)
+        {
+            // try to recover
+            audioSource = GetComponent<AudioSource>();
+
+            if (audioSource == null)
+            {
+                Debug.LogWarning("SFXManager: Missing AudioSource.");
+                return;
+            }
+        }
+
         audioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
     }
 

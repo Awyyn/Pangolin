@@ -1,51 +1,44 @@
 using UnityEngine;
 using System.Collections;
 
-
-/*
-
-Int → Facing
-0 = Right
-1 = Up
-2 = Left
-3 = Down
-
-From Turn → Idle states
-4 transitions:
-To Idle_Right when Facing == 0
-To Idle_Up when Facing == 1
-To Idle_Left when Facing == 2
-To Idle_Down when Facing == 3
-
-*/
-
 public class Poacher : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    
-    //start dir
+
+    [Header("Start direction")]
     [SerializeField] private Direction startingDirection = Direction.Right;
     private Direction currentDirection;
-    
-    //for pangolin check
+
+    [Header("Player reference")]
     [SerializeField] private Transform pangolin;
     [SerializeField] private PlayerMovement player;
-    
-    //flashlight sprites
+
+    [Header("Flashlight sprites")]
     [SerializeField] private GameObject lightRight;
     [SerializeField] private GameObject lightLeft;
     [SerializeField] private GameObject lightUp;
     [SerializeField] private GameObject lightDown;
 
+    [Header("Feet for detection")]
+    [SerializeField] private Transform feet;
+
     private void Start()
     {
-        if (!animator)
-            animator = GetComponent<Animator>();
+        if (!animator) animator = GetComponent<Animator>();
+
+        // auto-find player if not assigned
+        if (!pangolin) pangolin = GameObject.FindGameObjectWithTag("Player").transform;
+        if (!player) player = pangolin.GetComponent<PlayerMovement>();
+
+        // auto-find feet if not assigned
+        if (!feet) feet = transform.Find("Feet");
 
         currentDirection = startingDirection;
+
         UpdateIdleAnimation();
         UpdateLight();
     }
+
     private void UpdateLight()
     {
         lightRight.SetActive(currentDirection == Direction.Right);
@@ -53,18 +46,23 @@ public class Poacher : MonoBehaviour
         lightUp.SetActive(currentDirection == Direction.Up);
         lightDown.SetActive(currentDirection == Direction.Down);
     }
-    
+
+    // Called after poacher finishes turning
     private void CheckForPangolin()
     {
-        Vector2 poacherPos = transform.position;
-        Vector2 playerPos = pangolin.position;
+        
+        Debug.Log($"Feet world: {feet.position}, Player world: {pangolin.position}");
+        
+        // Use feet position for tile calculation
+        Vector3Int poacherCell = GridManager.Instance.groundTilemap.WorldToCell(feet.position);
+        Vector3Int playerCell = GridManager.Instance.groundTilemap.WorldToCell(pangolin.position);
+        Debug.Log($"Poacher cell: {poacherCell}, Player cell: {playerCell}");
+        
+        int ox = poacherCell.x;
+        int oy = poacherCell.y;
 
-        // convert world positions to grid coordinates
-        int px = Mathf.RoundToInt(playerPos.x);
-        int py = Mathf.RoundToInt(playerPos.y);
-
-        int ox = Mathf.RoundToInt(poacherPos.x);
-        int oy = Mathf.RoundToInt(poacherPos.y);
+        int px = playerCell.x;
+        int py = playerCell.y;
 
         bool caught = false;
 
@@ -73,49 +71,45 @@ public class Poacher : MonoBehaviour
             case Direction.Right:
                 caught = (py == oy) && (px > ox);
                 break;
-
             case Direction.Left:
                 caught = (py == oy) && (px < ox);
                 break;
-
             case Direction.Up:
                 caught = (px == ox) && (py > oy);
                 break;
-
             case Direction.Down:
                 caught = (px == ox) && (py < oy);
                 break;
         }
 
-        if (caught)
-        {
-            Debug.Log("player caught");
-            CatchPlayer();
-        }
+        Debug.Log($"Poacher: ({ox},{oy}) Player: ({px},{py}) Facing: {currentDirection}, bool ({caught})");
+
+        if (caught) CatchPlayer();
     }
-    
+
     private void CatchPlayer()
     {
-        animator.Play(currentDirection == Direction.Right 
-            ? "PoacherAlertedRight" 
-            : "PoacherAlertedLeft");
+        animator.Play(currentDirection == Direction.Right ? "PoacherAlertedRight" : "PoacherAlertedLeft");
 
-        player.animator.Play("ScaredSide");                 //idk if this works
+        player.animator.Play("ScaredSide");
 
         StartCoroutine(RestartLevelDelay());
     }
+
     private IEnumerator RestartLevelDelay()
     {
         yield return new WaitForSeconds(1.5f);
         LevelManager.Instance.ResetLevel();
     }
 
-
-    // This will be called whenever the PLAYER moves
+    // Called whenever player moves
     public void RotateCounterClockwise()
     {
         currentDirection = GetNextDirectionCCW(currentDirection);
         PlayTurnAnimation(currentDirection);
+
+        // <-- call detection right after turning
+        CheckForPangolin();
     }
 
     private Direction GetNextDirectionCCW(Direction dir)
@@ -123,10 +117,10 @@ public class Poacher : MonoBehaviour
         switch (dir)
         {
             case Direction.Right: return Direction.Up;
-            case Direction.Up:    return Direction.Left;
-            case Direction.Left:  return Direction.Down;
-            case Direction.Down:  return Direction.Right;
-            default:              return Direction.Right;
+            case Direction.Up: return Direction.Left;
+            case Direction.Left: return Direction.Down;
+            case Direction.Down: return Direction.Right;
+            default: return Direction.Right;
         }
     }
 
@@ -135,36 +129,22 @@ public class Poacher : MonoBehaviour
         currentDirection = newDir;
         animator.SetInteger("Facing", (int)newDir);
 
-        // Force restart of the correct turn animation
         switch (newDir)
         {
-            case Direction.Right:
-                animator.Play("PoacherTurnRight", 0, 0f);
-                break;
-            case Direction.Up:
-                animator.Play("PoacherTurnUp", 0, 0f);
-                break;
-            case Direction.Left:
-                animator.Play("PoacherTurnLeft", 0, 0f);
-                break;
-            case Direction.Down:
-                animator.Play("PoacherTurnDown", 0, 0f);
-                break;
+            case Direction.Right: animator.Play("PoacherTurnRight", 0, 0f); break;
+            case Direction.Up: animator.Play("PoacherTurnUp", 0, 0f); break;
+            case Direction.Left: animator.Play("PoacherTurnLeft", 0, 0f); break;
+            case Direction.Down: animator.Play("PoacherTurnDown", 0, 0f); break;
         }
 
-        animator.Update(0f); // apply immediately this frame
+        animator.Update(0f); // apply immediately
         UpdateLight();
     }
-    // Called at the end of the turn animation using an Animation Event
+
     public void OnTurnAnimationFinished()
     {
         UpdateIdleAnimation();
-        //WaitABitAfterTurning();
         CheckForPangolin();
-    }
-    private IEnumerator WaitABitAfterTurning()
-    {
-        yield return new WaitForSeconds(0.1f);
     }
 
     private void UpdateIdleAnimation()
@@ -181,11 +161,19 @@ public class Poacher : MonoBehaviour
     {
         PlayerMovement.OnPlayerStepComplete -= RotateCounterClockwise;
     }
-    
+
     public void ResetPoacher()
     {
         currentDirection = startingDirection;
         UpdateIdleAnimation();
+        UpdateLight();
     }
+}
 
+public enum Direction
+{
+    Right,
+    Up,
+    Left,
+    Down
 }

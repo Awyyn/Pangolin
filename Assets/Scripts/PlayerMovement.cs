@@ -39,8 +39,10 @@ public class PlayerMovement : MonoBehaviour
     public float bumpCooldown = 0.6f;     // cooldown after bump
     public Animator animator;
     private SpriteRenderer spriteRenderer;
-    public AudioClip bumpSound;
     public static System.Action OnPlayerStepComplete;
+    
+    //SOUNDS
+    public AudioClip bumpSound;
 
     public float automaticLevelRestartWait = 10f; //time ater which the level will restart acutomatically (when failing the level)
 
@@ -74,13 +76,13 @@ public class PlayerMovement : MonoBehaviour
             return;
         if (inputLocked || LevelManager.Instance == null || LevelManager.Instance.levelCompleted)
             return;
-        /*
+        
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.R))
         {
             LevelManager.Instance.ResetLevel();
             return;
         }
-        */
+        
 
         if (!isMoving && movesManager.movesLeft > 0)
         {
@@ -329,17 +331,8 @@ public class PlayerMovement : MonoBehaviour
 
         LevelManager.Instance.RestartLevelAfterDelay(automaticLevelRestartWait);
     }
+
     
-    private IEnumerator RestartLevelAfterDelay()
-    {
-        yield return new WaitForSeconds(automaticLevelRestartWait);
-
-        if (LevelManager.Instance != null)
-        {
-            LevelManager.Instance.ResetLevel();
-        }
-    }
-
     private void PlaySleepAnimation()
     {
         string idleState = "SideIdle";

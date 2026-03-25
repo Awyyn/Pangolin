@@ -1,7 +1,8 @@
-public enum Direction
+/*public enum Direction
 {
     Right,
     Up,
     Left,
     Down
 }
+*/

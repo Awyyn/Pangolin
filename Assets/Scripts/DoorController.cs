@@ -9,8 +9,13 @@ public class DoorController : MonoBehaviour
     public Transform dustSpawnPoint;
     public GameObject dustOpenPrefab;
     public GameObject dustClosePrefab;
+    
+    public AudioClip DoorOpenSound;
+    public AudioClip DoorCloseSound;
+    public AudioClip PreassurePlateActiveSound;
+    
 
-    public Collider2D doorCollider; // assign the collider of the door here
+    public Collider2D doorCollider; 
 
     private int pressedCount = 0;
 
@@ -43,10 +48,16 @@ public class DoorController : MonoBehaviour
             isOpen = shouldBeOpen;
             doorAnimator.SetBool("Open", isOpen);
 
-            if (isOpen)
+            if (isOpen)    
+            {
                 SpawnDust(dustOpenPrefab);
+                SFXManager.Instance.PlaySFX(DoorOpenSound);
+            }
             else
+            {
                 SpawnDust(dustClosePrefab);
+                //SFXManager.Instance.PlaySFX(DoorCloseSound);
+            }
 
             if (doorCollider != null)
                 doorCollider.enabled = !isOpen;
@@ -60,6 +71,7 @@ public class DoorController : MonoBehaviour
 
     public void PlatePressed(PressurePlate plate, bool pressed)
     {
+        SFXManager.Instance.PlaySFX(PreassurePlateActiveSound);
         pressedCount += pressed ? 1 : -1;
         pressedCount = Mathf.Clamp(pressedCount, 0, requiredPlates); // ensure it doesn't go negative or exceed indicators in case more Indicators fire at the same time
         UpdateIndicators();
@@ -89,25 +101,21 @@ public class DoorController : MonoBehaviour
 
     public void ResetState()
     {
-        // Destroy all running dust animations
         foreach (Transform child in transform)
         {
             if (child.CompareTag("DustFX"))
                 Destroy(child.gameObject);
         }
 
-
-        // Reset door Animator instantly
-        if (doorAnimator != null)
-            doorAnimator.Play("DoorClosing", 0, 0f);
-
-        // Reset door state
         pressedCount = 0;
-        lastOpenState = false;
         isOpen = false;
+        lastOpenState = false;
+
         UpdateIndicators();
 
-        // Reset collider
+        if (doorAnimator != null)
+            doorAnimator.SetBool("Open", false);
+
         if (doorCollider != null)
             doorCollider.enabled = true;
     }
