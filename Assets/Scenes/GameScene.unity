@@ -4402,10 +4402,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1281683287}
   soundtrack:
-  - {fileID: 8300000, guid: 417a09a7d4d784be1a84ee452fabef43, type: 3}
-  - {fileID: 8300000, guid: b64edd63ae42e48a88f5d26716157c8d, type: 3}
-  - {fileID: 8300000, guid: c3c8524b19b5f4ade955a435831cb10c, type: 3}
+  - {fileID: 8300000, guid: cfae5c5f9ae5941afb1562aaab451cfa, type: 3}
+  - {fileID: 8300000, guid: adc342ada3c604bcb9d2875b45feb843, type: 3}
   - {fileID: 8300000, guid: 6245612de988f496fa0a4679d2a5b652, type: 3}
+  - {fileID: 8300000, guid: b64edd63ae42e48a88f5d26716157c8d, type: 3}
+  - {fileID: 8300000, guid: 417a09a7d4d784be1a84ee452fabef43, type: 3}
+  - {fileID: 8300000, guid: c3c8524b19b5f4ade955a435831cb10c, type: 3}
+  - {fileID: 8300000, guid: 1b571b418475f495791a201260514ee4, type: 3}
+  - {fileID: 8300000, guid: 417a09a7d4d784be1a84ee452fabef43, type: 3}
   audioMixer: {fileID: 24100000, guid: cdc330fc8585f0f49804625fd6a38411, type: 2}
 --- !u!1001 &1437859818
 PrefabInstance:
