@@ -7,9 +7,9 @@ public static class PlayerProgress
     private const string HighestLevelKey = "HighestLevel";
     private const string CompletedLevelKeyPrefix = "CompletedLevel_";
     private const string LastPlayedLevelKey = "LastPlayedLevel";
-
     private const string HasStartedGameKey = "HasStartedGame";
-    
+    private const string IntroPlayedKey = "IntroPlayed"; // <--- added
+
     // ----------- Game Started -----------
     public static void MarkGameStarted()
     {
@@ -22,9 +22,25 @@ public static class PlayerProgress
         return PlayerPrefs.GetInt(HasStartedGameKey, 0) == 1;
     }
 
-        // ----------- Fireflies -----------
+    // ----------- Cutscene -----------
+    public static bool HasSeenIntro()
+    {
+        return PlayerPrefs.GetInt(IntroPlayedKey, 0) == 1;
+    }
 
-        public static int GetFireflyCount(int totalLevels)
+    public static void MarkIntroPlayed()
+    {
+        PlayerPrefs.SetInt(IntroPlayedKey, 1);
+        PlayerPrefs.Save();
+    }
+
+    public static void ResetIntro()
+    {
+        PlayerPrefs.DeleteKey(IntroPlayedKey);
+    }
+
+    // ----------- Fireflies -----------
+    public static int GetFireflyCount(int totalLevels)
     {
         int count = 0;
 
@@ -36,15 +52,6 @@ public static class PlayerProgress
 
         return count;
     }
-
-/*
-    public static bool SpendFireflies(int amount)
-    {
-        int total = GetFireflyTotal();
-        if (total < amount) return false;
-        SetFireflyTotal(total - amount);
-        return true;
-    }*/
 
     // ----------- Levels -----------
     public static bool WasLevelCompletedBefore(int levelIndex)
@@ -74,7 +81,6 @@ public static class PlayerProgress
 
     public static bool IsLevelUnlocked(int levelIndex)
     {
-        // Level 0 is always unlocked
         if (levelIndex == 0) return true;
         return levelIndex <= GetHighestLevel();
     }
@@ -109,11 +115,10 @@ public static class PlayerProgress
         PlayerPrefs.Save();
         Debug.Log("Progress reset.");
     }
-    
-    public static void ResetFireflies()             //used by statues
+
+    public static void ResetFireflies() // used by statues
     {
         PlayerPrefs.SetInt("CompletedLevelsCount", 0);
         PlayerPrefs.Save();
     }
-
 }

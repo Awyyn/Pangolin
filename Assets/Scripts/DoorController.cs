@@ -42,13 +42,14 @@ public class DoorController : MonoBehaviour
     {
         bool shouldBeOpen = pressedCount >= requiredPlates;
 
-        // only act if the state actually changed
         if (shouldBeOpen != lastOpenState)
         {
+            bool wasOpen = lastOpenState; // store previous state
+
             isOpen = shouldBeOpen;
             doorAnimator.SetBool("Open", isOpen);
 
-            if (isOpen)    
+            if (isOpen)
             {
                 SpawnDust(dustOpenPrefab);
                 SFXManager.Instance.PlaySFX(DoorOpenSound);
@@ -56,7 +57,12 @@ public class DoorController : MonoBehaviour
             else
             {
                 SpawnDust(dustClosePrefab);
-                //SFXManager.Instance.PlaySFX(DoorCloseSound);
+
+                // ONLY play close sound if it was actually open before
+                if (wasOpen)
+                {
+                    SFXManager.Instance.PlaySFX(DoorCloseSound);
+                }
             }
 
             if (doorCollider != null)

@@ -9,6 +9,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject mainMenu;
     public ButtonManager buttonManager;
 
+
     private void OnEnable()          // Called every time menu becomes active
     {
         RefreshContinueButton();
@@ -33,7 +34,9 @@ public class MainMenuManager : MonoBehaviour
     {
         confirmationPanel.SetActive(false);
         mainMenu.SetActive(false);
-        CloseOptions();
+
+        // Start the game through GameManager
+        GameManager.Instance.StartGame();
     }
 
     public void OpenOptions()
@@ -63,25 +66,35 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartFreshGame()
     {
-        // Reset ONLY gameplay progress
+        // Reset GameManager flag so the cutscene can play
+        GameManager.Instance.ResetGameStartedFlag();
+        
+        //SHOW curtain immediately
+        GameManager.Instance.Curtain.SetActive(true);
+    
+        // Reset all gameplay progress
         PlayerProgress.ResetProgress();
+        PlayerProgress.ResetFireflies();
 
-        // Mark fresh run started
+        // Reset intro so it will play
+        PlayerProgress.ResetIntro();
+
+        // Mark game as started
         PlayerProgress.MarkGameStarted();
 
-        mainMenu.SetActive(false);
-
-        ButtonManager.Instance.levelMenuManager.RefreshMenu();
-
-        // Force UI refresh to 0
-        int fireflies = PlayerProgress.GetFireflyCount(             //we need to pass the total levels count to get the correct firefly count after reset.
-        LevelManager.Instance != null 
-            ? LevelManager.Instance.levelPrefabs.Length 
-            : 100
+        // Update firefly counter (this is fine to keep)
+        int fireflies = PlayerProgress.GetFireflyCount(
+            LevelManager.Instance != null
+                ? LevelManager.Instance.levelPrefabs.Length
+                : 100
         );
-
         FireflyCounterUI.Instance?.UpdateCount(fireflies);
 
+        // Hide main menu FIRST
+        mainMenu.SetActive(false);
+
+        // Start the game (cutscene OR menu handled inside GameManager)
+        GameManager.Instance.StartGame();
     }
 
 

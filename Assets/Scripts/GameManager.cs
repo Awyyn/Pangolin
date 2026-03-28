@@ -9,11 +9,17 @@ public class GameManager : MonoBehaviour
     public MovesManager movesManager;
     public LevelNumberUI levelNumberUI; 
 
+    [SerializeField] private GameObject introCutscene;
+    public GameObject IntroCutscene => introCutscene; // public getter
+
+    private bool gameStarted = false;
+    [SerializeField] private GameObject curtain;
+    public GameObject Curtain => curtain;
+
 
     // Runtime flag
     public bool bossMode;
 
-    // Check if the current level prefab name contains "Boss"
     public bool isBossLevel => currentLevelManager.currentLevelInstance != null &&
                                currentLevelManager.currentLevelInstance.name.Contains("Boss");
 
@@ -31,14 +37,56 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-            // For debugging purposes: clear all PlayerPrefs on start
-            
-        //PlayerPrefs.DeleteAll(); 
-        //PlayerPrefs.Save();
-
-
-        QualitySettings.vSyncCount = 1; //Synchronizes the frame rate to the monitor's refresh rate (e.g., 60Hz = 60 FPS). 0 disables it. i am not sure how it works, but i am trying to make my laptop pverheat less :,D 
+        QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 60;
+    }
+
+    /// <summary>
+    /// Called from MainMenuManager after player clicks Continue/New Game
+    /// </summary>
+    public void StartGame()
+    {
+        if (gameStarted) return;
+        gameStarted = true;
+
+        // Keep curtain ON while deciding what to show
+        if (curtain != null)
+            curtain.SetActive(true);
+
+        if (!PlayerProgress.HasSeenIntro() && introCutscene != null)
+        {
+            introCutscene.SetActive(true);
+        }
+        else
+        {
+            ShowLevelMenu();
+            HideCurtain();
+        }
+    }
+
+    /// <summary>
+    /// Call this when the intro video finishes
+    /// </summary>
+    public void OnIntroFinished()
+    {
+        PlayerProgress.MarkIntroPlayed();
+
+        if (introCutscene != null)
+            introCutscene.SetActive(false);
+
+        ShowLevelMenu();
+
+        HideCurtain();
+    }
+
+    public void ShowLevelMenu()
+    {
+        ButtonManager.Instance.levelMenuManager.RefreshMenu();
+    }
+    private void HideCurtain()
+    {
+        if (curtain != null)
+            curtain.SetActive(false);
     }
 
     public void RestartLevel()
@@ -53,5 +101,9 @@ public class GameManager : MonoBehaviour
         if (bossController != null)
             bossController.TriggerBossFight();
     }
-
+    
+    public void ResetGameStartedFlag()
+    {
+        gameStarted = false;
+    }
 }
