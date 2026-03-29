@@ -66,35 +66,34 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartFreshGame()
     {
-        // Reset GameManager flag so the cutscene can play
-        GameManager.Instance.ResetGameStartedFlag();
-        
         //SHOW curtain immediately
-        GameManager.Instance.Curtain.SetActive(true);
+        //GameManager.Instance.Curtain.SetActive(true);
     
         // Reset all gameplay progress
         PlayerProgress.ResetProgress();
         PlayerProgress.ResetFireflies();
+        PlayerProgress.ResetIntro();         // <-- ensures cutscene will pl
 
         // Reset intro so it will play
         PlayerProgress.ResetIntro();
 
         // Mark game as started
         PlayerProgress.MarkGameStarted();
-
-        // Update firefly counter (this is fine to keep)
+        
+        mainMenu.SetActive(false);
+        ButtonManager.Instance.levelMenuManager.RefreshMenu();
+        
+        GameManager.Instance.ResetGameStartedFlag(); // allow cutscene to play
+        GameManager.Instance.StartGame();
+        
+        // Update firefly counter 
         int fireflies = PlayerProgress.GetFireflyCount(
             LevelManager.Instance != null
                 ? LevelManager.Instance.levelPrefabs.Length
                 : 100
         );
         FireflyCounterUI.Instance?.UpdateCount(fireflies);
-
-        // Hide main menu FIRST
-        mainMenu.SetActive(false);
-
-        // Start the game (cutscene OR menu handled inside GameManager)
-        GameManager.Instance.StartGame();
+        
     }
 
 

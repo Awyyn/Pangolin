@@ -23,8 +23,19 @@ public class GameManager : MonoBehaviour
     public bool isBossLevel => currentLevelManager.currentLevelInstance != null &&
                                currentLevelManager.currentLevelInstance.name.Contains("Boss");
 
+    public void ResetAllProgress()
+    {
+        // Delete everything saved in PlayerPrefs
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        Debug.Log("All PlayerPrefs cleared.");
+    }
+    
     void Awake()
     {
+        //ResetAllProgress(); 
+        
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -53,14 +64,19 @@ public class GameManager : MonoBehaviour
         if (curtain != null)
             curtain.SetActive(true);
 
+        // Only play cutscene if it hasn't been seen yet
         if (!PlayerProgress.HasSeenIntro() && introCutscene != null)
         {
-            introCutscene.SetActive(true);
+            introCutscene.SetActive(true);      // show cutscene
+            var controller = introCutscene.GetComponent<IntroCutsceneController>();
+            if (controller != null)
+                controller.PlayVideo();          // start playing the video
         }
         else
         {
             ShowLevelMenu();
-            HideCurtain();
+            if (curtain != null)
+                curtain.SetActive(false);
         }
     }
 
@@ -69,24 +85,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnIntroFinished()
     {
-        PlayerProgress.MarkIntroPlayed();
-
+        PlayerProgress.MarkIntroPlayed();      // mark as seen
         if (introCutscene != null)
-            introCutscene.SetActive(false);
-
+            introCutscene.SetActive(false);    // hide cutscene
+        
+        if (curtain != null)
+            curtain.SetActive(false);
         ShowLevelMenu();
-
-        HideCurtain();
     }
 
     public void ShowLevelMenu()
     {
         ButtonManager.Instance.levelMenuManager.RefreshMenu();
-    }
-    private void HideCurtain()
-    {
-        if (curtain != null)
-            curtain.SetActive(false);
     }
 
     public void RestartLevel()
