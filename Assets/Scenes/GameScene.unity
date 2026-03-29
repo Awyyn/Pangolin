@@ -3453,14 +3453,6 @@ PrefabInstance:
       value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 1561625676}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: bumpSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 3edfe9ea7d14d4ca1ac064b56cfc6947, type: 3}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1018645421}
@@ -3472,21 +3464,9 @@ PrefabInstance:
       propertyPath: movesManager
       value: 
       objectReference: {fileID: 1514760806}
-    - target: {fileID: 1933304499215749713, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: automaticLevelRestartWait
-      value: 2.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5556812785336252897, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 60d738e9fbaec77408d355e01983d369, type: 2}
     - target: {fileID: 6202408108734590070, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
       propertyPath: m_Name
       value: Pangolin
-      objectReference: {fileID: 0}
-    - target: {fileID: 6202408108734590070, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4764,11 +4744,6 @@ MonoBehaviour:
   movesLeft: 0
   movesLeftDisplay: {fileID: 378411883}
   movesAnimator: {fileID: 1211028306}
---- !u!95 &1561625676 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5556812785336252897, guid: 938d3671b36d71041b9fe669606a07f2, type: 3}
-  m_PrefabInstance: {fileID: 914431280}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1576780560
 GameObject:
   m_ObjectHideFlags: 0
@@ -6276,10 +6251,6 @@ PrefabInstance:
     - target: {fileID: 3984131970686508394, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
       propertyPath: m_Name
       value: LevelTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 3984131970686508394, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7823128667611180915, guid: d8417504d1f53804485319fb2d53a67e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9114,26 +9085,14 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 519420032}
-    - target: {fileID: 2743947765993951913, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: allowedMoves
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 2897894956789340269, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: cameraTransform
-      value: 
-      objectReference: {fileID: 519420032}
     - target: {fileID: 3574759573098946759, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
       propertyPath: m_Name
       value: BossHunterLevel
       objectReference: {fileID: 0}
-    - target: {fileID: 4537349668824046629, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1460575944}
-    - target: {fileID: 4537349668824046629, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: cameraScroller
-      value: 
-      objectReference: {fileID: 519420033}
+    - target: {fileID: 3574759573098946759, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6222908839561353445, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
       propertyPath: player
       value: 
@@ -9142,26 +9101,6 @@ PrefabInstance:
       propertyPath: cameraScroller
       value: 
       objectReference: {fileID: 519420033}
-    - target: {fileID: 6260583795696401473, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: m_SortingLayer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6260583795696401473, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: m_SortingLayerID
-      value: -560468783
-      objectReference: {fileID: 0}
-    - target: {fileID: 6446839298285830471, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: m_SortingLayer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6446839298285830471, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1382046359
-      objectReference: {fileID: 0}
-    - target: {fileID: 7201485732548509250, guid: 22a7f71670fb541f68941ad3e354112c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.61
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

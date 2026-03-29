@@ -4397,7 +4397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60159dfde5932f44e81f0da3e5520267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowedMoves: 80
+  allowedMoves: 70
   PangolinStartPoint: {fileID: 2469430814277471778}
   isBossLevel: 1
 --- !u!1 &4607964751821654540
@@ -5075,6 +5075,10 @@ PrefabInstance:
     - target: {fileID: 8122588916520150464, guid: 514221b780f3349759ddca393907c17c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8201544554658100482, guid: 514221b780f3349759ddca393907c17c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.61
       objectReference: {fileID: 0}
     - target: {fileID: 9020224057559806619, guid: 514221b780f3349759ddca393907c17c, type: 3}
       propertyPath: m_Name

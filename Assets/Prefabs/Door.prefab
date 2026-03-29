@@ -436,6 +436,8 @@ MonoBehaviour:
   DoorOpenSound: {fileID: 8300000, guid: 3e7d65de32f2a4b129e068e1a8ff9e3b, type: 3}
   DoorCloseSound: {fileID: 8300000, guid: a1074e0a9a1564f0fa52374a4ed12cc6, type: 3}
   PreassurePlateActiveSound: {fileID: 8300000, guid: dbf01e1c6d548432e84b85d35696c1e0, type: 3}
+  IndicatorTune: {fileID: 8300000, guid: 5f6aa21400bd64536876e2e1f32c02a0, type: 3}
+  DoorTune: {fileID: 8300000, guid: 23b66832ee031460c98c8373681344cf, type: 3}
   doorCollider: {fileID: 1114638282341764589}
 --- !u!61 &1114638282341764589
 BoxCollider2D:

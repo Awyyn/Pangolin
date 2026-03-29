@@ -164,3 +164,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13ee6d5f57c3de4ab82e655fa71caac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  fireflySound: {fileID: 8300000, guid: 96b106f39dad84b77aea6e6048147fe2, type: 3}

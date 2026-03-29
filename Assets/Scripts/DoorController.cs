@@ -14,6 +14,8 @@ public class DoorController : MonoBehaviour
     public AudioClip DoorCloseSound;
     public AudioClip PreassurePlateActiveSound;
     
+    public AudioClip IndicatorTune;
+    public AudioClip DoorTune;
 
     public Collider2D doorCollider; 
 
@@ -53,6 +55,7 @@ public class DoorController : MonoBehaviour
             {
                 SpawnDust(dustOpenPrefab);
                 SFXManager.Instance.PlaySFX(DoorOpenSound);
+                SFXManager.Instance.PlaySFX(DoorTune);
             }
             else
             {
@@ -78,6 +81,7 @@ public class DoorController : MonoBehaviour
     public void PlatePressed(PressurePlate plate, bool pressed)
     {
         SFXManager.Instance.PlaySFX(PreassurePlateActiveSound);
+        SFXManager.Instance.PlaySFX(IndicatorTune);
         pressedCount += pressed ? 1 : -1;
         pressedCount = Mathf.Clamp(pressedCount, 0, requiredPlates); // ensure it doesn't go negative or exceed indicators in case more Indicators fire at the same time
         UpdateIndicators();

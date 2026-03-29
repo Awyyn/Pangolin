@@ -39,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     
     //SOUNDS
     public AudioClip bumpSound;
+    public AudioClip walkSound;
 
     public float automaticLevelRestartWait = 10f; //time after which the level will restart automatically (when failing the level)
 
@@ -116,11 +117,13 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 nextPos = targetPosition + direction;
 
                 movesManager.ModifyMoves(-1);
-                //ANNOUNCE STEP COMPLETE -> Poacher listenes.
-                OnPlayerStepComplete?.Invoke();
+                
+                OnPlayerStepComplete?.Invoke(); //announce spet - poacher listenes
 
                 if (GridManager.Instance.CanMoveTo(nextPos))
                 {
+                    SFXManager.Instance.PlaySFX(walkSound);
+                    
                     targetPosition = nextPos;
                     StartCoroutine(MoveToPosition(targetPosition));
                     StartCoroutine(InputCooldown(inputCooldown));
@@ -195,6 +198,7 @@ public class PlayerMovement : MonoBehaviour
                 interactable.Interact(Vector3.zero);
             }
         }
+        //OnPlayerStepComplete?.Invoke();                 //ANNOUNCE STEP COMPLETE -> Poacher listenes.
     }
 
     private IEnumerator InputCooldown(float delay)
@@ -301,15 +305,7 @@ public class PlayerMovement : MonoBehaviour
             
         }
     }
-
-    // Call this when the player reaches a firefly
-    public void OnReachedFirefly()
-    {
-        //reachedFirefly = true;      // prevents sleep
-        //outOfMovesTriggered = false; // ensure sleep won't trigger after this
-        animator.SetTrigger("LookUp");
-    }
-
+    
     private void HandleOutOfMoves()
     {
         if (outOfMovesTriggered) return;
@@ -325,6 +321,14 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Out of moves! Falling asleep. Mimimimimi");
 
         LevelManager.Instance.RestartLevelAfterDelay(automaticLevelRestartWait);
+    }
+    /*
+    // Call this when the player reaches a firefly
+    public void OnReachedFirefly()
+    {
+        //reachedFirefly = true;      // prevents sleep
+        //outOfMovesTriggered = false; // ensure sleep won't trigger after this
+        animator.SetTrigger("LookUp");
     }
 
     
@@ -367,7 +371,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetTrigger("LookUp");
 
         Debug.Log("[PlayerMovement] Forced LookUp from firefly");
-    }
+    }*/
 
     public void ForceFacing(PangolinStartPoint.FacingDirection facing)
     {

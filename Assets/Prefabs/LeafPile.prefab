@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 2959829967618207322}
+  leafpileSound: {fileID: 8300000, guid: 7524dc1c3efb64543bc0886c639289c7, type: 3}
 --- !u!95 &2959829967618207322
 Animator:
   serializedVersion: 7

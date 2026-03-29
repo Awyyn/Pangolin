@@ -39,6 +39,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!212 &1804253476329792177
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -84,6 +85,7 @@ SpriteRenderer:
   m_SortingLayerID: 1437824741
   m_SortingLayer: 4
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 5d9390977274cc04782f69391d6cce6e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -93,7 +95,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &364263480922581081
 Rigidbody2D:
@@ -184,10 +185,15 @@ MonoBehaviour:
   movesManager: {fileID: 0}
   levelManager: {fileID: 0}
   moveSpeed: 10
-  reachedFirefly: 0
+  outOfMovesTriggered: 0
   inputCooldown: 0.125
   bumpCooldown: 0.6
-  bumpSound: {fileID: 8300000, guid: d4b7a73d451c5a445a47c590592656d9, type: 3}
+  animator: {fileID: 5556812785336252897}
+  bumpSound: {fileID: 8300000, guid: aaf2ab5ee55bb43059b1211a19d127d3, type: 3}
+  walkSound: {fileID: 8300000, guid: c61d3bedc88cb489b8ea206fcbdd907c, type: 3}
+  scaredSound: {fileID: 8300000, guid: 2bfcead3d825c48bd956c07626bfc381, type: 3}
+  leafpileSound: {fileID: 8300000, guid: 7524dc1c3efb64543bc0886c639289c7, type: 3}
+  automaticLevelRestartWait: 2.2
 --- !u!82 &744110159799853701
 AudioSource:
   m_ObjectHideFlags: 0

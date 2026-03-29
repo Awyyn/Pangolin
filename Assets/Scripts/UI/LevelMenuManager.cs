@@ -60,9 +60,11 @@ public class LevelMenuManager : MonoBehaviour
     {
         bool isActive = levelMenuPanel.activeSelf;
         levelMenuPanel.SetActive(!isActive);
+        PlayerMovement.instance?.SetInputEnabled(false); 
 
         if (!isActive)
         {
+            PlayerMovement.instance?.SetInputEnabled(true);
             currentPage = 0;              // always start on first page
             PopulatePage(currentPage);
         }
@@ -130,7 +132,7 @@ public class LevelMenuManager : MonoBehaviour
 
     void OnLevelSelected(int index)
     {
-        GameSession.Instance.MarkRunStarted(); // ← ADD
+        GameSession.Instance.MarkRunStarted(); 
 
         if (index > PlayerProgress.GetHighestLevel())
             PlayerProgress.SetHighestLevel(index);

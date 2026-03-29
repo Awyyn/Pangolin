@@ -4,6 +4,7 @@ public class StatueOffering : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     private bool hasActivated = false;
+    public AudioClip StatueTune;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -26,6 +27,7 @@ public class StatueOffering : MonoBehaviour
 
         FireflyCounterUI.Instance?.UpdateCount(0);
         FireflyCounterUI.Instance?.PlayDecreaseAnimation();
+        SFXManager.Instance.PlaySFX(StatueTune);
     }
 
     private void StartOfferingSequence()

@@ -3,9 +3,9 @@ using System.Collections;
 
 public class FireflyPickup : MonoBehaviour
 {
-
     private Animator animator;
     private bool collected = false;
+    public AudioClip fireflySound;
 
     private void Awake()
     {
@@ -16,7 +16,9 @@ public class FireflyPickup : MonoBehaviour
     {
         if (collected) return;
         if (!collision.CompareTag("Player")) return;
-
+        
+        if (fireflySound != null)
+            SFXManager.Instance.PlaySFX(fireflySound);
         collected = true;
 
         PlayerMovement.instance.NotifyFireflyCollected();

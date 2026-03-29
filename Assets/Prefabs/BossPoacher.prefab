@@ -303,7 +303,10 @@ MonoBehaviour:
   offsetX: 3
   offsetY: 0
   playerAnimator: {fileID: 0}
+  poacherSound: {fileID: 0}
   animator: {fileID: 8234888564013734667}
+  scaredPangolinSound: {fileID: 8300000, guid: 2bfcead3d825c48bd956c07626bfc381, type: 3}
+  PoacherWalk: {fileID: 8300000, guid: e0200914801f24d8e8533f3ca23e611a, type: 3}
 --- !u!114 &4935200621466145701
 MonoBehaviour:
   m_ObjectHideFlags: 0

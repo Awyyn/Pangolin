@@ -6,7 +6,9 @@ public class LeafPile : MonoBehaviour, IInteractable
     public Animator animator;
     private Collider2D col;
     private bool hasInteracted = false;
-
+    
+    public AudioClip leafpileSound;
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -15,9 +17,10 @@ public class LeafPile : MonoBehaviour, IInteractable
 
     public void Interact(Vector3 playerDirection)
     {
-        Debug.Log("[LeafPile] Interacted with!");
         if (hasInteracted)
             return;
+        
+        SFXManager.Instance.PlaySFX(leafpileSound);
 
         hasInteracted = true;
 

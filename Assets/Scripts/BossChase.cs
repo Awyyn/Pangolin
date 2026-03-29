@@ -21,6 +21,9 @@ public class BossChase : MonoBehaviour
     private bool isStopped = false;
     
     public static BossChase Instance { get; private set; }
+    
+    public AudioClip scaredPangolinSound;
+    //public AudioClip PoacherWalk;
 
     private void Awake()
     {
@@ -94,8 +97,23 @@ public class BossChase : MonoBehaviour
         
         if (playerAnimator != null)
             playerAnimator.SetTrigger("Scared");
-        //CameraScroller.Instance?.StopScrolling();
+        
+        // Lock player input while scared
+        if (PlayerMovement.instance != null)
+        {
+            SFXManager.Instance.PlaySFX(scaredPangolinSound);
+            
+            PlayerMovement.instance.inputLocked = true;
+            // Optional: unlock after 1 second (length of scared animation)
+            StartCoroutine(UnlockPlayerAfterScared(1f));
+        }
         StartCoroutine(RestartLevel());
+    }
+    private IEnumerator UnlockPlayerAfterScared(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (PlayerMovement.instance != null)
+            PlayerMovement.instance.inputLocked = false;
     }
 
     private IEnumerator RestartLevel()
