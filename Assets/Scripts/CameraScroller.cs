@@ -5,12 +5,15 @@ public class CameraScroller : MonoBehaviour
     public static CameraScroller Instance { get; private set; }
 
     [Header("Scroll")]
-    public float scrollSpeed = 1.5f;
+    public float scrollSpeed = 1.15f;
 
     private Transform camTransform;
     private Vector3 startPosition;
     private bool isScrolling = false;
 
+    // Convenience check
+    public bool IsScrolling() => isScrolling;
+    
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,7 +40,6 @@ public class CameraScroller : MonoBehaviour
     {
         if (isScrolling) return;
         isScrolling = true;
-        Debug.Log("[CameraScroller] StartScrolling()");
     }
 
     // Stop horizontal scrolling (keeps camera where it is)
@@ -45,7 +47,6 @@ public class CameraScroller : MonoBehaviour
     {
         if (!isScrolling) return;
         isScrolling = false;
-        Debug.Log("[CameraScroller] StopScrolling()");
     }
 
     // Reset camera to initial position and clear boss mode
@@ -54,11 +55,8 @@ public class CameraScroller : MonoBehaviour
         isScrolling = false;
         camTransform.position = startPosition;
         if (GameManager.Instance != null) GameManager.Instance.bossMode = false;
-        Debug.Log("[CameraScroller] ResetCamera() to " + startPosition);
     }
-
-    // Convenience check
-    public bool IsScrolling() => isScrolling;
+    
 }
 
 

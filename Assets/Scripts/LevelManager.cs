@@ -146,6 +146,11 @@ public class LevelManager : MonoBehaviour
         {
             p.ResetPoacher();
         }
+        var bosses = currentLevelInstance.GetComponentsInChildren<BossChase>(true);
+        foreach (var b in bosses)
+        {
+            b.ResetBoss();
+        }
 
 
         Debug.Log("Level " + (currentLevelIndex + 1) + " has been reset (in-place).");

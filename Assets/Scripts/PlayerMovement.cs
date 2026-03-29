@@ -1,9 +1,5 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using UnityEngine.UI;
-using static PangolinStartPoint;
 
 /// <summary>
 /// Controls the player movement 
@@ -44,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
     //SOUNDS
     public AudioClip bumpSound;
 
-    public float automaticLevelRestartWait = 10f; //time ater which the level will restart acutomatically (when failing the level)
+    public float automaticLevelRestartWait = 10f; //time after which the level will restart automatically (when failing the level)
 
     private void Awake()
     {
@@ -157,7 +153,6 @@ public class PlayerMovement : MonoBehaviour
                         if (interactable != null)
                         {
                             interactable.Interact(direction);
-                            reacted = true;
                         }
                     }
 

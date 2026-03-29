@@ -48,6 +48,11 @@ public class FireflyPickup : MonoBehaviour
         StartCoroutine(DelayedUIAnimation(0.5f));
 
         LevelManager.Instance?.CompleteLevel();
+        
+        if (LevelManager.Instance.currentLevelInstance.GetComponent<LevelData>().isBossLevel)
+        {
+            BossChase.Instance?.StopChase();
+        }
 
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(state.length);
