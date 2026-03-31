@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
-    [Header("Tilemaps (can be left unassigned — auto-detected at runtime)")]
+    [Header("Tilemaps (can be left unassigned ï¿½ auto-detected at runtime)")]
     public Tilemap groundTilemap;
     public Tilemap obstacleTilemap;
 
@@ -46,7 +46,7 @@ public class GridManager : MonoBehaviour
                 if (ground != null)
                 {
                     groundTilemap = ground;
-                    obstacleTilemap = obstacle; // may be null, that's ok
+                    obstacleTilemap = obstacle; 
 
                     if (!autoAssignedLogged)
                     {

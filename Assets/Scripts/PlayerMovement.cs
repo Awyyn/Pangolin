@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 previousDirection = Vector3.zero;
 
     public bool inputLocked { get; set; }
-    //public bool reachedFirefly = false;
 
     private bool fireflyCollectedThisTurn = false;
 
@@ -313,7 +312,6 @@ public class PlayerMovement : MonoBehaviour
         if (isMoving) return;
 
         outOfMovesTriggered = true;
-        Debug.Log("handleoutofmoves() called. outofmovestriggered bool:" +  outOfMovesTriggered);
 
         animator.SetBool("isMoving", false);
         animator.SetBool("isSleeping", true);

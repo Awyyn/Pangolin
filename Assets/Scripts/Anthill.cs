@@ -27,8 +27,8 @@ public class Anthill : MonoBehaviour, IInteractable
         hasTriggered = true;
 
         // Optional: visually disable after use
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = false;
+        //if (spriteRenderer != null)
+          //  spriteRenderer.enabled = false;
 
         if (col != null)
             col.enabled = false;
@@ -38,8 +38,8 @@ public class Anthill : MonoBehaviour, IInteractable
     {
         hasTriggered = false;
 
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = true;
+        //if (spriteRenderer != null)
+         //   spriteRenderer.enabled = true;
 
         if (col != null)
             col.enabled = true;

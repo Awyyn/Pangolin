@@ -10,19 +10,17 @@ public class GameManager : MonoBehaviour
     public LevelNumberUI levelNumberUI; 
 
     [SerializeField] private GameObject introCutscene;
-    public GameObject IntroCutscene => introCutscene; // public getter
+    public GameObject IntroCutscene => introCutscene; 
 
     private bool gameStarted = false;
     [SerializeField] private GameObject curtain;
     public GameObject Curtain => curtain;
-
-
-    // Runtime flag
+    
     public bool bossMode;
 
     public bool isBossLevel => currentLevelManager.currentLevelInstance != null &&
                                currentLevelManager.currentLevelInstance.name.Contains("Boss");
-
+    /*  //deletes player prefs
     public void ResetAllProgress()
     {
         // Delete everything saved in PlayerPrefs
@@ -30,7 +28,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
 
         Debug.Log("All PlayerPrefs cleared.");
-    }
+    }*/
     
     void Awake()
     {
@@ -98,11 +96,7 @@ public class GameManager : MonoBehaviour
     {
         ButtonManager.Instance.levelMenuManager.RefreshMenu();
     }
-
-    public void RestartLevel()
-    {
-        currentLevelManager.ResetLevel();
-    }
+    
 
     public void StartBossFight()
     {
